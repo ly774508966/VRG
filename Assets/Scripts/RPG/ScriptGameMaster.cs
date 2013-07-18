@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class ScriptGameMaster : MonoBehaviour {
 	
+	
+	//GITHUB WORKING!
+	
 	/*NOTES
 	 * 
 	 * Players choose Tactics for multiple Cycles at a time
