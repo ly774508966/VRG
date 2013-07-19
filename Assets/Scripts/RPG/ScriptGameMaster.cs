@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class ScriptGameMaster : MonoBehaviour {
 	
-	
-	//GITHUB WORKING!
+
 	
 	/*NOTES
 	 * 
@@ -20,6 +19,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public ScriptCharacterSheet playerSheet = null;
 	
 	//Characters
+	public GameObject characterTemplate = null;
 	public List<GameObject> charactersInPlay = new List<GameObject>();
 	public int nextCharacterID = 0;
 	public List<GameObject> activeCharacters = new List<GameObject>();
@@ -29,11 +29,15 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Local variables
 	//Resolve Action Function
-	public List<float> priority = new List<float>();
-	public List<float> characterPriority = new List<float>();
+	//public List<float> priority = new List<float>();
+	//public List<float> characterPriority = new List<float>();
 	
 	//Scripts
 	public ScriptInterface scriptInterface;
+	
+	//Strings
+	public List<string> firstNames = new List<string>(new string[] {"Jimbly Joe", "Ham"});
+	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat"});
 	
 	// Use this for initialization
 	void Start () {
@@ -43,6 +47,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//...
 		
 		//Register characters in play by assigning ID and adding to list
+		/*
 		foreach (GameObject character in GameObject.FindGameObjectsWithTag("Character")){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(hotSheet.inPlay){
@@ -60,7 +65,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				playerSheet = hotSheet;
 				playerSheet.allegiance = "Player";
 			}
-		}
+		}*/
 		
 		//Begin Cycle 0
 		//BeginCycle();
@@ -69,9 +74,18 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-			if(!playerPrompt && Input.GetMouseButtonDown(0)){
-		NextStep();
+		if(!playerPrompt && Input.GetMouseButtonDown(0)){
+			NextStep();
 		}
+		
+		if(Input.GetKeyDown(KeyCode.N)){
+			CreateNPC();	
+		}
+		
+		if(Input.GetKeyDown(KeyCode.P)){
+			CreatePlayerCharacter();	
+		}
+		
 		
 		if(inputButtonName != null){
 			string hotButton = inputButtonName;
@@ -93,6 +107,46 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//BEGIN FUNCTIONS
 	
+	//New Character
+	void CreatePlayerCharacter(){
+		playerControlledCharacter = NewRandomCharacter();
+		playerSheet = playerControlledCharacter.GetComponent<ScriptCharacterSheet>();
+		playerSheet.control = "P1";
+	}
+	
+	void CreateNPC(){
+		NewRandomCharacter().GetComponent<ScriptCharacterSheet>().control = "AI";
+	}
+	
+	GameObject NewRandomCharacter(){
+		GameObject hotChar = Instantiate(characterTemplate) as GameObject;
+		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+		
+		//int test = (int)Mathf.Floor(Random.value*firstNames.Count);
+		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
+		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
+		hotSheet.health = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.focus = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.damage = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.speed = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.accuracy = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.evasion = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.armor = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.priority = Mathf.Floor(Random.value*100 + 1);
+		hotSheet.delay = 1;
+		
+		return (RegisterCharacter(hotChar, hotSheet));
+		
+		
+	}
+	GameObject RegisterCharacter(GameObject hotChar, ScriptCharacterSheet hotSheet){
+		hotSheet.characterID = nextCharacterID;
+		nextCharacterID += 1;
+		charactersInPlay.Add (hotChar);
+		return hotChar;
+	}
+	
+	//Progress to next event
 	void NextStep(){
 		if(playerSheet.inPlay){
 			CharacterCleanup();
@@ -113,7 +167,33 @@ public class ScriptGameMaster : MonoBehaviour {
 			scriptInterface.SendMessage("AddNewLine", "Character " + playerSheet.characterID.ToString() + " died.");
 		}
 	}
+	void ExecuteNextAction(){
+		
+			
+		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
+		if(hotSheet.target){
+
+			//Determine if attack hits and deal damage; log results to console
+			ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
+			//Log attack
+			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
+			+ " attacks Character " + targetSheet.characterID.ToString () + "!");
+			//Compare attacker's Accuracy to target's Defense
+			if(hotSheet.accuracy > targetSheet.evasion){
+				targetSheet.health -= hotSheet.damage;
+				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
+				+ " deals " + hotSheet.damage.ToString () + " damage to Character " + targetSheet.characterID.ToString ());
+			} else {
+				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString() + " misses!");
+			}
+		} else {
+			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString () + " attacks... nothing.");
+		}
+		//Reset Wait Time to Delay
+		hotSheet.waitTime = hotSheet.delay;
+	}
 	
+	//Change cycle
 	void BeginCycle(){
 		
 
@@ -126,7 +206,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		playerPrompt = true;
 
 	}
-	
 	void EndCycle(){
 		//Update characters' wait time (decrement by one)
 		foreach(GameObject character in charactersInPlay){
@@ -136,6 +215,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		BeginCycle();
 	}
 	
+	//Prepare queue
 	void GetActiveCharacters(){
 		activeCharacters = new List<GameObject>();
 		foreach(GameObject character in charactersInPlay){
@@ -145,7 +225,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 		}
 	}
-	
 	void SortActiveCharacters(){
 		int initialCount = activeCharacters.Count;
 		List<GameObject> tempList = new List<GameObject>();
@@ -176,37 +255,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 	}
 	
-
-	
-	
-	
-	
-	void ExecuteNextAction(){
-		
-			
-		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
-		if(hotSheet.target){
-
-			//Determine if attack hits and deal damage; log results to console
-			ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
-			//Log attack
-			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
-			+ " attacks Character " + targetSheet.characterID.ToString () + "!");
-			//Compare attacker's Accuracy to target's Defense
-			if(hotSheet.accuracy > targetSheet.evasion){
-				targetSheet.health -= hotSheet.damage;
-				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
-				+ " deals " + hotSheet.damage.ToString () + " damage to Character " + targetSheet.characterID.ToString ());
-			} else {
-				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString() + " misses!");
-			}
-		} else {
-			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString () + " attacks... nothing.");
-		}
-		//Reset Wait Time to Delay
-		hotSheet.waitTime = hotSheet.delay;
-	}
-	
+	//Maintenence
 	void CharacterCleanup(){
 	
 		for(int i = 0; i < charactersInPlay.Count; i++){
@@ -233,7 +282,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 		}
 	}
-	
 	void UpdateTargets(){
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();

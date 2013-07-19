@@ -7,7 +7,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int characterID = -1;
 	public int waitTime;
 	public bool inPlay = true;
-	public string allegiance = null;
+	public string control = null;
 	//Initiative
 	public bool isInPosition = true;
 	
@@ -15,29 +15,30 @@ public class ScriptCharacterSheet : MonoBehaviour {
 //Proper fields
 	
 	//Info
-	public string characterName;
+	public string firstName;
+	public string lastName;
 	
 	//Stats
-	public float health = 10.0F;
-	public float focus = 10.0F;
-	public float damage = 5.0F;
-	public float speed = 5.0F;
-	public float accuracy = 10.0F;
-	public float evasion = 5.0F;
-	public float armor = 0.0F;
+	public float health = -9999;
+	public float focus = -9999;
+	public float damage = -9999;
+	public float speed = -9999;
+	public float accuracy = -9999;
+	public float evasion = -9999;
+	public float armor = -9999;
 	
 	
 	//Derived stats
-	public float priority = 5.0F;
-	public int delay = 1;
+	public float priority = -9999;
+	public int delay = -9999;
 	
 //Behavior
 	
 	//Objectives 
 	public GameObject target = null;
 	
-	public bool engageTargets;
-	public bool retreat;
+	//public bool engageTargets;
+	//public bool retreat;
 	
 	
 	//Tactics
