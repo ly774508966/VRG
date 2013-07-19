@@ -36,8 +36,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	public ScriptInterface scriptInterface;
 	
 	//Strings
-	public List<string> firstNames = new List<string>(new string[] {"Jimbly Joe", "Ham"});
-	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat"});
+	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
+		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
+		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln"});
+	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat", "Kayla", 
+		"Dillon", "Reynolds", "Wild", "Rendar", "Casio", "Veis", "Ceti", "Vega", "Pavec", "Puncture", 
+		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln"});
 	
 	// Use this for initialization
 	void Start () {
@@ -122,33 +126,35 @@ public class ScriptGameMaster : MonoBehaviour {
 		GameObject hotChar = Instantiate(characterTemplate) as GameObject;
 		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
 		
-		//int test = (int)Mathf.Floor(Random.value*firstNames.Count);
-		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
-		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
-		hotSheet.health = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.focus = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.damage = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.speed = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.accuracy = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.evasion = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.armor = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.priority = Mathf.Floor(Random.value*100 + 1);
-		hotSheet.delay = 1;
-		
-		return (RegisterCharacter(hotChar, hotSheet));
-		
-		
-	}
-	GameObject RegisterCharacter(GameObject hotChar, ScriptCharacterSheet hotSheet){
+		//Register character
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
 		charactersInPlay.Add (hotChar);
-		return hotChar;
+		
+		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
+		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
+		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
+		hotSheet.name = hotSheet.characterID.ToString()+hotSheet.firstName+hotSheet.lastName;
+		
+		hotSheet.health = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.focus = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.damage = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.speed = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.accuracy = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.evasion = (int)Mathf.Floor((Random.value*100 + 1)/2);
+		hotSheet.armor = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.priority = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.melee = (int)Mathf.Floor(Random.value*100 + 1);
+		hotSheet.delay = 1;
+		
+		return (hotChar);
+		
+		
 	}
-	
+
 	//Progress to next event
 	void NextStep(){
-		if(playerSheet.inPlay){
+		//if(playerSheet.inPlay){
 			CharacterCleanup();
 			UpdateTargets();
 			//Set activeCharacters
@@ -163,9 +169,9 @@ public class ScriptGameMaster : MonoBehaviour {
 			} else {
 				EndCycle();
 			}
-		} else {
-			scriptInterface.SendMessage("AddNewLine", "Character " + playerSheet.characterID.ToString() + " died.");
-		}
+		//} else {
+		//	scriptInterface.SendMessage("AddNewLine", "Character " + playerSheet.characterID.ToString() + " died.");
+		//}
 	}
 	void ExecuteNextAction(){
 		
@@ -176,18 +182,20 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Determine if attack hits and deal damage; log results to console
 			ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
 			//Log attack
-			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
-			+ " attacks Character " + targetSheet.characterID.ToString () + "!");
+			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+			+ " attacks " + targetSheet.fullName + "! " + 
+				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
 			//Compare attacker's Accuracy to target's Defense
 			if(hotSheet.accuracy > targetSheet.evasion){
 				targetSheet.health -= hotSheet.damage;
-				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString()
-				+ " deals " + hotSheet.damage.ToString () + " damage to Character " + targetSheet.characterID.ToString ());
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
+				+ ". " + targetSheet.health.ToString() + " Health remaining.");
 			} else {
-				scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString() + " misses!");
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
 			}
 		} else {
-			scriptInterface.SendMessage("AddNewLine","Character " + hotSheet.characterID.ToString () + " attacks... nothing.");
+			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
 		hotSheet.waitTime = hotSheet.delay;
@@ -273,7 +281,7 @@ public class ScriptGameMaster : MonoBehaviour {
 					}
 				}
 				//Log death
-				scriptInterface.SendMessage("AddNewLine", "Character " + hotSheet.characterID.ToString() + " dies.");
+				scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
 			}
 			
 			//Error-checking
@@ -286,20 +294,26 @@ public class ScriptGameMaster : MonoBehaviour {
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(hotSheet.target == null){
-				bool assigningNewTarget = true;
-				int i = 0;
-				while(assigningNewTarget){
-					GameObject otherCharacter = charactersInPlay[i];
-					if(otherCharacter != hotSheet.gameObject){
+				//For all charactersInPlay without Targets:
+				//bool assigningNewTarget = true;
+				
+				//Choose random character
+				
+				//int i = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
+				//while(assigningNewTarget){
+				int randomCharacterIndex = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
+				GameObject otherCharacter = charactersInPlay[randomCharacterIndex];
+				
+				//If random character is not first character, assign as target (no character can be a target of him/herself
+				if(otherCharacter != hotSheet.gameObject){
 						hotSheet.target = otherCharacter;
-						assigningNewTarget = false;
-					} else {
-						i++;
-						if(i >= charactersInPlay.Count){
-							assigningNewTarget = false;
-						}
-					}
+						//assigningNewTarget = false;
+				} else {
+					//If it is first character, use next character in line
+						hotSheet.target = charactersInPlay[(randomCharacterIndex+1)%(charactersInPlay.Count-1)];
+					
 				}
+				//}
 			}
 		}
 						

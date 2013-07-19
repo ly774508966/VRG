@@ -3,6 +3,10 @@ using System.Collections;
 
 public class ScriptCharacterSheet : MonoBehaviour {
 	
+/*NOTES
+ * -9999 is used as a placeholder for values that are assigned during runtime (easy debugging). 
+ * */
+
 //Metagame Properties
 	public int characterID = -1;
 	public int waitTime;
@@ -17,15 +21,17 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Info
 	public string firstName;
 	public string lastName;
+	public string fullName;
 	
 	//Stats
-	public float health = -9999;
-	public float focus = -9999;
-	public float damage = -9999;
-	public float speed = -9999;
-	public float accuracy = -9999;
-	public float evasion = -9999;
-	public float armor = -9999;
+	public int health = -9999;
+	public int focus = -9999;
+	public int damage = -9999;
+	public int speed = -9999;
+	public int accuracy = -9999;
+	public int evasion = -9999;
+	public int armor = -9999;
+	public int melee = -9999;
 	
 	
 	//Derived stats
