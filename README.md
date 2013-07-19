@@ -16,13 +16,13 @@ turn-based tactical game.
 Features include:
 
 
--Fun gameplay---especially important
--Several unique character skills
--Simple physics/ chain reactions
--Character pathfinding over multiple floors
--Procedural generation of objects' locations
--Character creation/ customization system
--Several different equippable weapons
--User interface that is easily useable on all platforms.
--No aesthetic consideration needed at this stage; all art assets are placeholders.
+Fun gameplay---especially important
+Several unique character skills
+Simple physics/ chain reactions
+Character pathfinding over multiple floors
+Procedural generation of objects' locations
+Character creation/ customization system
+Several different equippable weapons
+User interface that is easily useable on all platforms.
+No aesthetic consideration needed at this stage; all art assets are placeholders.
 
