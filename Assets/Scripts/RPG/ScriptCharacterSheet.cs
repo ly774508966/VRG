@@ -11,7 +11,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int characterID = -1;
 	public int waitTime;
 	public bool inPlay = true;
-	public string control = null;
+	//public string control = null;
 	//Initiative
 	public bool isInPosition = true;
 	
@@ -48,6 +48,16 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	
 	//Tactics
+	public bool engageAtRange;
+	public bool engageInMelee;
+	public bool targetReassess;
+	
+	//Combat
+	
+	
+	
+	
+	
 	
 	
 	// Use this for initialization

@@ -12,11 +12,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * 
 	 * */
 	
-	//Player
+	//Interface
 	public bool playerPrompt = false;
-	public string inputButtonName = null;
-	public GameObject playerControlledCharacter = null;
-	public ScriptCharacterSheet playerSheet = null;
+	public string inputButtonName;
+	//public GameObject playerControlledCharacter = null;
+	//public ScriptCharacterSheet playerSheet = null;
 	
 	//Characters
 	public GameObject characterTemplate = null;
@@ -47,62 +47,26 @@ public class ScriptGameMaster : MonoBehaviour {
 	void Start () {
 		
 		scriptInterface = GetComponentInChildren<ScriptInterface>();
-		//Spawn characters
-		//...
 		
-		//Register characters in play by assigning ID and adding to list
-		/*
-		foreach (GameObject character in GameObject.FindGameObjectsWithTag("Character")){
-			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			if(hotSheet.inPlay){
-				hotSheet.characterID = nextCharacterID;
-				nextCharacterID += 1;
-				charactersInPlay.Add (character);
-			}
-		}
-		
-		//Set character with ID 0 to player-controlled
-		for(int i = 0; i < charactersInPlay.Count; i++){
-			ScriptCharacterSheet hotSheet = charactersInPlay[i].GetComponent<ScriptCharacterSheet>();
-			if(hotSheet.characterID == 0){
-				playerControlledCharacter = charactersInPlay[i];
-				playerSheet = hotSheet;
-				playerSheet.allegiance = "Player";
-			}
-		}*/
-		
-		//Begin Cycle 0
-		//BeginCycle();
-		
+		inputButtonName = null;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(!playerPrompt && Input.GetMouseButtonDown(0)){
-			NextStep();
-		}
+		//if(!playerPrompt && Input.GetMouseButtonDown(0)){
+		//	NextStep();
+		//}
 		
 		if(Input.GetKeyDown(KeyCode.N)){
-			CreateNPC();	
+			NewRandomCharacter();	
 		}
 		
-		if(Input.GetKeyDown(KeyCode.P)){
-			CreatePlayerCharacter();	
-		}
-		
-		
+		//if(Input.GetKeyDown(KeyCode.P)){
+		//	CreatePlayerCharacter();	
+		//}
+		//if(inputButtonName != null){
 		if(inputButtonName != null){
-			string hotButton = inputButtonName;
-			playerPrompt = false;
-			inputButtonName = null;
-			switch(hotButton){	
-				case "Fight":
-					//Fight
-					break;
-				case "Flight":
-					//Run away
-					break;
-			}	
+			ButtonHandler();
 		}
 	}
 	
@@ -112,15 +76,15 @@ public class ScriptGameMaster : MonoBehaviour {
 	//BEGIN FUNCTIONS
 	
 	//New Character
-	void CreatePlayerCharacter(){
-		playerControlledCharacter = NewRandomCharacter();
-		playerSheet = playerControlledCharacter.GetComponent<ScriptCharacterSheet>();
-		playerSheet.control = "P1";
-	}
+	//void CreatePlayerCharacter(){
+	//	playerControlledCharacter = NewRandomCharacter();
+	//	playerSheet = playerControlledCharacter.GetComponent<ScriptCharacterSheet>();
+	//	playerSheet.control = "P1";
+	//}
 	
-	void CreateNPC(){
-		NewRandomCharacter().GetComponent<ScriptCharacterSheet>().control = "AI";
-	}
+	//void CreateNPC(){
+	//	NewRandomCharacter().GetComponent<ScriptCharacterSheet>().control = "AI";
+	//}
 	
 	GameObject NewRandomCharacter(){
 		GameObject hotChar = Instantiate(characterTemplate) as GameObject;
@@ -136,16 +100,32 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
 		hotSheet.name = hotSheet.characterID.ToString()+hotSheet.firstName+hotSheet.lastName;
 		
-		hotSheet.health = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.focus = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.damage = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.speed = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.accuracy = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.evasion = (int)Mathf.Floor((Random.value*100 + 1)/2);
-		hotSheet.armor = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.priority = (int)Mathf.Floor(Random.value*100 + 1);
-		hotSheet.melee = (int)Mathf.Floor(Random.value*100 + 1);
+		//Assign Stats
+		hotSheet.health = GetRandom1To100();
+		hotSheet.focus = GetRandom1To100();
+		hotSheet.damage = GetRandom1To100();
+		hotSheet.speed = GetRandom1To100();
+		hotSheet.accuracy = GetRandom1To100();
+		hotSheet.evasion = GetRandom1To100()/2;
+		hotSheet.armor = GetRandom1To100()/4;
+		hotSheet.melee = GetRandom1To100();
+		
+		//Assign Abilities
+		hotSheet.targetReassess = GetRandomBool();
+		if(GetRandomBool()){
+		hotSheet.engageAtRange = true;
+			hotSheet.engageInMelee = false;
+		} else {
+			hotSheet.engageAtRange = false;
+			hotSheet.engageInMelee = true;
+		}
+		
+		//Assign Derived Stats
+		
 		hotSheet.delay = 1;
+		hotSheet.priority = hotSheet.focus;
+		
+		
 		
 		return (hotChar);
 		
@@ -178,22 +158,16 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
-
-			//Determine if attack hits and deal damage; log results to console
-			ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
-			//Log attack
-			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
-			+ " attacks " + targetSheet.fullName + "! " + 
-				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
-			//Compare attacker's Accuracy to target's Defense
-			if(hotSheet.accuracy > targetSheet.evasion){
-				targetSheet.health -= hotSheet.damage;
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
-				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
-				+ ". " + targetSheet.health.ToString() + " Health remaining.");
-			} else {
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+			
+			//Execute appropriate action function
+			if(hotSheet.engageAtRange){
+				ExecuteRangedAttack(hotSheet);	
 			}
+			if(hotSheet.engageInMelee){
+				ExecuteMeleeAttack(hotSheet);
+			}
+			
+
 		} else {
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
@@ -297,6 +271,9 @@ public class ScriptGameMaster : MonoBehaviour {
 				//For all charactersInPlay without Targets:
 				//bool assigningNewTarget = true;
 				
+				if(charactersInPlay.Count > 1){
+				 	
+				
 				//Choose random character
 				
 				//int i = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
@@ -313,10 +290,88 @@ public class ScriptGameMaster : MonoBehaviour {
 						hotSheet.target = charactersInPlay[(randomCharacterIndex+1)%(charactersInPlay.Count-1)];
 					
 				}
-				//}
+				}
 			}
 		}
 						
+	}
+	
+	void ExecuteRangedAttack(ScriptCharacterSheet hotSheet){
+		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
+	
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+			+ " attacks " + targetSheet.fullName + "! " + 
+				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
+			//Compare attacker's Accuracy to target's Defense
+			if(hotSheet.accuracy > targetSheet.evasion){
+				targetSheet.health -= hotSheet.damage;
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
+				+ ". " + targetSheet.health.ToString() + " Health remaining.");
+			} else {
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+				//targetReassess Tactic
+				//if(hotSheet.targetReassess){...}
+				
+			}
+	}
+	
+	void ExecuteMeleeAttack(ScriptCharacterSheet hotSheet){
+		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
+		
+						scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+			+ " attacks " + targetSheet.fullName + "! " + 
+				hotSheet.melee.ToString() + " Melee vs. " + targetSheet.evasion.ToString() + " Evasion");
+			//Compare attacker's Melee to target's Defense
+			if(hotSheet.melee > targetSheet.evasion){
+				targetSheet.health -= hotSheet.damage;
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
+				+ ". " + targetSheet.health.ToString() + " Health remaining.");
+			} else {
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+		}
+	}
+	//HANDLER FUNCTIONS
+	void ButtonHandler(){
+			ScriptCharacterSheet selectedSheet = charactersInPlay[0].GetComponent<ScriptCharacterSheet>();
+					
+			string hotButton = inputButtonName;
+			//playerPrompt = false;
+			inputButtonName = null;
+			switch(hotButton){	
+				case "Melee":
+					selectedSheet.engageInMelee = true;
+			selectedSheet.engageAtRange = false;
+					break;
+				case "Ranged":
+					selectedSheet.engageInMelee = false;
+			selectedSheet.engageAtRange = true;
+					break;
+				case "Next":
+					NextStep();
+					break;
+			case null:
+				Debug.Log("null");
+				break;
+				default:
+					Debug.Log ("Error 002: Button name " + hotButton + " is invalid.");
+					break;
+			}	
+	}
+	//HELPER FUNCTIONS
+	
+	bool GetRandomBool(){
+		if(Random.value >= .5){
+		return true;	
+		} else {
+		return false;
+		}
+			
+	}
+	
+	int GetRandom1To100(){
+		return (int)Mathf.Floor(Random.value*100 + 1);
 	}
 	
 	

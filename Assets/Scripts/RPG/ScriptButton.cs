@@ -12,18 +12,29 @@ public class ScriptButton : MonoBehaviour {
 		GUI.BeginGroup(new Rect(0.0F, Screen.height / 2, Screen.width, Screen.height / 2));
 		
 		//During Command Phase, show buttons and take input
-		if(scriptGameMaster.playerPrompt){
-			//Fight button
-			if(GUI.Button (new Rect(15, 15, 100, 100), "Fight")){
-				scriptGameMaster.inputButtonName = "Fight";
+		//if(scriptGameMaster.playerPrompt){
+		GUI.Box (new Rect(10,0,100,90), "Attack");
+			//Make the following toggle (boolean image) buttons
+			if(GUI.Button (new Rect(20, 30, 80, 20), "Melee")){
+				scriptGameMaster.inputButtonName = "Melee";
 			}
-			//Flight button
-			if(GUI.Button (new Rect(150, 15, 100, 100), "Flight")){
-				scriptGameMaster.inputButtonName = "Flight";
+			if(GUI.Button (new Rect(20, 60, 80, 20), "Ranged")){
+				scriptGameMaster.inputButtonName = "Ranged";
 			}
-		}
+		
+			//Next Step button
+	
+		//}
 		
 		GUI.EndGroup();
+		
+		GUI.BeginGroup(new Rect(Screen.width/2, Screen.height/2, Screen.width/2, Screen.height / 2));
+			if(GUI.Button (new Rect(20, 60, 80, 20), "Next")){
+				scriptGameMaster.inputButtonName = "Next";
+			}
+		GUI.EndGroup();
+		
+		
 		
 	}
 }
