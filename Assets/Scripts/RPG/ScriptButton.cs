@@ -8,6 +8,9 @@ public class ScriptButton : MonoBehaviour {
 	public ScriptGameMaster scriptGameMaster = null;
 	
 	void OnGUI(){
+		
+		GUI.BeginGroup(new Rect(0.0F, Screen.height / 2, Screen.width, Screen.height / 2));
+		
 		//During Command Phase, show buttons and take input
 		if(scriptGameMaster.playerPrompt){
 			//Fight button
@@ -15,9 +18,12 @@ public class ScriptButton : MonoBehaviour {
 				scriptGameMaster.inputButtonName = "Fight";
 			}
 			//Flight button
-			if(GUI.Button (new Rect(150, 150, 100, 100), "Flight")){
+			if(GUI.Button (new Rect(150, 15, 100, 100), "Flight")){
 				scriptGameMaster.inputButtonName = "Flight";
 			}
 		}
+		
+		GUI.EndGroup();
+		
 	}
 }
