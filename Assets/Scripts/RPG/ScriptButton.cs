@@ -4,6 +4,7 @@ using System.Collections;
 public class ScriptButton : MonoBehaviour {
 	
 	public Rect buttonRect = new Rect(150F, 1500F, 300F, 100F);
+	public Vector2 scrollPosition = Vector2.zero;
 	
 	public ScriptGameMaster scriptGameMaster = null;
 	
@@ -34,7 +35,23 @@ public class ScriptButton : MonoBehaviour {
 			}
 		GUI.EndGroup();
 		
-		
-		
+		/* Scrollbar
+		GUI.BeginGroup(new Rect(0, 0, Screen.width / 2, Screen.height/2));
+		GUILayout.BeginArea(new Rect(0, 0, 100, Screen.height / 2));
+		scrollPosition = GUI.BeginScrollView (
+                      new Rect (0,0,100,100),     // screen position
+                      scrollPosition,            // current scroll position
+                      new Rect (0, 0, 100, 200)      // content area
+                 );
+		GUILayout.Label("String 0");
+		//GUILayout.Box ("String 1"); //Writes "String 1" on first line of body.
+		GUI.Button (new Rect (0,0,100,20), "Top-left");
+		GUI.Button (new Rect (120,0,100,20), "Top-right");
+		GUI.Button (new Rect (0,180,100,20), "Bottom-left");
+		GUI.Button (new Rect (120,180,100,20), "Bottom-right");
+		GUI.EndScrollView();
+		GUILayout.EndArea();
+		GUI.EndGroup();
+	*/
 	}
 }

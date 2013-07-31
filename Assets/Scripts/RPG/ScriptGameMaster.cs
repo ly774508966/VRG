@@ -15,6 +15,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Interface
 	public bool playerPrompt = false;
 	public string inputButtonName;
+	public ScriptCharacterSheet selectedSheet;
 	//public GameObject playerControlledCharacter = null;
 	//public ScriptCharacterSheet playerSheet = null;
 	
@@ -49,6 +50,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		scriptInterface = GetComponentInChildren<ScriptInterface>();
 		
 		inputButtonName = null;
+		
+		
 	}
 	
 	// Update is called once per frame
@@ -87,7 +90,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//}
 	
 	GameObject NewRandomCharacter(){
-		GameObject hotChar = Instantiate(characterTemplate) as GameObject;
+		GameObject hotChar = Instantiate(characterTemplate, new Vector3(0 + nextCharacterID, 0, 0), transform.rotation) as GameObject;
 		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
 		
 		//Register character
@@ -99,6 +102,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
 		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
 		hotSheet.name = hotSheet.characterID.ToString()+hotSheet.firstName+hotSheet.lastName;
+		
+		//If first character, assign as selected
+		if(charactersInPlay.Count == 1){
+			selectedSheet = hotSheet;
+		} else if (charactersInPlay.Count < 1){
+		Debug.Log ("Error 103");	
+		}
 		
 		//Assign Stats
 		hotSheet.health = GetRandom1To100();
@@ -287,8 +297,7 @@ public class ScriptGameMaster : MonoBehaviour {
 						//assigningNewTarget = false;
 				} else {
 					//If it is first character, use next character in line
-						hotSheet.target = charactersInPlay[(randomCharacterIndex+1)%(charactersInPlay.Count-1)];
-					
+						hotSheet.target = charactersInPlay[((randomCharacterIndex+1)%(charactersInPlay.Count))];
 				}
 				}
 			}
@@ -334,6 +343,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	//HANDLER FUNCTIONS
 	void ButtonHandler(){
+			if(charactersInPlay.Count >= 1){
 			ScriptCharacterSheet selectedSheet = charactersInPlay[0].GetComponent<ScriptCharacterSheet>();
 					
 			string hotButton = inputButtonName;
@@ -352,13 +362,14 @@ public class ScriptGameMaster : MonoBehaviour {
 					NextStep();
 					break;
 			case null:
-				Debug.Log("null");
 				break;
 				default:
 					Debug.Log ("Error 002: Button name " + hotButton + " is invalid.");
 					break;
 			}	
-	}
+		}
+		}
+		
 	//HELPER FUNCTIONS
 	
 	bool GetRandomBool(){
