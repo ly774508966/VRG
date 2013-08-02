@@ -5,10 +5,11 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 	
 	public GameObject currentTarget = null;
 	public ScriptGameMaster scriptGameMaster;
+	public ScriptTargetNameDisplay scriptTargetNameDisplay;
 	
 	// Use this for initialization
 	void Start () {
-	
+	scriptTargetNameDisplay = transform.FindChild("TargetNameDisplay").GetComponent<ScriptTargetNameDisplay>();
 	}
 	
 	// Update is called once per frame
@@ -33,7 +34,7 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 								nextTargetID = (nextTargetID + 1) % scriptGameMaster.charactersInPlay.Count;
 							} else {			
 								selectedSheet.target = hotSheet.gameObject;	
-								guiText.text = hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName;
+								scriptTargetNameDisplay.guiText.text = hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName;
 								searchingForTarget = false;
 							}
 						break;
