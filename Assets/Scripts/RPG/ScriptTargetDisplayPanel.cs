@@ -6,11 +6,14 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 	public GameObject currentTarget = null;
 	public ScriptGameMaster scriptGameMaster;
 	public ScriptTargetNameDisplay scriptTargetNameDisplay;
+	//public ScriptTargetInfo scriptTargetInfo;
 	
 	// Use this for initialization
 	void Start () {
-	scriptTargetNameDisplay = transform.FindChild("TargetNameDisplay").GetComponent<ScriptTargetNameDisplay>();
+		scriptTargetNameDisplay = transform.FindChild("TargetNameDisplay").GetComponent<ScriptTargetNameDisplay>();
+		//scriptTargetInfo = transform.FindChild("TargetInfoDisplay").GetComponent<ScriptTargetInfo>();
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -32,10 +35,13 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 						if(hotSheet.characterID == nextTargetID){
 							if(hotSheet.characterID == scriptGameMaster.selectedSheet.characterID){
 								nextTargetID = (nextTargetID + 1) % scriptGameMaster.charactersInPlay.Count;
-							} else {			
-								selectedSheet.target = hotSheet.gameObject;	
-								scriptTargetNameDisplay.guiText.text = hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName;
+							} else {	
+								//Break while loop
 								searchingForTarget = false;
+								//Assign temporary character as current target
+								selectedSheet.target = hotSheet.gameObject;	
+								scriptTargetNameDisplay.guiText.text = GetCharacterInfo(hotSheet);
+									
 							}
 						break;
 						}	
@@ -44,6 +50,15 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 			}
 		}	
 	}
-
+		string GetCharacterInfo(ScriptCharacterSheet hotSheet){
+			return hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName + 
+			"\n Health " + hotSheet.health.ToString() +
+			"\n Priority " + hotSheet.priority.ToString() +
+			"\n Aim " + hotSheet.accuracy.ToString() +
+			"\n Melee " + hotSheet.melee.ToString() +
+			"\n Defense " + hotSheet.evasion.ToString() +
+			"\n Damage " + hotSheet.damage.ToString();
+								
+	}
 
 }

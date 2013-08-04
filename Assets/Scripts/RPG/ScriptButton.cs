@@ -16,24 +16,24 @@ public class ScriptButton : MonoBehaviour {
 		//if(scriptGameMaster.playerPrompt){
 		GUI.Box (new Rect(10,0,100,90), "Attack");
 			//Make the following toggle (boolean image) buttons
-			if(GUI.Button (new Rect(20, 30, 80, 20), "Melee")){
+			if(GUI.Button (new Rect(20, 25, 80, 20), "Melee")){
 				scriptGameMaster.inputButtonName = "Melee";
 			}
-			if(GUI.Button (new Rect(20, 60, 80, 20), "Ranged")){
+			if(GUI.Button (new Rect(20, 50, 80, 20), "Ranged")){
 				scriptGameMaster.inputButtonName = "Ranged";
 			}
 		
 			//Next Step button
-	
+			if(GUI.Button (new Rect(20, 100, 80, 20), "Next")){
+				scriptGameMaster.inputButtonName = "Next";
+			}
 		//}
 		
 		GUI.EndGroup();
 		
-		GUI.BeginGroup(new Rect(Screen.width/2, Screen.height/2, Screen.width/2, Screen.height / 2));
-			if(GUI.Button (new Rect(20, 60, 80, 20), "Next")){
-				scriptGameMaster.inputButtonName = "Next";
-			}
-		GUI.EndGroup();
+		//Bottom-righthand corner 
+		//GUI.BeginGroup(new Rect(Screen.width/2, Screen.height/2, Screen.width/2, Screen.height / 2));
+		//GUI.EndGroup();
 		
 		/* Scrollbar
 		GUI.BeginGroup(new Rect(0, 0, Screen.width / 2, Screen.height/2));
