@@ -13,9 +13,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * */
 	
 	//Interface
+	public ScriptInterface scriptInterface;
 	public bool playerPrompt = false;
 	public string inputButtonName;
 	public ScriptCharacterSheet selectedSheet;
+	public GameObject interfaceMain;
 	//public GameObject playerControlledCharacter = null;
 	//public ScriptCharacterSheet playerSheet = null;
 	
@@ -33,8 +35,6 @@ public class ScriptGameMaster : MonoBehaviour {
 	//public List<float> priority = new List<float>();
 	//public List<float> characterPriority = new List<float>();
 	
-	//Scripts
-	public ScriptInterface scriptInterface;
 	
 	//Strings
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
@@ -47,7 +47,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		scriptInterface = GetComponentInChildren<ScriptInterface>();
+		interfaceMain = GameObject.Find ("InterfaceMain");
+		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
+			//GetComponentInChildren<ScriptInterface>();
 		
 		inputButtonName = null;
 		

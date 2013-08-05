@@ -27,15 +27,8 @@ public class ScriptInterface : MonoBehaviour {
 	
 		console.SendMessage("AddNewLineConsole", textLine);
 		
-		//	for(int i = 0; i < consoleText.Count; i++){
-	//	consoleText[i].transform.Translate(0, scrollSpeed, 0);
-	//	}
-		
-	//	consoleText.Insert (0, Instantiate(textBlock,transform.position,transform.rotation) as GameObject);
-	//	consoleText[0].transform.parent = transform.FindChild("Console");
-	//	consoleText[0].guiText.text = textLine;
-		
 	}
+	
 	
 	
 }

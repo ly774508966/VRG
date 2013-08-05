@@ -27,11 +27,5 @@ public class ScriptTargetNameDisplay : MonoBehaviour {
 			SendMessageUpwards("SetNextTarget");
 		}
 	}
-	
-	void SetNextValidTarget(ScriptCharacterSheet selectedSheet){
-		
-		
-	}
-		
 		
 }
