@@ -12,6 +12,7 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 	void Start () {
 		scriptTargetNameDisplay = transform.FindChild("TargetNameDisplay").GetComponent<ScriptTargetNameDisplay>();
 		//scriptTargetInfo = transform.FindChild("TargetInfoDisplay").GetComponent<ScriptTargetInfo>();
+		scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
 	}
 
 	

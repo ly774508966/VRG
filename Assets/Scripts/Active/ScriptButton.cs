@@ -6,7 +6,12 @@ public class ScriptButton : MonoBehaviour {
 	public Rect buttonRect = new Rect(150F, 1500F, 300F, 100F);
 	public Vector2 scrollPosition = Vector2.zero;
 	
-	public ScriptGameMaster scriptGameMaster = null;
+	public ScriptGameMaster scriptGameMaster;
+	
+	void Start(){
+	scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();	
+		
+	}
 	
 	void OnGUI(){
 		

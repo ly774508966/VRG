@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ScriptTargetInfo : MonoBehaviour {
+public class ScriptRagdollPhysics : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -12,5 +12,4 @@ public class ScriptTargetInfo : MonoBehaviour {
 	void Update () {
 	
 	}
-	
 }

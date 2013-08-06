@@ -17,7 +17,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public bool playerPrompt = false;
 	public string inputButtonName;
 	public ScriptCharacterSheet selectedSheet;
-	public GameObject interfaceMain;
+	//public GameObject interfaceMain;
 	//public GameObject playerControlledCharacter = null;
 	//public ScriptCharacterSheet playerSheet = null;
 	
@@ -26,15 +26,13 @@ public class ScriptGameMaster : MonoBehaviour {
 	public List<GameObject> charactersInPlay = new List<GameObject>();
 	public int nextCharacterID = 0;
 	public List<GameObject> activeCharacters = new List<GameObject>();
+	public Vector3 spawnPosition;
 	
 	//Time
 	public int cycle = -1;
 	
-	//Local variables
-	//Resolve Action Function
-	//public List<float> priority = new List<float>();
-	//public List<float> characterPriority = new List<float>();
-	
+	//Physics
+	ScriptPhysicsController scriptPhysicsController;
 	
 	//Strings
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
@@ -47,9 +45,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		interfaceMain = GameObject.Find ("InterfaceMain");
-		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
-			//GetComponentInChildren<ScriptInterface>();
+		//interfaceMain = ;
+		
+		//Acquire scripts
+		scriptInterface = GameObject.Find ("InterfaceMain").GetComponent<ScriptInterface>();
+		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		
 		inputButtonName = null;
 		
@@ -80,19 +80,10 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//BEGIN FUNCTIONS
 	
-	//New Character
-	//void CreatePlayerCharacter(){
-	//	playerControlledCharacter = NewRandomCharacter();
-	//	playerSheet = playerControlledCharacter.GetComponent<ScriptCharacterSheet>();
-	//	playerSheet.control = "P1";
-	//}
-	
-	//void CreateNPC(){
-	//	NewRandomCharacter().GetComponent<ScriptCharacterSheet>().control = "AI";
-	//}
+	//Character Management
 	
 	GameObject NewRandomCharacter(){
-		GameObject hotChar = Instantiate(characterTemplate, new Vector3(0 + nextCharacterID, 0, 0), transform.rotation) as GameObject;
+		GameObject hotChar = Instantiate(characterTemplate, new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
 		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
 		
 		//Register character
@@ -143,7 +134,28 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		
 	}
-
+	
+	void KillCharacter(ScriptCharacterSheet hotSheet, int characterIndex){
+						
+				//Remove dead character from characters in play 
+				charactersInPlay.RemoveAt(characterIndex);
+				//Set character's inPlay to false
+				hotSheet.inPlay = false;
+				//Remove character as an active target
+				foreach(GameObject character in charactersInPlay){
+					ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
+					if(otherHotSheet.target == hotSheet.gameObject){
+						otherHotSheet.target = null;
+					}
+				}
+				//Log death
+				scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
+		
+				//Enable ragdoll
+		scriptPhysicsController.SendMessage("PropelChunk", hotSheet.gameObject);
+}
+	
+	
 	//Progress to next event
 	void NextStep(){
 		//if(playerSheet.inPlay){
@@ -255,19 +267,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		for(int i = 0; i < charactersInPlay.Count; i++){
 			ScriptCharacterSheet hotSheet = charactersInPlay[i].GetComponent<ScriptCharacterSheet>();
 			if(hotSheet.health <= 0){
-				//Remove dead character from characters in play 
-				charactersInPlay.RemoveAt(i);
-				//Set character's inPlay to false
-				hotSheet.inPlay = false;
-				//Remove character as an active target
-				foreach(GameObject character in charactersInPlay){
-					ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
-					if(otherHotSheet.target == hotSheet.gameObject){
-						otherHotSheet.target = null;
-					}
-				}
-				//Log death
-				scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
+				KillCharacter(hotSheet, i);
+
 			}
 			
 			//Error-checking
