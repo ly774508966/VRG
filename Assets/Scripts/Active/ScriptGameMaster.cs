@@ -63,7 +63,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//}
 		
 		if(Input.GetKeyDown(KeyCode.N)){
-			NewRandomCharacter();	
+			;
+			RandomizeCharacterValues(RegisterCharacter(NewCharacter()));
 		}
 		
 		//if(Input.GetKeyDown(KeyCode.P)){
@@ -81,27 +82,44 @@ public class ScriptGameMaster : MonoBehaviour {
 	//BEGIN FUNCTIONS
 	
 	//Character Management
+	GameObject NewCharacter(){
+	//Create character object at spawn position
+		return Instantiate(characterTemplate, new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
 	
-	GameObject NewRandomCharacter(){
-		GameObject hotChar = Instantiate(characterTemplate, new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
-		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+	}
+	GameObject RegisterCharacter(GameObject character){
+		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
-		//Register character
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
-		charactersInPlay.Add (hotChar);
+		charactersInPlay.Add (character);
 		
+		//Assign object character name
+		character.name = hotSheet.stringID;
+		return character;
+			
+		
+	}
+	GameObject SetAsSelected(GameObject character){
+				//If first character, assign as selected
+		
+			selectedSheet = character.GetComponent<ScriptCharacterSheet>();
+		return character;
+		
+	}
+	GameObject RandomizeCharacterValues(GameObject character){
+		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+	
+	
+			
+		//Set name and update game object
 		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
 		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
 		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
-		hotSheet.name = hotSheet.characterID.ToString()+hotSheet.firstName+hotSheet.lastName;
+		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName.ToString() + hotSheet.lastName.ToString();
+		hotSheet.name = hotSheet.stringID;
 		
-		//If first character, assign as selected
-		if(charactersInPlay.Count == 1){
-			selectedSheet = hotSheet;
-		} else if (charactersInPlay.Count < 1){
-		Debug.Log ("Error 103");	
-		}
+
 		
 		//Assign Stats
 		hotSheet.health = GetRandom1To100();
@@ -113,7 +131,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.armor = GetRandom1To100()/4;
 		hotSheet.melee = GetRandom1To100();
 		
-		//Assign Abilities
+		//Assign Tactics
 		hotSheet.targetReassess = GetRandomBool();
 		if(GetRandomBool()){
 		hotSheet.engageAtRange = true;
@@ -130,11 +148,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		
 		
-		return (hotChar);
-		
+		return (character);
 		
 	}
-	
+
 	void KillCharacter(ScriptCharacterSheet hotSheet, int characterIndex){
 						
 				//Remove dead character from characters in play 

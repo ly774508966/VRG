@@ -18,10 +18,11 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 //Proper fields
 	
-	//Info
+	//Identification
 	public string firstName;
 	public string lastName;
 	public string fullName;
+	public string stringID;
 	
 	//Stats
 	public int health = -9999;
