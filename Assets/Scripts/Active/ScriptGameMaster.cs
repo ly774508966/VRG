@@ -13,19 +13,18 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * */
 	
 	//Interface
-	public ScriptInterface scriptInterface;
+	ScriptInterface scriptInterface;
 	public bool playerPrompt = false;
-	public string inputButtonName;
+	public string inputButtonName = "";
 	public ScriptCharacterSheet selectedSheet;
-	//public GameObject interfaceMain;
-	//public GameObject playerControlledCharacter = null;
-	//public ScriptCharacterSheet playerSheet = null;
 	
 	//Characters
-	public GameObject characterTemplate = null;
+	public GameObject characterTemplate;
 	public List<GameObject> charactersInPlay = new List<GameObject>();
 	public int nextCharacterID = 0;
 	public List<GameObject> activeCharacters = new List<GameObject>();
+	
+	//Space
 	public Vector3 spawnPosition;
 	
 	//Time
@@ -34,7 +33,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
 	
-	//Strings
+	//Database
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
 		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
 		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln"});
@@ -42,16 +41,27 @@ public class ScriptGameMaster : MonoBehaviour {
 		"Dillon", "Reynolds", "Wild", "Rendar", "Casio", "Veis", "Ceti", "Vega", "Pavec", "Puncture", 
 		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln"});
 	
+	//Debug
+	//public GameObject testCharacter;
+	//public GameObject[] testArray;
+	
 	// Use this for initialization
 	void Start () {
 		
-		//interfaceMain = ;
+		
 		
 		//Acquire scripts
 		scriptInterface = GameObject.Find ("InterfaceMain").GetComponent<ScriptInterface>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		
-		inputButtonName = null;
+		//Register each character object in the scene
+		foreach(GameObject character in GameObject.FindGameObjectsWithTag("Character")){
+			
+		RegisterCharacter(character);	
+		}
+		
+		//RegisterCharacter(testCharacter);	
+		
 		
 		
 	}
@@ -70,8 +80,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//if(Input.GetKeyDown(KeyCode.P)){
 		//	CreatePlayerCharacter();	
 		//}
-		//if(inputButtonName != null){
-		if(inputButtonName != null){
+		if(inputButtonName != ""){
 			ButtonHandler();
 		}
 	}
@@ -109,17 +118,13 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	GameObject RandomizeCharacterValues(GameObject character){
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-	
-	
-			
+		
 		//Set name and update game object
 		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
 		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
 		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
 		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName.ToString() + hotSheet.lastName.ToString();
 		hotSheet.name = hotSheet.stringID;
-		
-
 		
 		//Assign Stats
 		hotSheet.health = GetRandom1To100();
