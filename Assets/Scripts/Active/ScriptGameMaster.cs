@@ -68,9 +68,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//if(!playerPrompt && Input.GetMouseButtonDown(0)){
-		//	NextStep();
-		//}
+		
 		
 		if(Input.GetKeyDown(KeyCode.N)){
 			;
@@ -137,7 +135,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.melee = GetRandom1To100();
 		
 		//Assign Tactics
-		hotSheet.targetReassess = GetRandomBool();
+		//hotSheet.targetReassess = GetRandomBool();
 		if(GetRandomBool()){
 		hotSheet.engageAtRange = true;
 			hotSheet.engageInMelee = false;
@@ -208,9 +206,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Execute appropriate action function
 			if(hotSheet.engageAtRange){
 				ExecuteRangedAttack(hotSheet);	
-			}
-			if(hotSheet.engageInMelee){
+			} else if (hotSheet.engageInMelee){
 				ExecuteMeleeAttack(hotSheet);
+			} else {
+			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " does zero things.");	
 			}
 			
 

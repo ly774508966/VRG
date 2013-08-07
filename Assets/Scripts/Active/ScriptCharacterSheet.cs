@@ -51,7 +51,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Tactics
 	public bool engageAtRange;
 	public bool engageInMelee;
-	public bool targetReassess;
+	//public bool targetReassess;
 	
 	//Combat
 	
