@@ -8,7 +8,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	public float wallJointStrength = 1.0F;
 	public float wallThresholdVelocity = 1.0F;
 	
-	public Vector3 propelForce = new Vector3(0, 0, -1000F);
+	public float propelForce = 10000F;
 	
 	// Use this for initialization
 	void Start () {
@@ -21,8 +21,9 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
+	
+
 	
 	void RegisterWallPanels(GameObject wallSegment){
 		foreach(Transform child in wallSegment.transform){
@@ -43,16 +44,43 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	void PropelChunk(GameObject character){
+	void Ragdollify(GameObject character){
 		
 		foreach(Transform child in character.transform){
 		if(child.rigidbody != null){
 			child.rigidbody.isKinematic = false;
-			child.rigidbody.AddForce(propelForce);	
+			child.rigidbody.WakeUp();
 			} else {
-			PropelChunk(child.gameObject);
+			Ragdollify(child.gameObject);
 			}
 		}
+	}
+	
+	void Propel(Vector3 propelDirection, GameObject targetCharacter){
+		Debug.Log ("well???");
+		foreach(Transform child in targetCharacter.transform){
+			if(child.rigidbody != null){
+				child.rigidbody.AddForce( propelDirection * propelForce);	
+				} else {
+			Propel(propelDirection, child.gameObject);
+			}
+		}
+	}
+		
+	
+	void ExecuteCharacter(GameObject targetCharacter){
+		//Debug.Log (targetCharacter.GetComponent<ScriptCharacterSheet>().stringID);
+		Ragdollify(targetCharacter);
+		//GameObject lastAttacker = targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker ;
+		//ScriptControllerTargeting hotCont = lastAttacker.GetComponentInChildren<ScriptControllerTargeting>(); 
+		
+				
+		Vector3 rangedAttack = targetCharacter.transform.position - 
+			targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker.
+				GetComponentInChildren<ScriptControllerTargeting>().transform.position;
+		Propel (rangedAttack, targetCharacter);
+		
+		
 	}
 	
 }

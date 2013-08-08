@@ -14,6 +14,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public string control = null;
 	//Initiative
 	public bool isInPosition = true;
+	public GameObject lastAttacker;
 	
 	
 //Proper fields
@@ -41,7 +42,8 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 //Behavior
 	
-	//Objectives 
+	
+	//Objectives
 	public GameObject target = null;
 	
 	//public bool engageTargets;

@@ -171,8 +171,8 @@ public class ScriptGameMaster : MonoBehaviour {
 				//Log death
 				scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
 		
-				//Enable ragdoll
-		scriptPhysicsController.SendMessage("PropelChunk", hotSheet.gameObject);
+				//Death physics
+				scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
 }
 	
 	
@@ -202,7 +202,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
-			
+			hotSheet.target.GetComponent<ScriptCharacterSheet>().lastAttacker = hotSheet.gameObject;
 			//Execute appropriate action function
 			if(hotSheet.engageAtRange){
 				ExecuteRangedAttack(hotSheet);	
