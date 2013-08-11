@@ -12,9 +12,13 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * 
 	 * */
 	
+	//Modes
+	public bool playerPrompt = false;
+	public bool movementMode = false;
+	
+	
 	//Interface
 	ScriptInterface scriptInterface;
-	public bool playerPrompt = false;
 	public string inputButtonName = "";
 	public ScriptCharacterSheet selectedSheet;
 	
@@ -178,7 +182,6 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Progress to next event
 	void NextStep(){
-		//if(playerSheet.inPlay){
 			CharacterCleanup();
 			UpdateTargets();
 			//Set activeCharacters
@@ -191,11 +194,10 @@ public class ScriptGameMaster : MonoBehaviour {
 				ExecuteNextAction();
 				CharacterCleanup();
 			} else {
-				EndCycle();
+			SetToMovementMode();
+			//EndCycle();
 			}
-		//} else {
-		//	scriptInterface.SendMessage("AddNewLine", "Character " + playerSheet.characterID.ToString() + " died.");
-		//}
+	
 	}
 	void ExecuteNextAction(){
 		
@@ -409,5 +411,16 @@ public class ScriptGameMaster : MonoBehaviour {
 		return (int)Mathf.Floor(Random.value*100 + 1);
 	}
 	
+	
+	//MODE TOGGLE
+	
+	void SetToMovementMode(){
+	movementMode = true;
+	foreach(GameObject character in charactersInPlay){
+		character.SendMessage("GreenLight");	
+		}
+		
+	
+	}
 	
 }

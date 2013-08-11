@@ -17,6 +17,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public GameObject lastAttacker;
 	
 	
+	
 //Proper fields
 	
 	//Identification
@@ -46,6 +47,8 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Objectives
 	public GameObject target = null;
 	
+	public Vector3 destination;
+	
 	//public bool engageTargets;
 	//public bool retreat;
 	
@@ -73,4 +76,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	void Update () {
 	
 	}
+	
+	//Start character movement to destination
+
 }

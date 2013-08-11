@@ -57,7 +57,6 @@ public class ScriptPhysicsController : MonoBehaviour {
 	}
 	
 	void Propel(Vector3 propelDirection, GameObject targetCharacter){
-		Debug.Log ("well???");
 		foreach(Transform child in targetCharacter.transform){
 			if(child.rigidbody != null){
 				child.rigidbody.AddForce( propelDirection * propelForce);	
