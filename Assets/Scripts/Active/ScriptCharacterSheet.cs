@@ -11,9 +11,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int characterID = -1;
 	public int waitTime;
 	public bool inPlay = true;
-	//public string control = null;
-	//Initiative
-	public bool isInPosition = false;
 	public GameObject lastAttacker;
 	
 	
@@ -41,23 +38,27 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//Derived stats
 	public float priority = -9999;
-	public int delay = -9999;
+	public int delay = 1;
 	
 //Behavior
 	
+	//Position
+	public bool isInPosition = false;
+	public Vector3 positionObjective;
+	public bool suspendPositionObjective = false;
 	
 	//Objectives
 	public GameObject target = null;
 	
-	public Vector3 destination;
+
 	
 	//public bool engageTargets;
 	//public bool retreat;
 	
 	
 	//Tactics
-	public bool engageAtRange;
-	public bool engageInMelee;
+	public bool engageAtRange = true;
+	public bool engageInMelee = false;
 	//public bool targetReassess;
 	
 	//Combat

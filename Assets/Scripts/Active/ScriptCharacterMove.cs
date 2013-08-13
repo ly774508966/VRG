@@ -12,6 +12,7 @@ public class ScriptCharacterMove : MonoBehaviour {
 	public bool greenLight = false;
 	//public bool redLight = false;
 	public bool resetLerp = true;
+	public float fracJourney;
 	
 	
 	//public float durationMultiplier = 1;
@@ -38,11 +39,11 @@ public class ScriptCharacterMove : MonoBehaviour {
 				resetLerp = false;
 				startTime = Time.time;
 		startMarker = transform.position;
-		endMarker = scriptCharacterSheet.destination;
+		endMarker = scriptCharacterSheet.positionObjective;
 		journeyLength = Vector3.Distance(startMarker, endMarker);
 			}
 			float distCovered = (Time.time - startTime) * movementSpeed;
-		float fracJourney = (Time.time - startTime) / journeyLength;
+			fracJourney = (Time.time - startTime) / journeyLength;
 			transform.position = Vector3.Lerp (startMarker, endMarker, fracJourney);
 			
 		} else {

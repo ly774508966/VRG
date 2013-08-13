@@ -20,7 +20,7 @@ public class ScriptSelectedCharacterInfo : MonoBehaviour {
 	}
 	
 			string GetCharacterInfo(ScriptCharacterSheet hotSheet){
-			return hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName + 
+			return hotSheet.stringID + 
 			"\n Health " + hotSheet.health.ToString() +
 			"\n Priority " + hotSheet.priority.ToString() +
 			"\n Aim " + hotSheet.accuracy.ToString() +

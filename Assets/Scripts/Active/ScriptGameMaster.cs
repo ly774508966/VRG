@@ -16,6 +16,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public bool playerPrompt = false;
 	public bool movementMode = false;
 	public bool engagementMode = false;
+	public bool endOfCycle = false;
 	
 	
 	//Interface
@@ -61,11 +62,15 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Register each character object in the scene
 		foreach(GameObject character in GameObject.FindGameObjectsWithTag("Character")){
-			
-		RegisterCharacter(character);	
+			if(selectedSheet == null){				
+				SetAsSelected(RegisterCharacter(character));
+			} else {
+				RegisterCharacter(character);	
+			}
 		}
 		
-		NextStep ();
+		//NextStep ();
+		RolloverCycle();
 		
 		//RegisterCharacter(testCharacter);	
 		
@@ -88,6 +93,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		if(inputButtonName != ""){
 			ButtonHandler();
 		}
+		
 	}
 	
 	
@@ -107,6 +113,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
 		charactersInPlay.Add (character);
+		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName + hotSheet.lastName;
 		
 		//Assign object character name
 		character.name = hotSheet.stringID;
@@ -144,7 +151,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
 		if(GetRandomBool()){
-		hotSheet.engageAtRange = true;
+			hotSheet.engageAtRange = true;
 			hotSheet.engageInMelee = false;
 		} else {
 			hotSheet.engageAtRange = false;
@@ -164,27 +171,29 @@ public class ScriptGameMaster : MonoBehaviour {
 
 	void KillCharacter(ScriptCharacterSheet hotSheet, int characterIndex){
 						
-				//Remove dead character from characters in play 
-				charactersInPlay.RemoveAt(characterIndex);
-				//Set character's inPlay to false
-				hotSheet.inPlay = false;
-				//Remove character as an active target
-				foreach(GameObject character in charactersInPlay){
-					ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
-					if(otherHotSheet.target == hotSheet.gameObject){
-						otherHotSheet.target = null;
-					}
-				}
-				//Log death
-				scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
+		//Remove dead character from characters in play 
+		charactersInPlay.RemoveAt(characterIndex);
+		//Set character's inPlay to false
+		hotSheet.inPlay = false;
+		//Remove character as an active target
+		foreach(GameObject character in charactersInPlay){
+			ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
+			if(otherHotSheet.target == hotSheet.gameObject){
+				otherHotSheet.target = null;
+			}
+		}
+		//Log death
+		scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
 		
-				//Death physics
-				scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
+		//Death physics
+		scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
 }
 	
 	
 	//Progress to next event
 	void NextStep(){
+		
+		
 			//CharacterCleanup();
 			//UpdateTargets();
 			//Set activeCharacters
@@ -199,10 +208,13 @@ public class ScriptGameMaster : MonoBehaviour {
 				UpdateTargets();
 				NextStep ();
 			} else {
-			SetToMovementMode();
-			//EndCycle();
+			Debug.Log (MovementIsOver());
+				if(MovementIsOver()){
+					RolloverCycle();
+				} else {
+				SetToMovementMode();
 			}
-	
+		}
 	}
 	void ExecuteNextAction(){
 		
@@ -228,9 +240,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	//Change cycle
-	void BeginCycle(){
+	void RolloverCycle(){
 		
-
+		foreach(GameObject character in charactersInPlay){
+			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+			hotSheet.waitTime -= 1;
+		}
 		//Begin new Cycle
 		cycle += 1;
 		//Log new Cycle
@@ -240,14 +255,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		playerPrompt = true;
 
 	}
-	void EndCycle(){
-		//Update characters' wait time (decrement by one)
-		foreach(GameObject character in charactersInPlay){
-			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			hotSheet.waitTime -= 1;
-		}
-		BeginCycle();
-	}
+
 	
 	//Prepare queue
 	void GetActiveCharacters(){
@@ -424,8 +432,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	void SetToMovementMode(){
 		engagementMode = false;
-	movementMode = true;
-	foreach(GameObject character in charactersInPlay){
+		movementMode = true;
+		foreach(GameObject character in charactersInPlay){
 		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = true;
 		}
@@ -438,8 +446,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		engagementMode = true;
 		//Wait for every character to finish their frame of movement, then stop all characters
 			StartCoroutine("RedLight");
-		
-		
 	}
 	
 	IEnumerator RedLight(){
@@ -449,6 +455,17 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotScript.greenLight = false;
 		}
 		NextStep ();
+		
+	}
+	
+	//Queries
+	bool MovementIsOver(){
+		foreach(GameObject character in charactersInPlay){
+			if(character.GetComponent<ScriptCharacterMove>().fracJourney < 1.0F){
+				return false;
+			}
+		}
+		return true;
 		
 	}
 	
