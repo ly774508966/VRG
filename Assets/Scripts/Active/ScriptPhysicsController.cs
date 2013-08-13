@@ -78,8 +78,14 @@ public class ScriptPhysicsController : MonoBehaviour {
 			targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker.
 				GetComponentInChildren<ScriptControllerTargeting>().transform.position;
 		Propel (rangedAttack, targetCharacter);
-		
-		
+	//	StartCoroutine("KillCam");
+	//yield Wait	
 	}
-	
+	/*
+	IEnumerator KillCam(){
+		yield return new WaitForSeconds(0.1);
+		
+		Debug.Break();
+	}
+	*/
 }

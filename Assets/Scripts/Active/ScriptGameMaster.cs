@@ -15,6 +15,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Modes
 	public bool playerPrompt = false;
 	public bool movementMode = false;
+	public bool engagementMode = false;
 	
 	
 	//Interface
@@ -63,6 +64,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 		RegisterCharacter(character);	
 		}
+		
+		NextStep ();
 		
 		//RegisterCharacter(testCharacter);	
 		
@@ -182,8 +185,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Progress to next event
 	void NextStep(){
-			CharacterCleanup();
-			UpdateTargets();
+			//CharacterCleanup();
+			//UpdateTargets();
 			//Set activeCharacters
 			GetActiveCharacters();
 
@@ -193,6 +196,8 @@ public class ScriptGameMaster : MonoBehaviour {
 				SortActiveCharacters();
 				ExecuteNextAction();
 				CharacterCleanup();
+				UpdateTargets();
+				NextStep ();
 			} else {
 			SetToMovementMode();
 			//EndCycle();
@@ -246,6 +251,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Prepare queue
 	void GetActiveCharacters(){
+		
+
 		activeCharacters = new List<GameObject>();
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet currentSheet = character.GetComponent<ScriptCharacterSheet>();
@@ -253,6 +260,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				activeCharacters.Add (character);
 			}
 		}
+		
 	}
 	void SortActiveCharacters(){
 		int initialCount = activeCharacters.Count;
@@ -415,12 +423,33 @@ public class ScriptGameMaster : MonoBehaviour {
 	//MODE TOGGLE
 	
 	void SetToMovementMode(){
+		engagementMode = false;
 	movementMode = true;
 	foreach(GameObject character in charactersInPlay){
-		character.SendMessage("GreenLight");	
+		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
+			hotScript.greenLight = true;
 		}
 		
 	
+	}
+	
+	void SetToEngagementMode(){
+		movementMode = false;
+		engagementMode = true;
+		//Wait for every character to finish their frame of movement, then stop all characters
+			StartCoroutine("RedLight");
+		
+		
+	}
+	
+	IEnumerator RedLight(){
+		yield return 0;
+		foreach(GameObject character in charactersInPlay){
+		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
+			hotScript.greenLight = false;
+		}
+		NextStep ();
+		
 	}
 	
 }

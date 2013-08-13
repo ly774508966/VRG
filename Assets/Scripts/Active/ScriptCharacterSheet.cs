@@ -13,7 +13,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public bool inPlay = true;
 	//public string control = null;
 	//Initiative
-	public bool isInPosition = true;
+	public bool isInPosition = false;
 	public GameObject lastAttacker;
 	
 	
@@ -35,6 +35,8 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int evasion = -9999;
 	public int armor = -9999;
 	public int melee = -9999;
+	
+	public float weaponRange = 5;
 	
 	
 	//Derived stats
@@ -69,7 +71,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-	waitTime = 1;
+	//waitTime = 1;
 	}
 	
 	// Update is called once per frame
