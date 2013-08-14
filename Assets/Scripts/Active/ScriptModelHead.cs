@@ -3,13 +3,18 @@ using System.Collections;
 
 public class ScriptModelHead : MonoBehaviour {
 	
-	public GameObject brainBox;
+	public GameObject impactBox;
+	public AudioSource audioSource;
+	public int impactBoxNumber = 14;
 	
 	// Use this for initialization
 	void Start () {
 		
-		brainBox = transform.FindChild("headBox14").gameObject;
-	
+		impactBox = transform.FindChild("headBox" + impactBoxNumber.ToString()).gameObject;
+		audioSource = gameObject.GetComponent<AudioSource>();
+		
+		
+		
 		foreach(Transform child in transform){
 			
 			Rigidbody boxRigid = child.gameObject.GetComponent<Rigidbody>();
@@ -37,7 +42,9 @@ public class ScriptModelHead : MonoBehaviour {
 			}
 			
 			Rigidbody boxRigid = child.GetComponent<Rigidbody>();
-			boxRigid.AddExplosionForce(explosiveForce, brainBox.transform.position, 5.0F);
+			boxRigid.WakeUp();
+			boxRigid.AddExplosionForce(explosiveForce, impactBox.transform.position, 5.0F);
+			audioSource.Play ();
 			
 			
 		}

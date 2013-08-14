@@ -7,7 +7,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	public float wallJointStrength = 1.0F;
 	public float wallThresholdVelocity = 1.0F;
-	
+	public float headExplodeForce = 1000;
 	public float propelForce = 10000F;
 	
 	//public GameObject testHead;
@@ -83,7 +83,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//Propel (AttackDirection, targetCharacter);
 		GameObject targetHead = targetCharacter.transform.Find("ObjectCharacterModel/head").gameObject;
 		//Debug.Log (targetHead);
-		targetHead.SendMessage("HeadExplode", 1000);
+		targetHead.SendMessage("HeadExplode", headExplodeForce);
 		//testHead.SendMessage("HeadExplode", 1000);
 	}
 	/*
