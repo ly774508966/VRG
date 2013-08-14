@@ -71,7 +71,9 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-	
+	positionObjective = transform.position;
+		
+		
 	//waitTime = 1;
 	}
 	

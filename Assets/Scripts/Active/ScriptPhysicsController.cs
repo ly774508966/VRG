@@ -10,6 +10,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	public float propelForce = 10000F;
 	
+	//public GameObject testHead;
+	
 	// Use this for initialization
 	void Start () {
 	//foreach(GameObject wall in GameObject.Find ("ObjectBreakableWall")){
@@ -78,9 +80,11 @@ public class ScriptPhysicsController : MonoBehaviour {
 			targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker.
 				GetComponentInChildren<ScriptControllerTargeting>().transform.position);
 		AttackDirection.Normalize();
-		Propel (AttackDirection, targetCharacter);
-	//	StartCoroutine("KillCam");
-	//yield Wait	
+		//Propel (AttackDirection, targetCharacter);
+		GameObject targetHead = targetCharacter.transform.Find("ObjectCharacterModel/head").gameObject;
+		//Debug.Log (targetHead);
+		targetHead.SendMessage("HeadExplode", 1000);
+		//testHead.SendMessage("HeadExplode", 1000);
 	}
 	/*
 	IEnumerator KillCam(){
