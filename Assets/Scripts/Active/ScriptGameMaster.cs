@@ -94,6 +94,9 @@ public class ScriptGameMaster : MonoBehaviour {
 			ButtonHandler();
 		}
 		
+		
+		
+		
 	}
 	
 	
@@ -209,12 +212,13 @@ public class ScriptGameMaster : MonoBehaviour {
 				NextStep ();
 			} else {
 			Debug.Log (MovementIsOver());
-				if(MovementIsOver()){
-					RolloverCycle();
-				} else {
+			if(MovementIsOver()){
+				RolloverCycle();
+			} else {
 				SetToMovementMode();
 			}
 		}
+		
 	}
 	void ExecuteNextAction(){
 		
@@ -241,7 +245,6 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Change cycle
 	void RolloverCycle(){
-		
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			hotSheet.waitTime -= 1;
@@ -436,6 +439,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		foreach(GameObject character in charactersInPlay){
 		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = true;
+			hotScript.startLerp = true;
 		}
 		
 	
@@ -461,12 +465,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Queries
 	bool MovementIsOver(){
 		foreach(GameObject character in charactersInPlay){
-			if(character.GetComponent<ScriptCharacterMove>().fracJourney < 1.0F){
+			if(character.GetComponent<ScriptCharacterMove>().atDestination == false){
+				Debug.Log (character.GetComponent<ScriptCharacterMove>().fracJourney);
 				return false;
-			}
+		}
 		}
 		return true;
 		
 	}
-	
 }

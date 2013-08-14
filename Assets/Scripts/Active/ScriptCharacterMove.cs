@@ -4,6 +4,7 @@ using System.Collections;
 public class ScriptCharacterMove : MonoBehaviour {
 	
 	ScriptCharacterSheet scriptCharacterSheet;
+	ScriptGameMaster scriptGameMaster;
 	public Vector3 startMarker;
 	public Vector3 endMarker;
 	public float movementSpeed = 0.5F;
@@ -11,8 +12,9 @@ public class ScriptCharacterMove : MonoBehaviour {
 	public float startTime;
 	public bool greenLight = false;
 	//public bool redLight = false;
-	public bool resetLerp = true;
+	public bool startLerp;
 	public float fracJourney;
+	public bool atDestination;
 	
 	
 	//public float durationMultiplier = 1;
@@ -20,6 +22,7 @@ public class ScriptCharacterMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		scriptCharacterSheet = GetComponent<ScriptCharacterSheet>();
+		scriptGameMaster = GameObject.Find("ControllerGame").GetComponent<ScriptGameMaster>();
 		
 		
 		//GreenLight();
@@ -34,21 +37,38 @@ public class ScriptCharacterMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(greenLight){
-			if(resetLerp){
-				resetLerp = false;
-				startTime = Time.time;
-		startMarker = transform.position;
-		endMarker = scriptCharacterSheet.positionObjective;
-		journeyLength = Vector3.Distance(startMarker, endMarker);
+	
+		
+		if(greenLight){	
+			Debug.Log ("green");
+			if(startLerp){
+				Debug.Log ("reset");
+				startLerp = false;
+			ResetLerp();	
 			}
-			float distCovered = (Time.time - startTime) * movementSpeed;
-			fracJourney = (Time.time - startTime) / journeyLength;
-			transform.position = Vector3.Lerp (startMarker, endMarker, fracJourney);
 			
-		} else {
-			if(!resetLerp){
-			resetLerp = true;	
+			if(!atDestination){
+			if(journeyLength > 0.0F){
+				if(atDestination){
+				atDestination = false;
+				}
+				
+				
+			fracJourney = (Time.time - startTime) / journeyLength;
+				if(fracJourney < 1.0F){
+				//float distCovered = (Time.time - startTime) * movementSpeed;
+				transform.position = Vector3.Lerp (startMarker, endMarker, fracJourney);
+				} else {
+					atDestination = true;
+					scriptGameMaster.SendMessage("SetToEngagementMode");
+				}
+				
+				
+			} else {
+				atDestination = true;
+					scriptGameMaster.SendMessage("SetToEngagementMode");
+				}
+			
 			}
 		}
 		
@@ -59,6 +79,18 @@ public class ScriptCharacterMove : MonoBehaviour {
 		
 		
 	}
+	void ResetLerp(){
+		startTime = Time.time;
+				startMarker = transform.position;
+				endMarker = scriptCharacterSheet.positionObjective;
+				journeyLength = Vector3.Distance(startMarker, endMarker);
+		if(atDestination){
+		if((scriptCharacterSheet.positionObjective - transform.position).magnitude > 0){
+				atDestination = false;
+			}
+		}
+	}
+	
 	/*
 	void GreenLight(){
 		//Assign static variables

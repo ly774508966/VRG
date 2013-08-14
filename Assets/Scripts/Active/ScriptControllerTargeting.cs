@@ -8,6 +8,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	public Vector3 rangedAttack;
 	public GameObject characterSource;
 	public GameObject characterDestination;
+
 	
 	// Use this for initialization
 	void Start () {
