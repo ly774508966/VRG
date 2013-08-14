@@ -74,10 +74,11 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//ScriptControllerTargeting hotCont = lastAttacker.GetComponentInChildren<ScriptControllerTargeting>(); 
 		
 				
-		Vector3 rangedAttack = targetCharacter.transform.position - 
+		Vector3 AttackDirection = (targetCharacter.transform.position - 
 			targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker.
-				GetComponentInChildren<ScriptControllerTargeting>().transform.position;
-		Propel (rangedAttack, targetCharacter);
+				GetComponentInChildren<ScriptControllerTargeting>().transform.position);
+		AttackDirection.Normalize();
+		Propel (AttackDirection, targetCharacter);
 	//	StartCoroutine("KillCam");
 	//yield Wait	
 	}

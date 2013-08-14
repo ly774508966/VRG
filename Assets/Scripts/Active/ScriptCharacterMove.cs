@@ -4,7 +4,6 @@ using System.Collections;
 public class ScriptCharacterMove : MonoBehaviour {
 	
 	ScriptCharacterSheet scriptCharacterSheet;
-	ScriptGameMaster scriptGameMaster;
 	public Vector3 startMarker;
 	public Vector3 endMarker;
 	public float movementSpeed = 0.5F;
@@ -22,7 +21,6 @@ public class ScriptCharacterMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		scriptCharacterSheet = GetComponent<ScriptCharacterSheet>();
-		scriptGameMaster = GameObject.Find("ControllerGame").GetComponent<ScriptGameMaster>();
 		
 		
 		//GreenLight();
@@ -40,9 +38,9 @@ public class ScriptCharacterMove : MonoBehaviour {
 	
 		
 		if(greenLight){	
-			Debug.Log ("green");
+			//Debug.Log ("green");
 			if(startLerp){
-				Debug.Log ("reset");
+				//Debug.Log ("reset");
 				startLerp = false;
 			ResetLerp();	
 			}
@@ -60,13 +58,13 @@ public class ScriptCharacterMove : MonoBehaviour {
 				transform.position = Vector3.Lerp (startMarker, endMarker, fracJourney);
 				} else {
 					atDestination = true;
-					scriptGameMaster.SendMessage("SetToEngagementMode");
+					//scriptGameMaster.SendMessage("SetToEngagementMode");
 				}
 				
 				
 			} else {
 				atDestination = true;
-					scriptGameMaster.SendMessage("SetToEngagementMode");
+					//scriptGameMaster.SendMessage("SetToEngagementMode");
 				}
 			
 			}

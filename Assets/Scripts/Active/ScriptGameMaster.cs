@@ -35,6 +35,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Time
 	public int cycle = -1;
+	public float cycleTimer;
+	public float cycleLength = 10;
+	public float timerConstant = 1;
 	
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
@@ -94,7 +97,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			ButtonHandler();
 		}
 		
-		
+		if(movementMode){
+		cycleTimer += Time.deltaTime * timerConstant;
+			if(cycleTimer >= cycleLength){
+			RolloverCycle();	
+			}
+		}
 		
 		
 	}
@@ -211,12 +219,12 @@ public class ScriptGameMaster : MonoBehaviour {
 				UpdateTargets();
 				NextStep ();
 			} else {
-			Debug.Log (MovementIsOver());
-			if(MovementIsOver()){
-				RolloverCycle();
-			} else {
+			//Debug.Log (MovementIsOver());
+			//if(MovementIsOver()){
+			//	RolloverCycle();
+			//} else {
 				SetToMovementMode();
-			}
+			//}
 		}
 		
 	}
@@ -245,18 +253,29 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Change cycle
 	void RolloverCycle(){
+		//Stop all movement
+		StartCoroutine("RedLight");
+		
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			hotSheet.waitTime -= 1;
+			hotSheet.waitTime = 0;
 		}
 		//Begin new Cycle
 		cycle += 1;
+		//Begin cycle timer at zero
+		cycleTimer = 0.0F;
 		//Log new Cycle
 		scriptInterface.SendMessage("AddNewLine", "Cycle " + cycle.ToString());
 		
 		//Begin Command Phase
 		playerPrompt = true;
-
+		movementMode = false;
+		engagementMode = false;
+		
+		//Ensure all characters have valid targets
+		UpdateTargets();
+		
+		
 	}
 
 	
@@ -446,19 +465,22 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	void SetToEngagementMode(){
+		Debug.Log ("engagementmode");
 		movementMode = false;
 		engagementMode = true;
-		//Wait for every character to finish their frame of movement, then stop all characters
 			StartCoroutine("RedLight");
 	}
 	
+	//Wait for every character to finish their frame of movement, then stop all characters
 	IEnumerator RedLight(){
 		yield return 0;
 		foreach(GameObject character in charactersInPlay){
 		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = false;
 		}
+		if(cycleTimer != 0){
 		NextStep ();
+		}
 		
 	}
 	
@@ -466,7 +488,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	bool MovementIsOver(){
 		foreach(GameObject character in charactersInPlay){
 			if(character.GetComponent<ScriptCharacterMove>().atDestination == false){
-				Debug.Log (character.GetComponent<ScriptCharacterMove>().fracJourney);
+				//Debug.Log (character.GetComponent<ScriptCharacterMove>().fracJourney);
 				return false;
 		}
 		}

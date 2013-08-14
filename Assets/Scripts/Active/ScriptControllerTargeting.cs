@@ -22,12 +22,16 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(scriptCharacterSheet.target){
-			rangedAttack = scriptCharacterSheet.target.transform.position - transform.position;
+	
+		if(scriptCharacterSheet.target && scriptGameMaster.movementMode){
+				rangedAttack = scriptCharacterSheet.target.transform.position - transform.position;
 			if(scriptCharacterSheet.weaponRange >= rangedAttack.magnitude){
 				scriptCharacterSheet.isInPosition = true;
 				if(!scriptGameMaster.engagementMode && scriptCharacterSheet.waitTime == 0){
 					scriptGameMaster.SendMessage("SetToEngagementMode");
+				} else {
+					scriptCharacterSheet.isInPosition = false;
+					
 				}
 			}
 		}
