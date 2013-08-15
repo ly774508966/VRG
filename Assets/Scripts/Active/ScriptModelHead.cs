@@ -20,10 +20,10 @@ public class ScriptModelHead : MonoBehaviour {
 			Rigidbody boxRigid = child.gameObject.GetComponent<Rigidbody>();
 			
 			foreach(Transform otherChild in transform){
-			//if(((otherChild.transform.position - child.transform.position).magnitude) <= 0.1F && otherChild != child){
+			if(((otherChild.transform.position - child.transform.position).magnitude) <= 0.1F && otherChild != child){
 			FixedJoint hotJoint = boxRigid.gameObject.AddComponent<FixedJoint>();
 					hotJoint.connectedBody = otherChild.gameObject.GetComponent<Rigidbody>();
-			//	}
+				}
 			}
 		//boxRigid.isKinematic = false;	
 		}
