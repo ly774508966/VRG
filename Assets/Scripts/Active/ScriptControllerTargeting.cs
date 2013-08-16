@@ -23,7 +23,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if(scriptCharacterSheet.target && scriptGameMaster.movementMode){
+		if(scriptCharacterSheet.target && scriptGameMaster.movementMode && scriptCharacterSheet.inPlay){
 				rangedAttack = scriptCharacterSheet.target.transform.position - transform.position;
 			if(scriptCharacterSheet.weaponRange >= rangedAttack.magnitude){
 				scriptCharacterSheet.isInPosition = true;

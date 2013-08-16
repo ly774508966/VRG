@@ -199,6 +199,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Death physics
 	ScriptCharacterSheet lastAttackerSheet = hotSheet.lastAttacker.GetComponent<ScriptCharacterSheet>();
 			scriptPhysicsController.propel = lastAttackerSheet.propel;
+		scriptPhysicsController.blowUpHead = lastAttackerSheet.blowUpHead;
 			
 		
 		scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
@@ -215,7 +216,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			GetActiveCharacters();
 
 			//If there any characters left to act for this Cycle, then execute next action
-			if(activeCharacters.Count > 0){
+			if(activeCharacters.Count > 1){
 				//Sort activeCharacters by descending Priority
 				SortActiveCharacters();
 				ExecuteNextAction();
