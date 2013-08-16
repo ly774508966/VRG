@@ -197,6 +197,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		scriptInterface.SendMessage("AddNewLine", hotSheet.fullName + " dies.");
 		
 		//Death physics
+	ScriptCharacterSheet lastAttackerSheet = hotSheet.lastAttacker.GetComponent<ScriptCharacterSheet>();
+			scriptPhysicsController.propel = lastAttackerSheet.propel;
+			
+		
 		scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
 }
 	

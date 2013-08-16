@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ScriptCharacterSheet : MonoBehaviour {
 	
@@ -8,10 +9,22 @@ public class ScriptCharacterSheet : MonoBehaviour {
  * */
 
 //Metagame Properties
+	//Identification
 	public int characterID = -1;
+	
+	//Timing
 	public int waitTime;
+	
+	//Status
 	public bool inPlay = true;
+	
+	//Physics
 	public GameObject lastAttacker;
+	
+		//Attack properties
+	public bool propel;
+	public bool blowUpHead;
+	
 	
 	
 	
@@ -62,6 +75,9 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public bool targetReassess;
 	
 	//Combat
+	
+	
+	
 	
 	
 	
