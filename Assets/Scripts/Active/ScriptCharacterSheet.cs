@@ -18,15 +18,13 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Status
 	public bool inPlay = true;
 	
-	//Physics
-	public GameObject lastAttacker;
-	
-		//Attack properties
-	public bool propel;
-	public bool blowUpHead;
 	
 	
 	
+//Appearance	
+	public Color primaryColor;
+	public Color secondaryColor;
+	public Color skinColor;
 	
 //Proper fields
 	
@@ -77,9 +75,12 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Combat
 	
 	
+//Physics
+	public GameObject lastAttacker;
 	
-	
-	
+		//Attack properties
+	public bool propel;
+	public bool blowUpHead;
 	
 	
 	

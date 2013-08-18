@@ -21,6 +21,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		
 	//foreach(GameObject wall in GameObject.Find ("ObjectBreakableWall")){
 	RegisterAllPanels(GameObject.Find ("ContainerPanel"));
 	//GameObject poorBastard = GameObject.Find ("ObjectCharacterModel");
@@ -53,10 +54,23 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	void Ragdollify(GameObject character){
+		void Unragdollify(GameObject chunk){
 		
-		foreach(Transform child in character.transform){
+		foreach(Transform child in chunk.transform){
 		if(child.rigidbody != null){
+			child.rigidbody.isKinematic = true;
+			} else {
+			Unragdollify(child.gameObject);
+			}
+		}
+	}
+	
+	
+	void Ragdollify(GameObject chunk){
+		
+		foreach(Transform child in chunk.transform){
+		if(child.rigidbody != null){
+			//	Debug.Log (child);
 			child.rigidbody.isKinematic = false;
 			child.rigidbody.WakeUp();
 			} else {

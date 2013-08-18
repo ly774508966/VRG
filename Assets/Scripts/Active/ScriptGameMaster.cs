@@ -121,6 +121,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	GameObject RegisterCharacter(GameObject character){
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
+		scriptPhysicsController.SendMessage("Unragdollify", character);
+		
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
 		charactersInPlay.Add (character);
@@ -186,6 +188,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		charactersInPlay.RemoveAt(characterIndex);
 		//Set character's inPlay to false
 		hotSheet.inPlay = false;
+		//Disable character model's face
+		GameObject hotFace = hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().face;
+		hotFace.SetActive(false);
+		//transform.Find ("ObjectCharacterObjectCharacterModelheadfacefaceImage").gameObject.SetActive(false);
 		//Remove character as an active target
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();

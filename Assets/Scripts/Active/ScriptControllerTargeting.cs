@@ -13,7 +13,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	scriptCharacterSheet = transform.parent.GetComponent<ScriptCharacterSheet>();
-		scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
+	scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
 	
 	
 	
