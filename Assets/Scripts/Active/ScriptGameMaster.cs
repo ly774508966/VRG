@@ -42,6 +42,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
 	
+	//Effects
+	public GameObject energyBall;
+	
 	//Database
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
 		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
@@ -392,11 +395,19 @@ public class ScriptGameMaster : MonoBehaviour {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
 				+ ". " + targetSheet.health.ToString() + " Health remaining.");
+			
+				//Launch energy ball
+			Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
+			GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
+			//Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
+			hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
+			//	AddForce(new Vector3(1000,0,0));
+			
+			
 			} else {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
 				//targetReassess Tactic
-				//if(hotSheet.targetReassess){...}
-				
+				//if(hotSheet.targetReassess){...}	
 			}
 	}
 	
