@@ -13,7 +13,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * */
 	
 	//Modes
-	public bool playerPrompt = false;
+	public bool executionPhase = false;
+	public bool commandPhase = false;
 	public bool movementMode = false;
 	public bool engagementMode = false;
 	public bool endOfCycle = false;
@@ -130,6 +131,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		nextCharacterID += 1;
 		charactersInPlay.Add (character);
 		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName + hotSheet.lastName;
+		hotSheet.fullName = hotSheet.stringID;
 		
 		//Assign object character name
 		character.name = hotSheet.stringID;
@@ -216,22 +218,22 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	
 	//Progress to next event
-	void NextStep(){
+	void ResolveEngagement(){
 		
-		
+		if(engagementMode){
 			//CharacterCleanup();
 			//UpdateTargets();
 			//Set activeCharacters
 			GetActiveCharacters();
-
+		Debug.Log (activeCharacters.Count.ToString());
 			//If there any characters left to act for this Cycle, then execute next action
-			if(activeCharacters.Count > 1){
+			if(activeCharacters.Count >= 1){
 				//Sort activeCharacters by descending Priority
 				SortActiveCharacters();
 				ExecuteNextAction();
 				CharacterCleanup();
 				UpdateTargets();
-				NextStep ();
+				ResolveEngagement ();
 			} else {
 			//Debug.Log (MovementIsOver());
 			//if(MovementIsOver()){
@@ -239,8 +241,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			//} else {
 				SetToMovementMode();
 			//}
+			}
+		} else {
+			Debug.Log ("Error: Attempt to resolve engagement outside of engagement mode");
 		}
-		
 	}
 	void ExecuteNextAction(){
 		
@@ -267,6 +271,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Change cycle
 	void RolloverCycle(){
+		
+				//Begin new Cycle
+		cycle += 1;
+		//Begin Command Phase
+		SetToCommandMode();
 		//Stop all movement
 		StartCoroutine("RedLight");
 		
@@ -274,17 +283,14 @@ public class ScriptGameMaster : MonoBehaviour {
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			hotSheet.waitTime = 0;
 		}
-		//Begin new Cycle
-		cycle += 1;
+
 		//Begin cycle timer at zero
 		cycleTimer = 0.0F;
 		//Log new Cycle
 		scriptInterface.SendMessage("AddNewLine", "Cycle " + cycle.ToString());
 		
-		//Begin Command Phase
-		playerPrompt = true;
-		movementMode = false;
-		engagementMode = false;
+		
+		
 		
 		//Ensure all characters have valid targets
 		UpdateTargets();
@@ -445,7 +451,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			selectedSheet.engageAtRange = true;
 					break;
 				case "Next":
-					NextStep();
+					//NextStep();
+					SetToExecutionPhase();
 					break;
 			case null:
 				break;
@@ -474,7 +481,36 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//MODE TOGGLE
 	
+	void SetToExecutionPhase(){
+	Debug.Log ("Execution Phase");
+	commandPhase = false;
+		//movementMode = false;
+		executionPhase = true;
+		//engagementMode = true;
+		
+		
+		//Adjust Stats according to Tactics
+		ApplyTactics();
+		
+		
+		
+		
+		SetToEngagementMode();
+	}
+	
+	
+	
+	void SetToCommandMode(){
+		Debug.Log ("CommandPhase");
+	engagementMode = false;
+		movementMode = false;
+		executionPhase = false;
+		commandPhase = true;
+	}
+	
 	void SetToMovementMode(){
+		Debug.Log ("MovementMode");
+		commandPhase = false;
 		engagementMode = false;
 		movementMode = true;
 		foreach(GameObject character in charactersInPlay){
@@ -487,7 +523,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	void SetToEngagementMode(){
-		Debug.Log ("engagementmode");
+		Debug.Log ("EngagementMode");
+		//playerPrompt = false;
 		movementMode = false;
 		engagementMode = true;
 			StartCoroutine("RedLight");
@@ -495,14 +532,16 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Wait for every character to finish their frame of movement, then stop all characters
 	IEnumerator RedLight(){
+		Debug.Log ("RedLight");
 		yield return 0;
 		foreach(GameObject character in charactersInPlay){
 		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = false;
 		}
-		if(cycleTimer != 0){
-		NextStep ();
+		if(engagementMode){
+		ResolveEngagement ();
 		}
+		//}
 		
 	}
 	
@@ -517,4 +556,22 @@ public class ScriptGameMaster : MonoBehaviour {
 		return true;
 		
 	}
+	
+	
+	void ApplyTactics(){
+		foreach(GameObject character in charactersInPlay){
+		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+			
+			
+			//Apply firing mode
+			if(hotSheet.aggressiveFire){
+				//hotSheet.priority
+			} else if(hotSheet.blindFire){
+			
+			} else if(hotSheet.aimedFire){
+				
+			}
+		}
+	}
+	
 }

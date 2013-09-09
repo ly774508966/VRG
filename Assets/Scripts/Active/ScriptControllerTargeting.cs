@@ -29,8 +29,9 @@ public class ScriptControllerTargeting : MonoBehaviour {
 				scriptCharacterSheet.isInPosition = true;
 				if(!scriptGameMaster.engagementMode && scriptCharacterSheet.waitTime == 0){
 					scriptGameMaster.SendMessage("SetToEngagementMode");
-				} else {
-					scriptCharacterSheet.isInPosition = false;
+				//} else {
+					//Debug.Log ("OutOfPosition");
+					//scriptCharacterSheet.isInPosition = false;
 					
 				}
 			}

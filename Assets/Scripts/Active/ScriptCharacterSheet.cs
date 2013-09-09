@@ -72,6 +72,11 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public bool engageInMelee = false;
 	//public bool targetReassess;
 	
+	//Firing Mode
+	public bool aggressiveFire = false;
+	public bool blindFire = false;
+	public bool aimedFire = false;
+	
 	//Combat
 	
 	
