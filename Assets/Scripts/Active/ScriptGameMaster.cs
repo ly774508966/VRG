@@ -40,6 +40,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	public float cycleLength = 10;
 	public float timerConstant = 1;
 	
+	//Gameplay
+	
+		//Tactics
+	public int aggressiveFirePriorityBonus = 10;
+	
+	
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
 	
@@ -72,6 +78,9 @@ public class ScriptGameMaster : MonoBehaviour {
 			if(selectedSheet == null){				
 				SetAsSelected(RegisterCharacter(character));
 			} else {
+				//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+				//int output = hotSheet.GetCharacterPriority(0);
+				//Debug.Log (output.ToString());
 				RegisterCharacter(character);	
 			}
 		}
@@ -179,7 +188,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Derived Stats
 		
 		hotSheet.delay = 1;
-		hotSheet.priority = hotSheet.focus;
+		//hotSheet.priority = hotSheet.focus;
 		
 		
 		
@@ -319,7 +328,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Determine highest priority of remaining active characters
 			float maxPriority = 0.0F;
 			for(int i = 0; i < activeCharacters.Count; i++){
-			float currentPriority = activeCharacters[i].GetComponent<ScriptCharacterSheet>().priority;
+			float currentPriority = GetCharacterPriority(activeCharacters[i]);
 			if(currentPriority > maxPriority)
 				maxPriority = currentPriority;
 			}	
@@ -328,7 +337,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			bool findingNextCharacter = true;
 			int j = 0;
 			while(findingNextCharacter){	
-				if(activeCharacters[j].GetComponent<ScriptCharacterSheet>().priority == maxPriority){
+				if(GetCharacterPriority(activeCharacters[j]) == maxPriority){
 					tempList.Add (activeCharacters[j]);
 					findingNextCharacter = false;
 					activeCharacters.RemoveAt (j);
@@ -476,6 +485,18 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	int GetRandom1To100(){
 		return (int)Mathf.Floor(Random.value*100 + 1);
+	}
+	
+	int GetCharacterPriority(GameObject character){
+		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+		//Start with character focus and add/ subtract due to conditions
+		int total = hotSheet.focus;
+		if(hotSheet.aggressiveFire){
+			total += aggressiveFirePriorityBonus;
+		}
+		
+		
+		return total;
 	}
 	
 	

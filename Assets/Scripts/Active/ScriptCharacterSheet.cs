@@ -34,7 +34,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public string fullName;
 	public string stringID;
 	
-	//Stats
+	//Character Stats
 	public int health = -9999;
 	public int focus = -9999;
 	public int damage = -9999;
@@ -43,12 +43,13 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int evasion = -9999;
 	public int armor = -9999;
 	public int melee = -9999;
+
 	
 	public float weaponRange = 5;
 	
 	
 	//Derived stats
-	public float priority = -9999;
+
 	public int delay = 1;
 	
 //Behavior
@@ -103,7 +104,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	void Update () {
 	
 	}
-	
-	//Start character movement to destination
 
+	
 }
