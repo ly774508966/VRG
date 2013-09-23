@@ -412,12 +412,10 @@ public class ScriptGameMaster : MonoBehaviour {
 				+ ". " + targetSheet.health.ToString() + " Health remaining.");
 			
 				//Launch energy ball
-			Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
-			GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
+			//Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
+			//GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
 			//Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
-			hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
-			//	AddForce(new Vector3(1000,0,0));
-			
+			//hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
 			
 			} else {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
