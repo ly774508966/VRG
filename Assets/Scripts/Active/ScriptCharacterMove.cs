@@ -78,6 +78,7 @@ public class ScriptCharacterMove : MonoBehaviour {
 		
 	}
 	void ResetLerp(){
+		Debug.Log ("Reset");
 		startTime = Time.time;
 				startMarker = transform.position;
 				endMarker = scriptCharacterSheet.positionObjective;
@@ -87,6 +88,8 @@ public class ScriptCharacterMove : MonoBehaviour {
 				atDestination = false;
 			}
 		}
+		
+		//Debug.Break ();
 	}
 	
 	/*

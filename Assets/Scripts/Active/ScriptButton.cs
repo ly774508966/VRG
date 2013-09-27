@@ -14,7 +14,7 @@ public class ScriptButton : MonoBehaviour {
 	}
 	
 	void OnGUI(){
-		
+		/*
 		GUI.BeginGroup(new Rect(0.0F, Screen.height / 2, Screen.width, Screen.height / 2));
 		
 		//During Command Phase, show buttons and take input
@@ -35,6 +35,8 @@ public class ScriptButton : MonoBehaviour {
 		//}
 		
 		GUI.EndGroup();
+		*/
+		
 		
 		//Bottom-righthand corner 
 		//GUI.BeginGroup(new Rect(Screen.width/2, Screen.height/2, Screen.width/2, Screen.height / 2));

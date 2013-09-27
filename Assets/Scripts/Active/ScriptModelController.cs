@@ -17,6 +17,17 @@ public class ScriptModelController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		
+		
+		//ColorCharacter();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+	
+	void InitializeModel(){
 		scriptCharacterSheet = transform.parent.GetComponent<ScriptCharacterSheet>();
 		leftArm = transform.FindChild("leftArm").gameObject;
 		rightArm = transform.FindChild("rightArm").gameObject;
@@ -25,17 +36,10 @@ public class ScriptModelController : MonoBehaviour {
 		spine = transform.FindChild("spine").gameObject;
 		head = transform.FindChild("head").gameObject;
 		face = head.transform.FindChild("face").gameObject;
-		
-		ColorCharacter();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 	
 	void ColorCharacter(){
-		
+		Debug.Log ("ColorCharacter");
 		
 		//Primary coloring
 		foreach(Transform child in leftArm.transform){

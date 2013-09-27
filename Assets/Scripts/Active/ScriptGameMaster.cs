@@ -21,18 +21,23 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	
 	//Interface
+	GameObject interfaceMain;
 	ScriptInterface scriptInterface;
 	public string inputButtonName = "";
 	public ScriptCharacterSheet selectedSheet;
+	ScriptCycleDisplay scriptCycleDisplay;
 	
 	//Characters
 	public GameObject characterTemplate;
 	public List<GameObject> charactersInPlay = new List<GameObject>();
 	public int nextCharacterID = 0;
 	public List<GameObject> activeCharacters = new List<GameObject>();
+	public int spawn00Time = -1;
+	public int spawn01Time = -1;
 	
 	//Space
-	public Vector3 spawnPosition;
+	public Transform spawn00;
+	public Transform spawn01;
 	
 	//Time
 	public int cycle = -1;
@@ -70,7 +75,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		
 		//Acquire scripts
-		scriptInterface = GameObject.Find ("InterfaceMain").GetComponent<ScriptInterface>();
+		interfaceMain = GameObject.Find ("InterfaceMain");
+		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
+		scriptCycleDisplay = interfaceMain.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		
 		//Register each character object in the scene
@@ -85,6 +92,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 		}
 		
+		//Spawn a random character on the left and right spawnpoints
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(0)));
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(1)));
+		
 		//NextStep ();
 		RolloverCycle();
 		
@@ -98,9 +109,16 @@ public class ScriptGameMaster : MonoBehaviour {
 	void Update () {
 		
 		
-		if(Input.GetKeyDown(KeyCode.N)){
-			;
-			RandomizeCharacterValues(RegisterCharacter(NewCharacter()));
+		//if(Input.GetKeyDown(KeyCode.N)){
+		//	;
+		//	RandomizeCharacterValues(RegisterCharacter(NewCharacter()));
+		//}
+		
+		if(Input.GetKeyDown(KeyCode.C)){
+		foreach(GameObject character in charactersInPlay)
+			{
+			character.transform.FindChild("ObjectCharacterModel").SendMessage("ColorCharacter");	
+			}
 		}
 		
 		//if(Input.GetKeyDown(KeyCode.P)){
@@ -113,7 +131,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		if(movementMode){
 		cycleTimer += Time.deltaTime * timerConstant;
 			if(cycleTimer >= cycleLength){
-			RolloverCycle();	
+			SetToEngagementMode();
+			//RolloverCycle();	
 			}
 		}
 		
@@ -126,9 +145,35 @@ public class ScriptGameMaster : MonoBehaviour {
 	//BEGIN FUNCTIONS
 	
 	//Character Management
-	GameObject NewCharacter(){
+	GameObject NewCharacter(int spawnPosition){
 	//Create character object at spawn position
-		return Instantiate(characterTemplate, new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
+		if(spawnPosition == 0)
+		{
+			GameObject hotChar = Instantiate(characterTemplate, spawn00.position, spawn00.rotation) as GameObject;
+			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
+			return hotChar;
+		}
+		else if(spawnPosition == 1)
+		{
+			GameObject hotChar = Instantiate(characterTemplate, spawn01.position, spawn01.rotation) as GameObject;
+			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
+			return hotChar;
+			
+		}
+		else 
+		{
+			Debug.Log ("Invalid Spawn Position");
+			return null;
+		
+			
+		}
+		
+		//return hotChar;
+		//return Instantiate(characterTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
+			
+			//new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
 	
 	}
 	GameObject RegisterCharacter(GameObject character){
@@ -144,7 +189,15 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign object character name
 		character.name = hotSheet.stringID;
+		
+		//Set color
+		GameObject hotModel = hotSheet.gameObject.transform.FindChild("ObjectCharacterModel").gameObject;
+		hotModel.SendMessage("InitializeModel");
+		hotModel.SendMessage("ColorCharacter");
+		
+		
 		return character;
+		
 			
 		
 	}
@@ -165,15 +218,19 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName.ToString() + hotSheet.lastName.ToString();
 		hotSheet.name = hotSheet.stringID;
 		
+		//Assign Colors
+		hotSheet.primaryColor = GetRandomColor();
+		hotSheet.secondaryColor = GetRandomColor();
+		
 		//Assign Stats
-		hotSheet.health = GetRandom1To100();
-		hotSheet.focus = GetRandom1To100();
-		hotSheet.damage = GetRandom1To100();
-		hotSheet.speed = GetRandom1To100();
-		hotSheet.accuracy = GetRandom1To100();
-		hotSheet.evasion = GetRandom1To100()/2;
-		hotSheet.armor = GetRandom1To100()/4;
-		hotSheet.melee = GetRandom1To100();
+		hotSheet.health = GetRandom1To10();
+		hotSheet.focus = GetRandom1To10();
+		hotSheet.damage = GetRandom1To10();
+		hotSheet.speed = GetRandom1To10();
+		hotSheet.accuracy = GetRandom1To10();
+		hotSheet.evasion = GetRandom1To10()/2;
+		hotSheet.armor = 0;
+		hotSheet.melee = GetRandom1To10();
 		
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
@@ -202,9 +259,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		charactersInPlay.RemoveAt(characterIndex);
 		//Set character's inPlay to false
 		hotSheet.inPlay = false;
+		
 		//Disable character model's face
-		GameObject hotFace = hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().face;
-		hotFace.SetActive(false);
+		//GameObject hotFace = hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().face;
+		//hotFace.SetActive(false);
+		
 		//transform.Find ("ObjectCharacterObjectCharacterModelheadfacefaceImage").gameObject.SetActive(false);
 		//Remove character as an active target
 		foreach(GameObject character in charactersInPlay){
@@ -223,6 +282,19 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 		
 		scriptPhysicsController.SendMessage("ExecuteCharacter", hotSheet.gameObject);
+		
+		//Set new character spawn time
+		if(hotSheet.gameObject.transform.rotation.y == 0){
+			
+					spawn01Time = cycle + 3;
+		} else
+		//if(hotSheet.gameObject.transform.rotation.y == 180)
+		{
+					spawn00Time = cycle + 3;
+		}
+		//} else {
+		//Debug.Log ("Unexpected");	
+		//}
 }
 	
 	
@@ -234,21 +306,26 @@ public class ScriptGameMaster : MonoBehaviour {
 			//UpdateTargets();
 			//Set activeCharacters
 			GetActiveCharacters();
-		Debug.Log (activeCharacters.Count.ToString());
+		//Debug.Log (activeCharacters.Count.ToString());
+			
 			//If there any characters left to act for this Cycle, then execute next action
-			if(activeCharacters.Count >= 1){
+			if(activeCharacters.Count >= 1)
+			{
 				//Sort activeCharacters by descending Priority
 				SortActiveCharacters();
 				ExecuteNextAction();
 				CharacterCleanup();
 				UpdateTargets();
 				ResolveEngagement ();
-			} else {
+			} 
+			else 
+			{
 			//Debug.Log (MovementIsOver());
 			//if(MovementIsOver()){
 			//	RolloverCycle();
 			//} else {
-				SetToMovementMode();
+				//SetToMovementMode();
+				RolloverCycle();
 			//}
 			}
 		} else {
@@ -257,10 +334,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	void ExecuteNextAction(){
 		
-			
+			//Get 1st character in queue and its target
 		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
 			hotSheet.target.GetComponent<ScriptCharacterSheet>().lastAttacker = hotSheet.gameObject;
+			
 			//Execute appropriate action function
 			if(hotSheet.engageAtRange){
 				ExecuteRangedAttack(hotSheet);	
@@ -272,7 +350,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 
 		} else {
-			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
+			//scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
 		hotSheet.waitTime = hotSheet.delay;
@@ -286,8 +364,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Begin Command Phase
 		SetToCommandMode();
 		//Stop all movement
-		StartCoroutine("RedLight");
+		//StartCoroutine("RedLight");
 		
+		//Reduce all characters' wait time to zero
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			hotSheet.waitTime = 0;
@@ -296,7 +375,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Begin cycle timer at zero
 		cycleTimer = 0.0F;
 		//Log new Cycle
-		scriptInterface.SendMessage("AddNewLine", "Cycle " + cycle.ToString());
+		scriptCycleDisplay.SendMessage("UpdateCycle",cycle);
+		//scriptInterface.SendMessage("AddNewLine", "Cycle " + cycle.ToString());
 		
 		
 		
@@ -485,6 +565,26 @@ public class ScriptGameMaster : MonoBehaviour {
 		return (int)Mathf.Floor(Random.value*100 + 1);
 	}
 	
+	int GetRandom1To10(){
+		return (int)Mathf.Floor(Random.value*10 + 1);
+	}
+	
+	int GetRandom1to255(){
+		int hotValue = (int)Mathf.Floor (Random.value * 255 + 1);
+		//Debug.Log (hotValue.ToString());
+			return hotValue;
+	}
+	
+	Color GetRandomColor(){
+		//Color test = new Color(
+	    return new Color(
+			Random.value,
+			Random.value,
+			Random.value,
+			255);
+			
+	}
+	
 	int GetCharacterPriority(GameObject character){
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		//Start with character focus and add/ subtract due to conditions
@@ -502,19 +602,29 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	void SetToExecutionPhase(){
 	Debug.Log ("Execution Phase");
-	commandPhase = false;
-		//movementMode = false;
+	    commandPhase = false;
+		//movementMode = true;
 		executionPhase = true;
 		//engagementMode = true;
-		
+	
 		
 		//Adjust Stats according to Tactics
 		ApplyTactics();
 		
 		
+		//Spawn characters if necessary
+		if(spawn00Time == cycle){
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(0)))	;
+			Debug.Log ("RespawnLeft");
+		} else if(spawn01Time == cycle){
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(1)))	;
+			Debug.Log ("RespawnRight");
+		} else {
+			
+		}
 		
-		
-		SetToEngagementMode();
+		//SetToEngagementMode();
+		SetToMovementMode();
 	}
 	
 	
@@ -525,11 +635,15 @@ public class ScriptGameMaster : MonoBehaviour {
 		movementMode = false;
 		executionPhase = false;
 		commandPhase = true;
+		
+		
+		//Skip Command Phase
+		SetToExecutionPhase();
 	}
 	
 	void SetToMovementMode(){
 		Debug.Log ("MovementMode");
-		commandPhase = false;
+		//commandPhase = false;
 		engagementMode = false;
 		movementMode = true;
 		foreach(GameObject character in charactersInPlay){
@@ -551,7 +665,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Wait for every character to finish their frame of movement, then stop all characters
 	IEnumerator RedLight(){
-		Debug.Log ("RedLight");
+		//Debug.Log ("RedLight");
 		yield return 0;
 		foreach(GameObject character in charactersInPlay){
 		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
