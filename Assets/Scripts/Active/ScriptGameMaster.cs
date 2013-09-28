@@ -8,16 +8,18 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	/*NOTES
 	 * 
-	 * Players choose Tactics for multiple Cycles at a time
+	 * 
 	 * 
 	 * */
 	
-	//Modes
+	//Phases
 	public bool executionPhase = false;
 	public bool commandPhase = false;
+	
+	//Modes
 	public bool movementMode = false;
 	public bool engagementMode = false;
-	public bool endOfCycle = false;
+	//public bool endOfCycle = false;
 	
 	
 	//Interface
@@ -36,6 +38,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public List<GameObject> activeCharacters = new List<GameObject>();
 	public int spawn00Time = -1;
 	public int spawn01Time = -1;
+	public GameObject conCharacter;
 	
 	//Space
 	public Transform spawn00;
@@ -82,6 +85,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		scriptCycleDisplay = interfaceMain.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		
+		//Acquire controllers
+		conCharacter = GameObject.Find ("ConCharacter");
+		
 		//Register each character object in the scene
 		foreach(GameObject character in GameObject.FindGameObjectsWithTag("Character")){
 			if(selectedSheet == null){				
@@ -95,8 +101,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		
 		//Spawn a random character on the left and right spawnpoints
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(0)));
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(1)));
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)));
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)));
 		
 		//NextStep ();
 		RolloverCycle();
@@ -142,32 +148,50 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	
-	
+
 	
 	//BEGIN FUNCTIONS
 	
 	//Character Management
-	GameObject NewCharacter(int spawnPosition){
+	GameObject NewCharacter(Transform spawnTransform){
 	//Create character object at spawn position
-		if(spawnPosition == 0)
-		{
-			GameObject hotChar = Instantiate(characterTemplate, spawn00.position, spawn00.rotation) as GameObject;
-			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
-			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
-			return hotChar;
-		}
-		else if(spawnPosition == 1)
-		{
-			GameObject hotChar = Instantiate(characterTemplate, spawn01.position, spawn01.rotation) as GameObject;
-			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
-			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
-			return hotChar;
+		//if(spawnPosition == 0)
+		//{
+	
 			
-		}
-		else 
-		{
-			Debug.Log ("Invalid Spawn Position");
-			return null;
+		//Create character at spawn point
+			GameObject hotChar = Instantiate(characterTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
+			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+			
+			//Place in character container
+			hotChar.transform.parent = conCharacter.transform;		
+			
+		//Assign position objective
+		if(spawnTransform == spawn00){
+			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
+			} else if(spawnTransform == spawn01){
+			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
+			} else {
+			Debug.Log ("Invalid spawn position");	
+			}
+			
+			
+			
+			
+			return hotChar;
+		//}
+		//else if(spawnPosition == 1)
+		//{
+		//	GameObject hotChar = Instantiate(characterTemplate, spawn01.position, spawn01.rotation) as GameObject;
+		//	ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
+		//	hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
+		//	return hotChar;
+			
+		//}
+		//else 
+		//{
+		//	Debug.Log ("Invalid Spawn Position");
+		//	return null;
 		
 			
 		}
@@ -177,7 +201,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 			//new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
 	
-	}
 	GameObject RegisterCharacter(GameObject character){
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
@@ -199,10 +222,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		
 		return character;
-		
-			
-		
 	}
+	
 	GameObject SetAsSelected(GameObject character){
 				//If first character, assign as selected
 		
@@ -339,11 +360,49 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Get 1st character in queue and its target
 		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
+			
 			hotSheet.target.GetComponent<ScriptCharacterSheet>().lastAttacker = hotSheet.gameObject;
 			
 			//Execute appropriate action function
 			if(hotSheet.engageAtRange){
-				ExecuteRangedAttack(hotSheet);	
+				ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
+	
+		//Start weapon effect
+				hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
+		
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+			+ " attacks " + targetSheet.fullName + "! " + 
+				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
+			//Compare attacker's Accuracy to target's Defense
+			if(hotSheet.accuracy > targetSheet.evasion){
+				targetSheet.health -= hotSheet.damage;
+			
+			//Damage display
+			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
+				targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
+	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "" + hotSheet.damage;
+			
+			//Log damage
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
+				+ ". " + targetSheet.health.ToString() + " Health remaining.");
+			
+				//Launch energy ball
+			//Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
+			//GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
+			//Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
+			//hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
+			
+			} else {
+				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+				//targetReassess Tactic
+				//if(hotSheet.targetReassess){...}	
+			}
+	
+			
+			
+			
+			//	ExecuteRangedAttack(hotSheet);	
 			} else if (hotSheet.engageInMelee){
 				Debug.Log ("Melee feature pending");
 				//ExecuteMeleeAttack(hotSheet);
@@ -480,39 +539,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 						
 	}
-
-	void ExecuteRangedAttack(ScriptCharacterSheet hotSheet){
-		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
 	
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
-			+ " attacks " + targetSheet.fullName + "! " + 
-				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
-			//Compare attacker's Accuracy to target's Defense
-			if(hotSheet.accuracy > targetSheet.evasion){
-				targetSheet.health -= hotSheet.damage;
-			
-			//Damage display
-			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
-				targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
-	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "" + hotSheet.damage;
-			
-			//Log damage
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
-				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
-				+ ". " + targetSheet.health.ToString() + " Health remaining.");
-			
-				//Launch energy ball
-			//Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
-			//GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
-			//Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
-			//hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
-			
-			} else {
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
-				//targetReassess Tactic
-				//if(hotSheet.targetReassess){...}	
-			}
-	}
+	//void ExecuteRangedAttack(ScriptCharacterSheet hotSheet){
+		
 	/*Needs revision
 	void ExecuteMeleeAttack(ScriptCharacterSheet hotSheet){
 		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
@@ -625,10 +654,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Spawn characters if necessary
 		if(spawn00Time == cycle){
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(0)))	;
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)))	;
 			Debug.Log ("RespawnLeft");
 		} else if(spawn01Time == cycle){
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(1)))	;
+		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)))	;
 			Debug.Log ("RespawnRight");
 		} else {
 			

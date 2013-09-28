@@ -10,14 +10,15 @@ public class ScriptModelController : MonoBehaviour {
 	public GameObject leftArm;
 	public GameObject spine;
 	public GameObject head;
+	public GameObject weapon;
 	
-	public GameObject face;
+	//public GameObject face;
 	
 	
 	// Use this for initialization
 	void Start () {
 	
-		
+		//WeaponEffect();
 		
 		//ColorCharacter();
 	}
@@ -35,7 +36,8 @@ public class ScriptModelController : MonoBehaviour {
 		rightLeg = transform.FindChild("rightLeg").gameObject;
 		spine = transform.FindChild("spine").gameObject;
 		head = transform.FindChild("head").gameObject;
-		face = head.transform.FindChild("face").gameObject;
+		//face = head.transform.FindChild("face").gameObject;
+		weapon = leftArm.transform.FindChild("weapon").gameObject;
 	}
 	
 	void ColorCharacter(){
@@ -94,7 +96,9 @@ public class ScriptModelController : MonoBehaviour {
 		
 	}
 	
-
+	void WeaponEffect(){
+	weapon.SendMessage("GunshotEffect");
+	}
 	
 	
 }
