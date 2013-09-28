@@ -26,6 +26,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	public string inputButtonName = "";
 	public ScriptCharacterSheet selectedSheet;
 	ScriptCycleDisplay scriptCycleDisplay;
+	public GameObject damageDisplay;
+	public float damageDisplayDepth = -1;
 	
 	//Characters
 	public GameObject characterTemplate;
@@ -230,17 +232,17 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.accuracy = GetRandom1To10();
 		hotSheet.evasion = GetRandom1To10()/2;
 		hotSheet.armor = 0;
-		hotSheet.melee = GetRandom1To10();
+		hotSheet.melee = 0;
 		
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
-		if(GetRandomBool()){
+		//if(GetRandomBool()){
 			hotSheet.engageAtRange = true;
 			hotSheet.engageInMelee = false;
-		} else {
-			hotSheet.engageAtRange = false;
-			hotSheet.engageInMelee = true;
-		}
+		//} else {
+		//	hotSheet.engageAtRange = false;
+		//	hotSheet.engageInMelee = true;
+		//}
 		
 		//Assign Derived Stats
 		
@@ -343,7 +345,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			if(hotSheet.engageAtRange){
 				ExecuteRangedAttack(hotSheet);	
 			} else if (hotSheet.engageInMelee){
-				ExecuteMeleeAttack(hotSheet);
+				Debug.Log ("Melee feature pending");
+				//ExecuteMeleeAttack(hotSheet);
 			} else {
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " does zero things.");	
 			}
@@ -477,7 +480,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 						
 	}
-	
+
 	void ExecuteRangedAttack(ScriptCharacterSheet hotSheet){
 		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
 	
@@ -487,6 +490,13 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Compare attacker's Accuracy to target's Defense
 			if(hotSheet.accuracy > targetSheet.evasion){
 				targetSheet.health -= hotSheet.damage;
+			
+			//Damage display
+			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
+				targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
+	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "" + hotSheet.damage;
+			
+			//Log damage
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
 				+ ". " + targetSheet.health.ToString() + " Health remaining.");
@@ -503,7 +513,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				//if(hotSheet.targetReassess){...}	
 			}
 	}
-	
+	/*Needs revision
 	void ExecuteMeleeAttack(ScriptCharacterSheet hotSheet){
 		ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
 		
@@ -520,6 +530,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
 		}
 	}
+	*/
 	//HANDLER FUNCTIONS
 	void ButtonHandler(){
 			if(charactersInPlay.Count >= 1){
