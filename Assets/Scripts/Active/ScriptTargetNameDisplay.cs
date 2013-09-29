@@ -16,7 +16,7 @@ public class ScriptTargetNameDisplay : MonoBehaviour {
 	void Update () {
 	
 	}
-	
+	/*
 	void OnMouseDown(){
 		isClicked = true;	
 	}
@@ -27,5 +27,5 @@ public class ScriptTargetNameDisplay : MonoBehaviour {
 			SendMessageUpwards("SetNextTarget");
 		}
 	}
-		
+	*/	
 }

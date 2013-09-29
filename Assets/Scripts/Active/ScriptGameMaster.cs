@@ -26,7 +26,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	GameObject interfaceMain;
 	ScriptInterface scriptInterface;
 	public string inputButtonName = "";
-	public ScriptCharacterSheet selectedSheet;
+	
 	ScriptCycleDisplay scriptCycleDisplay;
 	public GameObject damageDisplay;
 	public float damageDisplayDepth = -1;
@@ -39,6 +39,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	public int spawn00Time = -1;
 	public int spawn01Time = -1;
 	public GameObject conCharacter;
+	public ScriptCharacterSheet selectedSheet;
+	public ScriptCharacterSheet opposingSheet;
 	
 	//Space
 	public Transform spawn00;
@@ -53,7 +55,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Gameplay
 	
 		//Tactics
-	public int aggressiveFirePriorityBonus = 10;
+	//public int aggressiveFirePriorityBonus = 10;
 	
 	
 	//Physics
@@ -166,12 +168,14 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Place in character container
 			hotChar.transform.parent = conCharacter.transform;		
 			
-		//Assign position objective
+		//Assign left character as selected and right as opposing; assign position objective
 		if(spawnTransform == spawn00){
 			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
-			} else if(spawnTransform == spawn01){
+			selectedSheet = hotSheet;
+		} else if(spawnTransform == spawn01){		
 			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
-			} else {
+		opposingSheet = hotSheet;	
+		} else {
 			Debug.Log ("Invalid spawn position");	
 			}
 			
@@ -380,7 +384,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Damage display
 			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
 				targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
-	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "" + hotSheet.damage;
+	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "-" + hotSheet.damage + "HP";
 			
 			//Log damage
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
@@ -629,9 +633,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		//Start with character focus and add/ subtract due to conditions
 		int total = hotSheet.focus;
-		if(hotSheet.aggressiveFire){
-			total += aggressiveFirePriorityBonus;
-		}
+		//if(hotSheet.aggressiveFire){
+		//	total += aggressiveFirePriorityBonus;
+		//}
 		
 		
 		return total;

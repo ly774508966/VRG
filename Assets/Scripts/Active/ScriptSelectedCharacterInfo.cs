@@ -21,10 +21,10 @@ public class ScriptSelectedCharacterInfo : MonoBehaviour {
 	
 			string GetCharacterInfo(ScriptCharacterSheet hotSheet){
 			return hotSheet.stringID + 
-			"\n Health " + hotSheet.health.ToString() +
-			//"\n Priority " + hotSheet.priority.ToString() +
-			"\n Aim " + hotSheet.accuracy.ToString() +
-			"\n Melee " + hotSheet.melee.ToString() +
+			"\n HP " + hotSheet.health.ToString() +
+			"\n Priority " + hotSheet.focus.ToString() +
+			"\n Attack " + hotSheet.accuracy.ToString() +
+			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Defense " + hotSheet.evasion.ToString() +
 			"\n Damage " + hotSheet.damage.ToString();
 	}

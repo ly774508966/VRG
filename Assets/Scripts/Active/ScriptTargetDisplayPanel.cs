@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ScriptTargetDisplayPanel : MonoBehaviour {
 	
-	public GameObject currentTarget = null;
+	//public GameObject currentTarget = null;
 	public ScriptGameMaster scriptGameMaster;
 	public ScriptTargetNameDisplay scriptTargetNameDisplay;
 	//public ScriptTargetInfo scriptTargetInfo;
@@ -18,9 +18,11 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	if(scriptGameMaster.opposingSheet && scriptGameMaster.charactersInPlay.Count > 0){
+			scriptTargetNameDisplay.guiText.text = GetCharacterInfo(scriptGameMaster.opposingSheet);
+		}
 	}
-	
+	/*
 	void SetNextTarget(){
 		if(scriptGameMaster.charactersInPlay.Count > 1){
 			ScriptCharacterSheet selectedSheet = scriptGameMaster.selectedSheet;
@@ -51,12 +53,15 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 			}
 		}	
 	}
+	*/
+	
+	
 		string GetCharacterInfo(ScriptCharacterSheet hotSheet){
 			return hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName + 
-			"\n Health " + hotSheet.health.ToString() +
-			//"\n Priority " + hotSheet.priority.ToString() +
-			"\n Aim " + hotSheet.accuracy.ToString() +
-			"\n Melee " + hotSheet.melee.ToString() +
+			"\n HP " + hotSheet.health.ToString() +
+			"\n Priority " + hotSheet.focus.ToString() +
+			"\n Attack " + hotSheet.accuracy.ToString() +
+			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Defense " + hotSheet.evasion.ToString() +
 			"\n Damage " + hotSheet.damage.ToString();
 								
