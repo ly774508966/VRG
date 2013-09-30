@@ -55,7 +55,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 //Behavior
 	
 	//Position
-	public bool isInPosition = false;
+	public bool isInActingPosition = false;
 	public Vector3 positionObjective;
 	public bool suspendPositionObjective = false;
 	

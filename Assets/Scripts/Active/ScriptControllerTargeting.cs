@@ -3,17 +3,17 @@ using System.Collections;
 
 public class ScriptControllerTargeting : MonoBehaviour {
 	
-	ScriptCharacterSheet scriptCharacterSheet;
-	ScriptGameMaster scriptGameMaster;
-	public Vector3 rangedAttack;
+	//ScriptCharacterSheet scriptCharacterSheet;
+	//ScriptGameMaster scriptGameMaster;
+	//public Vector3 rangedAttack;
 	public GameObject characterSource;
 	public GameObject characterDestination;
 
 	
 	// Use this for initialization
 	void Start () {
-	scriptCharacterSheet = transform.parent.GetComponent<ScriptCharacterSheet>();
-	scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
+	//scriptCharacterSheet = transform.parent.GetComponent<ScriptCharacterSheet>();
+	//scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
 	
 	
 	
@@ -23,12 +23,8 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		//If character is in play, has a target, and in movement mode, calculate attack vector
-		if(scriptCharacterSheet.target && scriptGameMaster.movementMode && scriptCharacterSheet.inPlay){
-				rangedAttack = scriptCharacterSheet.target.transform.position - transform.position;
-			//Log if character is in position
-			if(scriptCharacterSheet.weaponRange >= rangedAttack.magnitude){
-				scriptCharacterSheet.isInPosition = true;
+
+		
 				//if(!scriptGameMaster.engagementMode && scriptCharacterSheet.waitTime == 0){
 				//	scriptGameMaster.SendMessage("SetToEngagementMode");
 				//} else {
@@ -36,11 +32,33 @@ public class ScriptControllerTargeting : MonoBehaviour {
 					//scriptCharacterSheet.isInPosition = false;
 					
 				//}
-			}
+			
 		}
-	}
 	
 	//Vector3 RangedAttack (Vector3 destination, Vector3 source){
 	//return destination - source;	
 	
+	
+	public bool IsInActingPosition(ScriptCharacterSheet hotSheet)
+	{
+			//If character is in play and has a target,
+		if(hotSheet.target && hotSheet.inPlay)
+		{	
+			 //calculate attack vector
+			Vector3 rangedAttack = hotSheet.target.transform.position - transform.position;
+			if(hotSheet.weaponRange >= rangedAttack.magnitude)
+			{
+				return true;
+			} 
+			else
+			{
+				return false;
+			}
+		}
+		else 
+		{
+			Debug.Log ("Invalid Query");
+			return false;
+		}
+	}
 }

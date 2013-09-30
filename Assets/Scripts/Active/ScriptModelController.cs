@@ -41,7 +41,7 @@ public class ScriptModelController : MonoBehaviour {
 	}
 	
 	void ColorCharacter(){
-		Debug.Log ("ColorCharacter");
+		//Debug.Log ("ColorCharacter");
 		
 		//Primary coloring
 		foreach(Transform child in leftArm.transform){

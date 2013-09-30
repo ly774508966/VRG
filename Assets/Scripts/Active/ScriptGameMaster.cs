@@ -292,7 +292,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//hotFace.SetActive(false);
 		
 		//transform.Find ("ObjectCharacterObjectCharacterModelheadfacefaceImage").gameObject.SetActive(false);
-		//Remove character as an active target
+		
+		//Remove character as an valid target
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(otherHotSheet.target == hotSheet.gameObject){
@@ -332,17 +333,24 @@ public class ScriptGameMaster : MonoBehaviour {
 			//CharacterCleanup();
 			//UpdateTargets();
 			//Set activeCharacters
+			UpdateCharacterValues();
 			GetActiveCharacters();
 		//Debug.Log (activeCharacters.Count.ToString());
 			
 			//If there any characters left to act for this Cycle, then execute next action
 			if(activeCharacters.Count >= 1)
 			{
-				//Sort activeCharacters by descending Priority
+				//1. Determine character order
 				SortActiveCharacters();
+				
+				//Exceute next action in queue
 				ExecuteNextAction();
+				
+				//Kill necessary characters
 				CharacterCleanup();
-				UpdateTargets();
+				
+				//Update character target, destination, stats
+				UpdateCharacterValues();
 				ResolveEngagement ();
 			} 
 			else 
@@ -377,14 +385,14 @@ public class ScriptGameMaster : MonoBehaviour {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 			+ " attacks " + targetSheet.fullName + "! " + 
 				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
-			//Compare attacker's Accuracy to target's Defense
-			if(hotSheet.accuracy > targetSheet.evasion){
-				targetSheet.health -= hotSheet.damage;
 			
-			//Damage display
-			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
-				targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
-	currentDamageDisplay.GetComponentInChildren<TextMesh>().text = "-" + hotSheet.damage + "HP";
+				//Compare attacker's Attack to target's Defense
+				//bool missed;
+			if(hotSheet.accuracy > targetSheet.evasion){
+					//missed = false;
+					targetSheet.health -= hotSheet.damage;
+				
+		
 			
 			//Log damage
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
@@ -403,6 +411,21 @@ public class ScriptGameMaster : MonoBehaviour {
 				//if(hotSheet.targetReassess){...}	
 			}
 	
+					
+			//Damage display - Ideally, this section would log the actual properties of the attack, rather than the character's stats
+			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
+					targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
+				 TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
+				
+				if(hotSheet.accuracy > targetSheet.evasion)
+				{
+					statusChangeText.text = "-" + hotSheet.damage + "HP";
+				}
+				else
+				{
+					statusChangeText.text = "Miss";
+				}
+			
 			
 			
 			
@@ -416,6 +439,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 
 		} else {
+			//Character attacks nothing
 			//scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
@@ -448,7 +472,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		
 		//Ensure all characters have valid targets
-		UpdateTargets();
+		UpdateCharacterValues();
 		
 		
 	}
@@ -461,7 +485,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		activeCharacters = new List<GameObject>();
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet currentSheet = character.GetComponent<ScriptCharacterSheet>();
-			if(currentSheet.waitTime == 0 && currentSheet.isInPosition){
+			if(currentSheet.waitTime == 0 && currentSheet.isInActingPosition){
 				activeCharacters.Add (character);
 			}
 		}
@@ -513,9 +537,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 		}
 	}
-	void UpdateTargets(){
+	void UpdateCharacterValues(){
+		
+		//Update targets
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+			
 			if(hotSheet.target == null){
 				//For all charactersInPlay without Targets:
 				//bool assigningNewTarget = true;
@@ -541,6 +568,14 @@ public class ScriptGameMaster : MonoBehaviour {
 				}
 			}
 		}
+		
+		//Update isInActingPosition
+		foreach(GameObject character in charactersInPlay)
+		{
+			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+			hotSheet.isInActingPosition = character.GetComponentInChildren<ScriptControllerTargeting>().IsInActingPosition(hotSheet);
+		}
+		
 						
 	}
 	
@@ -645,7 +680,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//MODE TOGGLE
 	
 	void SetToExecutionPhase(){
-	Debug.Log ("Execution Phase");
+	//Debug.Log ("Execution Phase");
 	    commandPhase = false;
 		//movementMode = true;
 		executionPhase = true;
@@ -674,7 +709,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	
 	void SetToCommandMode(){
-		Debug.Log ("CommandPhase");
+		//Debug.Log ("CommandPhase");
 	engagementMode = false;
 		movementMode = false;
 		executionPhase = false;
@@ -686,7 +721,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	void SetToMovementMode(){
-		Debug.Log ("MovementMode");
+		//Debug.Log ("MovementMode");
 		//commandPhase = false;
 		engagementMode = false;
 		movementMode = true;
