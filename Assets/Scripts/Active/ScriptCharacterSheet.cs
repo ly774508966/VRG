@@ -13,7 +13,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int characterID = -1;
 	
 	//Timing
-	public int waitTime;
+	public int waitTime = -9999;
 	
 	//Status
 	public bool inPlay = true;
@@ -37,20 +37,32 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Character Stats
 	public int health = -9999;
 	public int focus = -9999;
-	public int damage = -9999;
-	public int speed = -9999;
+	
+	//public int meleeDamage = -9999;
 	public int accuracy = -9999;
 	public int evasion = -9999;
 	public int armor = -9999;
 	public int melee = -9999;
-
 	
-	public float weaponRange = 5;
+	//Weapon
+	public int damage = -9999;
+		public float weaponRange = 5;
+	public int weaponCooldown;
+	//public int speed = -9999;
+	
+	//Equipment
+	//public int damageResistanceKinetic;
+	//public int damageResistanceThermal;
+	
+	//Status Effects
+	//public List<string> statusEffects = new List<string>();
+	
+
 	
 	
 	//Derived stats
 
-	public int delay = 1;
+	
 	
 //Behavior
 	

@@ -80,7 +80,6 @@ public class ScriptGameMaster : MonoBehaviour {
 	void Start () {
 		
 		
-		
 		//Acquire scripts
 		interfaceMain = GameObject.Find ("InterfaceMain");
 		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
@@ -250,12 +249,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.secondaryColor = GetRandomColor();
 		
 		//Assign Stats
-		hotSheet.health = GetRandom1To10();
-		hotSheet.focus = GetRandom1To10();
-		hotSheet.damage = GetRandom1To10();
-		hotSheet.speed = GetRandom1To10();
-		hotSheet.accuracy = GetRandom1To10();
-		hotSheet.evasion = GetRandom1To10()/2;
+		hotSheet.health = GetRandom1ToN(10);
+		hotSheet.focus = GetRandom1ToN(10);
+		hotSheet.damage = GetRandom1ToN(10);
+		//hotSheet.speed = GetRandom1ToN(10);
+		hotSheet.accuracy = GetRandom1ToN(10);
+		hotSheet.evasion = GetRandom1ToN(5);
+		hotSheet.weaponRange = GetRandom1ToN(6);
 		hotSheet.armor = 0;
 		hotSheet.melee = 0;
 		
@@ -271,10 +271,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign Derived Stats
 		
-		hotSheet.delay = 1;
+		hotSheet.weaponCooldown = 3;
 		//hotSheet.priority = hotSheet.focus;
-		
-		
 		
 		return (character);
 		
@@ -443,7 +441,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
-		hotSheet.waitTime = hotSheet.delay;
+		hotSheet.waitTime = hotSheet.weaponCooldown;
 	}
 	
 	//Change cycle
@@ -456,10 +454,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Stop all movement
 		//StartCoroutine("RedLight");
 		
-		//Reduce all characters' wait time to zero
+		//Reduce all characters' wait time by 1
 		foreach(GameObject character in charactersInPlay){
 			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			hotSheet.waitTime = 0;
+			if(hotSheet.waitTime > 0)
+			{
+			hotSheet.waitTime -= 1;
+			}
 		}
 
 		//Begin cycle timer at zero
@@ -640,19 +641,19 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 	}
 	
-	int GetRandom1To100(){
-		return (int)Mathf.Floor(Random.value*100 + 1);
+	int GetRandom1ToN(int n){
+		return (int)Mathf.Floor(Random.value*n + 1);
 	}
 	
-	int GetRandom1To10(){
-		return (int)Mathf.Floor(Random.value*10 + 1);
-	}
+	//int GetRandom1To10(){
+	//	return (int)Mathf.Floor(Random.value*10 + 1);
+	//}
 	
-	int GetRandom1to255(){
-		int hotValue = (int)Mathf.Floor (Random.value * 255 + 1);
+	//int GetRandom1to255(){
+	//	int hotValue = (int)Mathf.Floor (Random.value * 255 + 1);
 		//Debug.Log (hotValue.ToString());
-			return hotValue;
-	}
+	//		return hotValue;
+	//}
 	
 	Color GetRandomColor(){
 		//Color test = new Color(
@@ -735,7 +736,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	void SetToEngagementMode(){
-		Debug.Log ("EngagementMode");
+		//Debug.Log ("EngagementMode");
 		//playerPrompt = false;
 		movementMode = false;
 		engagementMode = true;

@@ -8,6 +8,8 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	//public Vector3 rangedAttack;
 	public GameObject characterSource;
 	public GameObject characterDestination;
+	public Vector3 rangedAttack;
+	public float weaponRangeOffset = -1F;
 
 	
 	// Use this for initialization
@@ -45,8 +47,8 @@ public class ScriptControllerTargeting : MonoBehaviour {
 		if(hotSheet.target && hotSheet.inPlay)
 		{	
 			 //calculate attack vector
-			Vector3 rangedAttack = hotSheet.target.transform.position - transform.position;
-			if(hotSheet.weaponRange >= rangedAttack.magnitude)
+			rangedAttack = hotSheet.target.transform.position - transform.position;
+			if(hotSheet.weaponRange >= rangedAttack.magnitude + weaponRangeOffset)
 			{
 				return true;
 			} 
@@ -57,7 +59,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 		}
 		else 
 		{
-			Debug.Log ("Invalid Query");
+			//Debug.Log ("Invalid Query");
 			return false;
 		}
 	}
