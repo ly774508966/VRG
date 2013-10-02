@@ -75,6 +75,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Debug
 	//public GameObject testCharacter;
 	//public GameObject[] testArray;
+	public List<GameObject> tempCharactersInPlay = new List<GameObject>();
 	
 	// Use this for initialization
 	void Start () {
@@ -250,13 +251,18 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign Stats
 		hotSheet.health = GetRandom1ToN(10);
-		hotSheet.focus = GetRandom1ToN(10);
-		hotSheet.damage = GetRandom1ToN(10);
+		//hotSheet.focus = GetRandom1ToN(10);
+		hotSheet.focus = 10;
+		
+		//hotSheet.damage = GetRandom1ToN(10);
+		hotSheet.damage = 15;
 		//hotSheet.speed = GetRandom1ToN(10);
-		hotSheet.accuracy = GetRandom1ToN(10);
+		//hotSheet.accuracy = GetRandom1ToN(10);
+		hotSheet.accuracy = 10;
 		hotSheet.evasion = GetRandom1ToN(5);
-		hotSheet.weaponRange = GetRandom1ToN(6);
-		hotSheet.armor = 0;
+		//hotSheet.weaponRange = GetRandom1ToN(6);
+		hotSheet.weaponRange = 1;
+		//hotSheet.armor = 0;
 		hotSheet.melee = 0;
 		
 		//Assign Tactics
@@ -277,11 +283,24 @@ public class ScriptGameMaster : MonoBehaviour {
 		return (character);
 		
 	}
-
-	void KillCharacter(ScriptCharacterSheet hotSheet, int characterIndex){
-						
+	
+	int GetCharactersInPlayIndex(GameObject character){
+		for(int i = 0; i < charactersInPlay.Count; i++){
+			if(character == charactersInPlay[i])
+			{
+			return i;	
+			}
+		}
+		
+		Debug.Log ("Character Index not found.");
+		return -9999;
+	}
+	
+	void KillCharacter(ScriptCharacterSheet hotSheet){
+				
+		//Debug.Log (hotSheet.characterID + "killed");
 		//Remove dead character from characters in play 
-		charactersInPlay.RemoveAt(characterIndex);
+		charactersInPlay.RemoveAt(GetCharactersInPlayIndex(hotSheet.gameObject));
 		//Set character's inPlay to false
 		hotSheet.inPlay = false;
 		
@@ -342,7 +361,13 @@ public class ScriptGameMaster : MonoBehaviour {
 				SortActiveCharacters();
 				
 				//Exceute next action in queue
-				ExecuteNextAction();
+				ExecuteAction(activeCharacters[0]);
+				
+				//If characters are tied for priority, both actions resolve before registering new states
+				if(GetCharacterPriority(activeCharacters[0]) == GetCharacterPriority(activeCharacters[1]))
+				{
+				ExecuteAction(activeCharacters[1]);	
+				}
 				
 				//Kill necessary characters
 				CharacterCleanup();
@@ -365,11 +390,15 @@ public class ScriptGameMaster : MonoBehaviour {
 			Debug.Log ("Error: Attempt to resolve engagement outside of engagement mode");
 		}
 	}
-	void ExecuteNextAction(){
+	void ExecuteAction(GameObject actingCharacter){
+		
+		
 		
 			//Get 1st character in queue and its target
-		ScriptCharacterSheet hotSheet = activeCharacters[0].GetComponent<ScriptCharacterSheet>();
+		ScriptCharacterSheet hotSheet = actingCharacter.GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
+		
+			//Debug.Log (hotSheet.characterID.ToString());
 			
 			hotSheet.target.GetComponent<ScriptCharacterSheet>().lastAttacker = hotSheet.gameObject;
 			
@@ -524,18 +553,23 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Maintenence
 	void CharacterCleanup(){
-	
-		for(int i = 0; i < charactersInPlay.Count; i++){
-			ScriptCharacterSheet hotSheet = charactersInPlay[i].GetComponent<ScriptCharacterSheet>();
+		//Debug.Break ();
+		tempCharactersInPlay = new List<GameObject>(charactersInPlay);
+		//Debug.Log ("temp contains " + tempCharactersInPlay.Count);
+		
+		for(int i = 0; i < tempCharactersInPlay.Count; i++){
+			//Debug.Log (charactersInPlay[1].GetComponent<ScriptCharacterSheet>().characterID + "charactercleanup");
+			ScriptCharacterSheet hotSheet = tempCharactersInPlay[i].GetComponent<ScriptCharacterSheet>();
+			//Debug.Log(hotSheet.characterID + " has health of " + hotSheet.health.ToString());
 			if(hotSheet.health <= 0){
-				KillCharacter(hotSheet, i);
+				KillCharacter(hotSheet);
 
 			}
 			
 			//Error-checking
-			if(hotSheet.waitTime < 0){
-			Debug.Log ("Error 001: " + hotSheet.characterID.ToString () + "'s waitTime is " + hotSheet.waitTime);	
-			}
+			//if(hotSheet.waitTime < 0){
+			//Debug.Log ("Error 001: " + hotSheet.characterID.ToString () + "'s waitTime is " + hotSheet.waitTime);	
+			//}
 		}
 	}
 	void UpdateCharacterValues(){
@@ -695,12 +729,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Spawn characters if necessary
 		if(spawn00Time == cycle){
 		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)))	;
-			Debug.Log ("RespawnLeft");
-		} else if(spawn01Time == cycle){
+			//Debug.Log ("RespawnLeft");
+		} 
+		if(spawn01Time == cycle){
 		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)))	;
-			Debug.Log ("RespawnRight");
-		} else {
-			
+			//Debug.Log ("RespawnRight");
 		}
 		
 		//SetToEngagementMode();

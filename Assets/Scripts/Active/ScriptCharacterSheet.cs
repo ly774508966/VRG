@@ -35,19 +35,28 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public string stringID;
 	
 	//Character Stats
+	
+	public int headHP = -9999;
+	public int bodyHP = -9999;
+	public int leftArmHP = -9999;
+	public int rightArmHP = -9999;
+	public int leftLegHP = -9999;
+	public int rightLegHP = -9999;
+	
 	public int health = -9999;
+	
 	public int focus = -9999;
 	
 	//public int meleeDamage = -9999;
 	public int accuracy = -9999;
 	public int evasion = -9999;
-	public int armor = -9999;
 	public int melee = -9999;
+	public int muscle = -9999;
 	
 	//Weapon
 	public int damage = -9999;
-		public float weaponRange = 5;
-	public int weaponCooldown;
+	public float weaponRange = -9999;
+	public int weaponCooldown = -9999;
 	//public int speed = -9999;
 	
 	//Equipment
@@ -57,10 +66,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Status Effects
 	//public List<string> statusEffects = new List<string>();
 	
-
-	
-	
-	//Derived stats
 
 	
 	

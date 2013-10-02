@@ -10,6 +10,8 @@ public class ScriptInterface : MonoBehaviour {
 	
 	ScriptGameMaster scriptGameMaster;
 	
+	GUIStyle defaultStyle;
+	
 	//public bool testSwitch = true;
 	
 	
@@ -43,7 +45,8 @@ public class ScriptInterface : MonoBehaviour {
 			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Defense " + hotSheet.evasion.ToString() +
 			"\n Damage " + hotSheet.damage.ToString() +
-			"\n Range " + hotSheet.weaponRange.ToString();
+			"\n Range " + hotSheet.weaponRange.ToString() +
+			"\n Cooldown " + hotSheet.weaponCooldown.ToString();
 	}
 	
 }
