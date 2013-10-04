@@ -251,17 +251,17 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign Stats
 		hotSheet.health = GetRandom1ToN(10);
-		//hotSheet.focus = GetRandom1ToN(10);
-		hotSheet.focus = 10;
+		hotSheet.focus = GetRandom1ToN(10);
+		//hotSheet.focus = 10;
 		
-		//hotSheet.damage = GetRandom1ToN(10);
-		hotSheet.damage = 15;
+		hotSheet.damage = GetRandom1ToN(10);
+		//hotSheet.damage = 15;
 		//hotSheet.speed = GetRandom1ToN(10);
-		//hotSheet.accuracy = GetRandom1ToN(10);
-		hotSheet.accuracy = 10;
+		hotSheet.accuracy = GetRandom1ToN(10);
+		//hotSheet.accuracy = 10;
 		hotSheet.evasion = GetRandom1ToN(5);
-		//hotSheet.weaponRange = GetRandom1ToN(6);
-		hotSheet.weaponRange = 1;
+		hotSheet.weaponRange = GetRandom1ToN(6);
+		//hotSheet.weaponRange = 1;
 		//hotSheet.armor = 0;
 		hotSheet.melee = 0;
 		
@@ -277,7 +277,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign Derived Stats
 		
-		hotSheet.weaponCooldown = 3;
+		hotSheet.weaponCooldown = GetRandom1ToN(3);
 		//hotSheet.priority = hotSheet.focus;
 		
 		return (character);
@@ -363,8 +363,8 @@ public class ScriptGameMaster : MonoBehaviour {
 				//Exceute next action in queue
 				ExecuteAction(activeCharacters[0]);
 				
-				//If characters are tied for priority, both actions resolve before registering new states
-				if(GetCharacterPriority(activeCharacters[0]) == GetCharacterPriority(activeCharacters[1]))
+				//If more than one character and characters are tied for priority, both actions resolve before registering new states
+				if(activeCharacters.Count > 1 && GetCharacterPriority(activeCharacters[0]) == GetCharacterPriority(activeCharacters[1]))
 				{
 				ExecuteAction(activeCharacters[1]);	
 				}
