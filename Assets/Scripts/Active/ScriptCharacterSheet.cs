@@ -21,6 +21,8 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	
 	
+	
+	
 //Appearance	
 	public Color primaryColor;
 	public Color secondaryColor;
@@ -34,14 +36,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public string fullName;
 	public string stringID;
 	
-	//Character Stats
-	
-	public int headHP = -9999;
-	public int bodyHP = -9999;
-	public int leftArmHP = -9999;
-	public int rightArmHP = -9999;
-	public int leftLegHP = -9999;
-	public int rightLegHP = -9999;
+	//First-Order Stats
 	
 	public int health = -9999;
 	
@@ -51,7 +46,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int accuracy = -9999;
 	public int evasion = -9999;
 	public int melee = -9999;
-	public int muscle = -9999;
+	//public int muscle = -9999;
 	
 	//Weapon
 	public int damage = -9999;
@@ -66,6 +61,17 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Status Effects
 	//public List<string> statusEffects = new List<string>();
 	
+    //Second-Order Stats
+	public int headHP = -9999;
+	public int bodyHP = -9999;
+	public int leftArmHP = -9999;
+	public int rightArmHP = -9999;
+	public int leftLegHP = -9999;
+	public int rightLegHP = -9999;
+	
+//Update stats
+	
+	public float lastHitPercentage = -9999;
 
 	
 	

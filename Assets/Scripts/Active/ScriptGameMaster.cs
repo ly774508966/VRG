@@ -12,6 +12,27 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * 
 	 * */
 	
+	//Classes
+	[System.Serializable]
+	public class Result
+	{
+		public ScriptCharacterSheet actingCharacter = null;
+		public ScriptCharacterSheet targetCharacter = null;
+		public bool success = false;
+		public string damageType = null;
+		public int damageAmount = -9999;
+		public int successNumber = -9999;
+		public int hitPercentage = -9999;
+		public int roll = -9999;
+		public Result(ScriptCharacterSheet actingCharacterSheet)
+		{
+
+			actingCharacter = actingCharacterSheet;
+		}
+
+		
+	}
+	
 	//Phases
 	public bool executionPhase = false;
 	public bool commandPhase = false;
@@ -52,7 +73,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public float cycleLength = 10;
 	public float timerConstant = 1;
 	
-	//Gameplay
+	//Mechanics
 	
 		//Tactics
 	//public int aggressiveFirePriorityBonus = 10;
@@ -75,7 +96,10 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Debug
 	//public GameObject testCharacter;
 	//public GameObject[] testArray;
-	public List<GameObject> tempCharactersInPlay = new List<GameObject>();
+	//public List<GameObject> tempCharactersInPlay = new List<GameObject>();
+	
+	
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -224,6 +248,14 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotModel.SendMessage("InitializeModel");
 		hotModel.SendMessage("ColorCharacter");
 		
+		//Set Derived Stats
+			  hotSheet.headHP = 4;
+	  hotSheet.bodyHP = 7;
+	  hotSheet.leftArmHP = 4;
+	  hotSheet.rightArmHP = 4;
+	  hotSheet.leftLegHP = 5;
+	  hotSheet.rightLegHP = 5;
+		
 		
 		return character;
 	}
@@ -346,9 +378,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Progress to next event
 	void ResolveEngagement(){
 		
-		if(engagementMode){
-			//CharacterCleanup();
-			//UpdateTargets();
+		if(engagementMode)
+		{
 			//Set activeCharacters
 			UpdateCharacterValues();
 			GetActiveCharacters();
@@ -360,31 +391,25 @@ public class ScriptGameMaster : MonoBehaviour {
 				//1. Determine character order
 				SortActiveCharacters();
 				
-				//Exceute next action in queue
+				//2. Exceute next action in queue
 				ExecuteAction(activeCharacters[0]);
 				
-				//If more than one character and characters are tied for priority, both actions resolve before registering new states
+				//3. If more than one character and characters are tied for priority, both actions resolve before registering new states
 				if(activeCharacters.Count > 1 && GetCharacterPriority(activeCharacters[0]) == GetCharacterPriority(activeCharacters[1]))
 				{
 				ExecuteAction(activeCharacters[1]);	
 				}
 				
-				//Kill necessary characters
+				//4. Kill necessary characters
 				CharacterCleanup();
 				
-				//Update character target, destination, stats
+				//5. Update character target, destination, stats
 				UpdateCharacterValues();
 				ResolveEngagement ();
 			} 
 			else 
 			{
-			//Debug.Log (MovementIsOver());
-			//if(MovementIsOver()){
-			//	RolloverCycle();
-			//} else {
-				//SetToMovementMode();
 				RolloverCycle();
-			//}
 			}
 		} else {
 			Debug.Log ("Error: Attempt to resolve engagement outside of engagement mode");
@@ -408,19 +433,37 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 		//Start weapon effect
 				hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
-		
-				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
-			+ " attacks " + targetSheet.fullName + "! " + 
-				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion");
-			
-				//Compare attacker's Attack to target's Defense
-				//bool missed;
-			if(hotSheet.accuracy > targetSheet.evasion){
-					//missed = false;
-					targetSheet.health -= hotSheet.damage;
+	
+				//Get action result
+				Result result = GetActionResult(hotSheet, targetSheet);
 				
-		
-			
+					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+			+ " attacks " + targetSheet.fullName + "! " + 
+				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion. " + (result.hitPercentage).ToString() + " % chance.");
+				
+				scriptInterface.SendMessage("AddNewLine", result.roll.ToString() + " <> " + result.successNumber.ToString());
+				if(result.success)
+				{
+					//Reduce health
+					targetSheet.health -= result.damageAmount;
+					
+					//Log damage
+					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+				+ " deals " + result.damageAmount.ToString() + " damage to "+ targetSheet.fullName
+				+ ".");
+				}
+				else
+				{
+					//Log miss
+					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+				}
+				
+			/*	
+				//Compare attacker's Attack to target's Defense
+			if(hotSheet.accuracy > targetSheet.evasion)
+				{
+					targetSheet.health -= hotSheet.damage;
+
 			//Log damage
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + hotSheet.damage.ToString() + " damage to "+ targetSheet.fullName
@@ -437,16 +480,16 @@ public class ScriptGameMaster : MonoBehaviour {
 				//targetReassess Tactic
 				//if(hotSheet.targetReassess){...}	
 			}
-	
+	*/
 					
-			//Damage display - Ideally, this section would log the actual properties of the attack, rather than the character's stats
+			//Damage display 
 			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
 					targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
 				 TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
 				
-				if(hotSheet.accuracy > targetSheet.evasion)
+				if(result.success)
 				{
-					statusChangeText.text = "-" + hotSheet.damage + "HP";
+					statusChangeText.text = "-" + result.damageAmount + "HP";
 				}
 				else
 				{
@@ -554,7 +597,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Maintenence
 	void CharacterCleanup(){
 		//Debug.Break ();
-		tempCharactersInPlay = new List<GameObject>(charactersInPlay);
+		List<GameObject> tempCharactersInPlay = new List<GameObject>(charactersInPlay);
 		//Debug.Log ("temp contains " + tempCharactersInPlay.Count);
 		
 		for(int i = 0; i < tempCharactersInPlay.Count; i++){
@@ -819,5 +862,48 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 		}
 	}
+	
+	Result GetActionResult(ScriptCharacterSheet actingCharacter, ScriptCharacterSheet targetCharacter)
+	{
+		Result result = new Result(actingCharacter);
+		result.targetCharacter = targetCharacter;
+		
+		int actingAttack = actingCharacter.accuracy;
+		int targetDefense = targetCharacter.evasion;
+		
+		//Calculate success number
+		result.hitPercentage = GetHitPercentage(actingAttack, targetDefense);
+		result.successNumber = 100 - result.hitPercentage;
+		
+		//Roll d100	
+		result.roll = GetRandom1ToN(100);
+			
+		//If roll is greater than or equal to the success number, attack succeeds
+		if(result.roll >= result.successNumber)
+		{
+			result.success = true;
+			//result.hitLocation = GetHitLocation();
+			result.damageAmount = actingCharacter.damage;
+			
+		}
+		else
+		{
+			result.success = false;
+		}
+		/*
+			 *result properties: actingCharacter, targetCharacter, damageType, damageAmount, hitLocation, success, status effects, successNumber, roll
+		
+			Char1 deals 5 kinetic damage to Char2's leg, Char2 is now bleeding
+			Char1 misses char2
+			*/
+		return result;
+	}
+	
+	int GetHitPercentage(int actingAttack, int targetDefense)
+	{
+		return (10+actingAttack-targetDefense)*5;	
+	}
+	
+	
 	
 }
