@@ -148,12 +148,12 @@ public class ScriptGameMaster : MonoBehaviour {
 		//	RandomizeCharacterValues(RegisterCharacter(NewCharacter()));
 		//}
 		
-		if(Input.GetKeyDown(KeyCode.C)){
-		foreach(GameObject character in charactersInPlay)
-			{
-			character.transform.FindChild("ObjectCharacterModel").SendMessage("ColorCharacter");	
-			}
-		}
+		//if(Input.GetKeyDown(KeyCode.C)){
+		//foreach(GameObject character in charactersInPlay)
+		//	{
+		//	character.transform.FindChild("ObjectCharacterModel").SendMessage("ColorCharacter");	
+		//	}
+		//}
 		
 		//if(Input.GetKeyDown(KeyCode.P)){
 		//	CreatePlayerCharacter();	
@@ -417,7 +417,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	void ExecuteAction(GameObject actingCharacter){
 		
-		
+		Result result = null;
 		
 			//Get 1st character in queue and its target
 		ScriptCharacterSheet hotSheet = actingCharacter.GetComponent<ScriptCharacterSheet>();
@@ -435,7 +435,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
 	
 				//Get action result
-				Result result = GetActionResult(hotSheet, targetSheet);
+				result = GetActionResult(hotSheet, targetSheet);
 				
 					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 			+ " attacks " + targetSheet.fullName + "! " + 
@@ -482,19 +482,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 	*/
 					
-			//Damage display 
-			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(targetSheet.gameObject.transform.position.x,
-					targetSheet.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
-				 TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
-				
-				if(result.success)
-				{
-					statusChangeText.text = "-" + result.damageAmount + "HP";
-				}
-				else
-				{
-					statusChangeText.text = "Miss";
-				}
+
 			
 			
 			
@@ -510,10 +498,29 @@ public class ScriptGameMaster : MonoBehaviour {
 
 		} else {
 			//Character attacks nothing
-			//scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
+			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
 		hotSheet.waitTime = hotSheet.weaponCooldown;
+		
+		//Log action
+		
+		//char1 att 5 
+		
+		//Display damage
+			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(result.targetCharacter.gameObject.transform.position.x,
+					result.targetCharacter.gameObject.transform.position.y,damageDisplayDepth), Quaternion.identity) as GameObject;
+				 TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
+				
+				if(result.success)
+				{
+					statusChangeText.text = "-" + result.damageAmount + "HP";
+				}
+				else
+				{
+					statusChangeText.text = "Miss";
+				}
+		
 	}
 	
 	//Change cycle
@@ -708,6 +715,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		
 	//HELPER FUNCTIONS
+	
+	void ConsoleAddLine(string line)
+	{
+	scriptInterface.SendMessage("AddNewLine", line);	
+	}
 	
 	bool GetRandomBool(){
 		if(Random.value >= .5){
