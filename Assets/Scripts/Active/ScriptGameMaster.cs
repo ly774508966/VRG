@@ -2,6 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//Damage
+	public enum DamageType 
+	{
+		None,
+		Kinetic,
+		Thermal
+	}
+
 public class ScriptGameMaster : MonoBehaviour {
 	
 
@@ -12,36 +20,29 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * 
 	 * */
 	
-	//Classes
-	[System.Serializable]
-	public class Result
-	{
-		public ScriptCharacterSheet actingCharacter = null;
-		public ScriptCharacterSheet targetCharacter = null;
-		public bool success = false;
-		public string damageType = null;
-		public int damageAmount = -9999;
-		public int successNumber = -9999;
-		public int hitPercentage = -9999;
-		public int roll = -9999;
-		public Result(ScriptCharacterSheet actingCharacterSheet)
-		{
-
-			actingCharacter = actingCharacterSheet;
-		}
-
-		
-	}
 	
 	//Phases
-	public bool executionPhase = false;
-	public bool commandPhase = false;
+	public enum Phase 
+	{
+		Execution,
+		Command
+	}
+	
+	public enum Mode
+	{
+		Movement,
+		Command,
+		Engagement
+	}
+	//public bool executionPhase = false;
+	//public bool commandPhase = false;
+	public Phase gamePhase;
+	public Mode gameMode;
 	
 	//Modes
 	public bool movementMode = false;
 	public bool engagementMode = false;
 	//public bool endOfCycle = false;
-	
 	
 	//Interface
 	GameObject interfaceMain;
@@ -78,12 +79,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Tactics
 	//public int aggressiveFirePriorityBonus = 10;
 	
+		
 	
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
 	
 	//Effects
-	public GameObject energyBall;
+	//public GameObject energyBall;
 	
 	//Database
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
@@ -98,8 +100,27 @@ public class ScriptGameMaster : MonoBehaviour {
 	//public GameObject[] testArray;
 	//public List<GameObject> tempCharactersInPlay = new List<GameObject>();
 	
-	
-	
+	//Classes
+	[System.Serializable]
+	public class Result
+	{
+		public ScriptCharacterSheet actingCharacter = null;
+		public ScriptCharacterSheet targetCharacter = null;
+		public bool success = false;
+		public DamageType damageType = DamageType.None;
+		public int damageAmount = -9999;
+		public int successNumber = -9999;
+		public int hitPercentage = -9999;
+		public int roll = -9999;
+		public int actingAttack = -9999;
+		public int targetDefense = -9999;
+		public BodyPart hitLocation = BodyPart.None;
+		public Result(ScriptCharacterSheet actingCharacterSheet)
+		{
+
+			actingCharacter = actingCharacterSheet;
+		}
+	}
 	
 	// Use this for initialization
 	void Start () {
@@ -470,10 +491,10 @@ public class ScriptGameMaster : MonoBehaviour {
 				+ ". " + targetSheet.health.ToString() + " Health remaining.");
 			
 				//Launch energy ball
-			//Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
-			//GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
-			//Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
-			//hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
+			Transform projectileOrigin = hotSheet.gameObject.transform.FindChild("TraEmitter").transform;
+			GameObject hotBall = Instantiate(energyBall, projectileOrigin.position, projectileOrigin.rotation) as GameObject;
+			Rigidbody ballRigid = hotBall.GetComponent<Rigidbody>();
+			hotBall.GetComponent<Rigidbody>().AddForce(new Vector3(-2500,0,0));
 			
 			} else {
 				scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
@@ -482,10 +503,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 	*/
 					
-
-			
-			
-			
 			
 			//	ExecuteRangedAttack(hotSheet);	
 			} else if (hotSheet.engageInMelee){
@@ -505,7 +522,44 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Log action
 		
-		//char1 att 5 
+		//char1 attacks char 2 (5 ATT vs 3 DEF: 60%). Roll: 52 > 40. char1 shoots char2 for 15 kinetic damage.
+		string hotLine = result.actingCharacter.fullName +
+			" attacks " +
+			result.targetCharacter.fullName +
+			" (" +
+			result.actingAttack.ToString() +
+			" ATT vs " +
+			result.targetDefense.ToString() +
+			" DEF: " +
+			result.hitPercentage.ToString() +
+			"%). Roll: " +
+			result.roll.ToString();
+			
+			if(result.success)
+		{
+			hotLine += " >= " +
+			result.successNumber.ToString() + 
+			". " +
+			result.actingCharacter.fullName + 
+			" shoots " +
+			result.targetCharacter.fullName + 
+			" for " + 
+			result.damageAmount.ToString() +
+			result.damageType +
+			" damage.";	
+		}
+		else
+		{
+			hotLine += " < " +
+			result.successNumber.ToString() + 
+			". " +
+			result.actingCharacter.fullName +
+					" misses.";
+		}
+				
+			
+		
+		ConsoleAddLine(hotLine);
 		
 		//Display damage
 			GameObject currentDamageDisplay = Instantiate(damageDisplay, new Vector3(result.targetCharacter.gameObject.transform.position.x,
@@ -771,11 +825,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	void SetToExecutionPhase(){
 	//Debug.Log ("Execution Phase");
-	    commandPhase = false;
-		//movementMode = true;
-		executionPhase = true;
-		//engagementMode = true;
-	
+		
+	gamePhase = Phase.Execution;
 		
 		//Adjust Stats according to Tactics
 		ApplyTactics();
@@ -799,10 +850,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	void SetToCommandMode(){
 		//Debug.Log ("CommandPhase");
-	engagementMode = false;
-		movementMode = false;
-		executionPhase = false;
-		commandPhase = true;
+		gamePhase = Phase.Command;
+		gameMode = Mode.Command;
+		//engagementMode = false;
+		//movementMode = false;
+		//executionPhase = false;
+		//commandPhase = true;
 		
 		
 		//Skip Command Phase
@@ -880,11 +933,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		Result result = new Result(actingCharacter);
 		result.targetCharacter = targetCharacter;
 		
-		int actingAttack = actingCharacter.accuracy;
-		int targetDefense = targetCharacter.evasion;
+		result.actingAttack = actingCharacter.accuracy;
+		result.targetDefense = targetCharacter.evasion;
 		
 		//Calculate success number
-		result.hitPercentage = GetHitPercentage(actingAttack, targetDefense);
+		result.hitPercentage = GetHitPercentage(result.actingAttack, result.targetDefense);
 		result.successNumber = 100 - result.hitPercentage;
 		
 		//Roll d100	
@@ -896,7 +949,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			result.success = true;
 			//result.hitLocation = GetHitLocation();
 			result.damageAmount = actingCharacter.damage;
-			
+			result.damageType = DamageType.Kinetic;
 		}
 		else
 		{

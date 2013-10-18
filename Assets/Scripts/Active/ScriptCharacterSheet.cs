@@ -2,6 +2,18 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+	//Body parts
+	public enum BodyPart 
+	{
+		None,
+		Head,
+		Body,
+		LeftArm,
+		RightArm,
+		LeftLeg,
+		RightLeg
+	}
+
 public class ScriptCharacterSheet : MonoBehaviour {
 	
 /*NOTES
@@ -52,6 +64,8 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int damage = -9999;
 	public float weaponRange = -9999;
 	public int weaponCooldown = -9999;
+	public int precision = -9999;
+	public DamageType damageType = DamageType.None; 
 	//public int speed = -9999;
 	
 	//Equipment
