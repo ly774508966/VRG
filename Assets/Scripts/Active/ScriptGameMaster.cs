@@ -2,13 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-//Damage
-	public enum DamageType 
-	{
-		None,
-		Kinetic,
-		Thermal
-	}
+
 
 public class ScriptGameMaster : MonoBehaviour {
 	

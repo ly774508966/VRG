@@ -2,17 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-	//Body parts
-	public enum BodyPart 
-	{
-		None,
-		Head,
-		Body,
-		LeftArm,
-		RightArm,
-		LeftLeg,
-		RightLeg
-	}
+
 
 public class ScriptCharacterSheet : MonoBehaviour {
 	
