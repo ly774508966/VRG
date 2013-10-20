@@ -39,15 +39,15 @@ public class ScriptInterface : MonoBehaviour {
 	
 	string GetCharacterInfo(ScriptCharacterSheet hotSheet){
 		return hotSheet.stringID + 
-			"\n HP " + hotSheet.health.ToString() +
-			"\n Priority " + hotSheet.focus.ToString() +
+			"\n HP " + hotSheet.meat.ToString() +
+			"\n Priority " + hotSheet.nerve.ToString() +
 			"\n Attack " + hotSheet.baseAttack.ToString() +
 			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Defense " + hotSheet.baseDefense.ToString() +
 			"\n Muscle " + hotSheet.baseMuscle.ToString() +
-			"\n Range " + hotSheet.maxRange.ToString() +
+			"\n Range " + hotSheet.readyRange.ToString() +
 			//"\n Cooldown " + hotSheet.weaponCooldown.ToString() +
-			"\n Hit % " + hotSheet.lastHitPercentage.ToString();
+			"\n Hit % " + hotSheet.currentHitChance.ToString();
 	}
 	
 	

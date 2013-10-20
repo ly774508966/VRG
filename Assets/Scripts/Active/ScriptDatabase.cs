@@ -78,11 +78,58 @@ public class ItemStatProfile
 		}
 	}
 
+[System.Serializable]
+public class CharacterStatProfile
+{
+	//public int meat = -9999;
+	public int nerve = -9999;
+	public int readyAttack = -9999; 
+	public int readyDefense = -9999;
+	public int readyPriority = -9999; 
+	//public int readyMuscle = -9999;
+	public int readyDamage = -9999; 
+	public int readyMaxRange = -9999; 
+	//public float currentHitChance = -9999;
+	public DamageType damageType = DamageType.None; 
+	
+	//Second-Order Stats
+	//public int headHP = -9999;
+	//public int bodyHP = -9999;
+	//public int leftArmHP = -9999;
+	//public int rightArmHP = -9999;
+	//public int leftLegHP = -9999;
+	//public int rightLegHP = -9999;
+	
+	public CharacterStatProfile (int nerveArg, int readyAttackArg, int readyDefenseArg, int readyPriorityArg, 
+		int readyDamageArg, int readyMaxRangeArg, DamageType damageTypeArg) 
+		{
+		
+		nerve = nerveArg;
+		readyAttack = readyAttackArg;
+		readyDefense = readyDefenseArg;
+		readyPriority = readyPriorityArg;
+		readyDamage = readyDamageArg;
+		readyMaxRange = readyMaxRangeArg;
+		//currentHitChance = currentHitChaceArg;
+		damageType = damageTypeArg;
+		
+		}
+	
+	public CharacterStatProfile(){}
+	
+	} 
 	
 	public class Action
 		{
-		public string actionName;
-		public ItemStatProfile modifierProfile;
+	
+			public string actionName;
+		public CharacterStatProfile modifierProfile;
+	
+	public Action (string actionNameArg, CharacterStatProfile modifierProfileArg)
+	{
+		actionName = actionNameArg;
+		modifierProfile = modifierProfileArg;
+	}
 		
 		}
 		
@@ -164,6 +211,10 @@ public class ScriptDatabase : MonoBehaviour {
 	Attribute[] qualityAttributes = new Attribute[]{
 		new Attribute("Overclocked", new ItemStatProfile(0, 0, 2, 0, 1, 0, 0, DamageType.None)),
 		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0, DamageType.None))
+	};
+	
+	Action[] actionReference = new Action[]{
+		new Action("Shoot", new CharacterStatProfile(0, 0, 0, 0, 0, 0, DamageType.None))  	
 	};
 
 	

@@ -58,8 +58,8 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 	
 		string GetCharacterInfo(ScriptCharacterSheet hotSheet){
 			return hotSheet.characterID.ToString() + " " + hotSheet.firstName + " " + hotSheet.lastName + 
-			"\n Health " + hotSheet.health.ToString() +
-			"\n Focus " + hotSheet.focus.ToString() +
+			"\n Health " + hotSheet.meat.ToString() +
+			"\n Focus " + hotSheet.nerve.ToString() +
 			"\n Base Attack " + hotSheet.baseAttack.ToString() +
 			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Base Defense " + hotSheet.baseDefense.ToString() +

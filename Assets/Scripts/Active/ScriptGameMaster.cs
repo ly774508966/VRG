@@ -302,8 +302,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.secondaryColor = GetRandomColor();
 		
 		//Assign Stats
-		hotSheet.health = GetRandom1ToN(10);
-		hotSheet.focus = GetRandom1ToN(10);
+		hotSheet.meat = GetRandom1ToN(10);
+		hotSheet.nerve = GetRandom1ToN(10);
 		hotSheet.baseMuscle = GetRandom1ToN(10);
 		hotSheet.baseAttack = GetRandom1ToN(10);
 		hotSheet.baseDefense = GetRandom1ToN(5);
@@ -312,8 +312,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
 		//if(GetRandomBool()){
-			hotSheet.engageAtRange = true;
-			hotSheet.engageInMelee = false;
+		
+		//	hotSheet.engageAtRange = true;
+		//	hotSheet.engageInMelee = false;
+		
 		//} else {
 		//	hotSheet.engageAtRange = false;
 		//	hotSheet.engageInMelee = true;
@@ -445,7 +447,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotSheet.target.GetComponent<ScriptCharacterSheet>().lastAttacker = hotSheet.gameObject;
 			
 			//Execute appropriate action function
-			if(hotSheet.engageAtRange){
+			//if(hotSheet.engageAtRange){
 				ScriptCharacterSheet targetSheet = hotSheet.target.GetComponent<ScriptCharacterSheet>();
 	
 		//Start weapon effect
@@ -464,7 +466,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				if(result.success)
 				{
 					//Reduce health
-					targetSheet.health -= result.damageAmount;
+					targetSheet.meat -= result.damageAmount;
 
 					/*scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + result.damageAmount.ToString() + " damage to "+ targetSheet.fullName
@@ -504,12 +506,12 @@ public class ScriptGameMaster : MonoBehaviour {
 					
 			
 			//	ExecuteRangedAttack(hotSheet);	
-			} else if (hotSheet.engageInMelee){
-				Debug.Log ("Melee feature pending");
+			//} else if (hotSheet.engageInMelee){
+			//	Debug.Log ("Melee feature pending");
 				//ExecuteMeleeAttack(hotSheet);
-			} else {
-			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " does zero things.");	
-			}
+			//} else {
+			//scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " does zero things.");	
+			//}
 			
 
 		} else {
@@ -661,7 +663,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Debug.Log (charactersInPlay[1].GetComponent<ScriptCharacterSheet>().characterID + "charactercleanup");
 			ScriptCharacterSheet hotSheet = tempCharactersInPlay[i].GetComponent<ScriptCharacterSheet>();
 			//Debug.Log(hotSheet.characterID + " has health of " + hotSheet.health.ToString());
-			if(hotSheet.health <= 0){
+			if(hotSheet.meat <= 0){
 				KillCharacter(hotSheet);
 
 			}
@@ -711,6 +713,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotSheet.isInActingPosition = character.GetComponentInChildren<ScriptControllerTargeting>().IsInActingPosition(hotSheet);
 		}
 		
+		//Update readyStatProfile
+		
+		
+		
+		//Update currentHitChance
+		
 						
 	}
 	
@@ -744,12 +752,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			inputButtonName = null;
 			switch(hotButton){	
 				case "Melee":
-					selectedSheet.engageInMelee = true;
-			selectedSheet.engageAtRange = false;
+					//selectedSheet.engageInMelee = true;
+			//selectedSheet.engageAtRange = false;
 					break;
 				case "Ranged":
-					selectedSheet.engageInMelee = false;
-			selectedSheet.engageAtRange = true;
+					//selectedSheet.engageInMelee = false;
+			//selectedSheet.engageAtRange = true;
 					break;
 				case "Next":
 					//NextStep();
@@ -807,7 +815,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	int GetCharacterPriority(GameObject character){
 		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		//Start with character focus and add/ subtract due to conditions
-		int total = hotSheet.focus;
+		int total = hotSheet.nerve;
 		//if(hotSheet.aggressiveFire){
 		//	total += aggressiveFirePriorityBonus;
 		//}
@@ -929,8 +937,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		Result result = new Result(actingCharacter);
 		result.targetCharacter = targetCharacter;
 		
-		result.actingAttack = actingCharacter.finalAttack;
-		result.targetDefense = targetCharacter.finalDefense;
+		result.actingAttack = actingCharacter.readyAttack;
+		result.targetDefense = targetCharacter.readyDefense;
 		
 		//Calculate success number
 		result.hitPercentage = GetHitPercentage(result.actingAttack, result.targetDefense);
@@ -944,7 +952,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		{
 			result.success = true;
 			//result.hitLocation = GetHitLocation();
-			result.damageAmount = actingCharacter.finalDamage;
+			result.damageAmount = actingCharacter.readyDamage;
 			result.damageType = DamageType.Kinetic;
 		}
 		else
@@ -978,14 +986,5 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 	}
 	
-	void UpdateFinalStats(ScriptCharacterSheet hotChar)
-	{
-		//hotChar.finalHealth = hotChar.baseHealth;
-		//hotChar.finalFocus = hotChar.baseFocus;
-		hotChar.finalAttack = hotChar.baseAttack;
-		hotChar.finalDefense = hotChar.baseDefense;
-		hotChar.finalMuscle = hotChar.baseMuscle;
-		hotChar.maxRange = hotChar.unarmedRange;
 
-	}
 }

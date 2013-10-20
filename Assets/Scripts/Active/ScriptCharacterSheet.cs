@@ -42,34 +42,39 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//public StatProfile baseProfile = new StatProfile(-9999,-9999,-9999,-9999,-9999,-9999,-9999);
 	
-	//Base stats
+	//Base/ innate stats
 	
-	public int health = -9999;
-	
-	public int focus = -9999;
-	
+	public int meat = -9999;
+	public int nerve = -9999;
 	public int baseAttack = -9999;
 	public int baseDefense = -9999;
-	//public int melee = -9999;
 	public int baseMuscle = -9999;
 	public int unarmedRange = 1;
+	
+	//Second-Order Stats
+	public int headHP = -9999;
+	public int bodyHP = -9999;
+	public int leftArmHP = -9999;
+	public int rightArmHP = -9999;
+	public int leftLegHP = -9999;
+	public int rightLegHP = -9999;
 	
 	//public int baseBrains = -9999;
 	//public int basePresence = -9999;
 	
+	//public int melee = -9999; OLD
 	
-	//Modified stats
-	//public int finalHealth;
-	public int finalFocus;
-	public int finalAttack;
-	public int finalDefense;
-	public int finalMuscle;
-	public int finalRange;
-	//public int finalBrains;
-	//public int finalPresence;
-	public int maxRange;
-	public int priority;
-	public int finalDamage;
+	//Updated, useable stats
+	public int readyPriority;
+	public int readyAttack;
+	public int readyDefense;
+	public int readyMuscle;
+	public int readyRange;
+	public int readyDamage;
+	public float currentHitChance;
+	
+	//public int readyBrains = -9999;
+	//public int readyFace
 	
 	
 	//Items
@@ -86,20 +91,13 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Status Effects
 	//public List<string> statusEffects = new List<string>();
 	
-    //Second-Order Stats
-	public int headHP = -9999;
-	public int bodyHP = -9999;
-	public int leftArmHP = -9999;
-	public int rightArmHP = -9999;
-	public int leftLegHP = -9999;
-	public int rightLegHP = -9999;
+	//Tactics
+	Action currentAction;
 	
+	//public bool engageAtRange = true;
+	//public bool engageInMelee = false;
 	
-//Update stats
-	
-	public float lastHitPercentage = -9999;
-
-	
+	//public bool targetReassess;
 	
 //Behavior
 	
@@ -115,12 +113,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//public bool engageTargets;
 	//public bool retreat;
-	
-	
-	//Tactics
-	public bool engageAtRange = true;
-	public bool engageInMelee = false;
-	//public bool targetReassess;
 	
 	//Firing Mode
 	public bool aggressiveFire = false;
