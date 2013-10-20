@@ -117,4 +117,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 		Debug.Break();
 	}
 	*/
+	
+	//void PopOpenItemBox(ScriptItemCrate itemCrate)
+	//{
+	//	
+	//}
+	
 }

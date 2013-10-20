@@ -153,10 +153,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		RolloverCycle();
 		
 		//Debug
-		Item hotItem = scriptDatabase.CreateRandomItem();
+		Item hotItem = scriptDatabase.PlayItem();
 		itemsInPlay.Add(hotItem);
 		GiveCharacterItem(charactersInPlay[0].GetComponent<ScriptCharacterSheet>(), itemsInPlay.Count - 1);
-		Debug.Log (charactersInPlay[0].GetComponent<ScriptCharacterSheet>().unequippedItems[0].attack);
+		//Debug.Log (charactersInPlay[0].GetComponent<ScriptCharacterSheet>().unequippedItems[0].netStatProfile.attackModifier);
 	}
 	
 	// Update is called once per frame
