@@ -15,34 +15,32 @@ public class ScriptGameMaster : MonoBehaviour {
 	 * */
 	
 	
-	//Phases
+	//Phases - Actions resolve in execution phase; players issue orders in command phase
 	public enum Phase 
 	{
 		Execution,
 		Command
 	}
 	
+	//Modes - Play alternates between movement and engagement modes while in execution phase
 	public enum Mode
 	{
 		Movement,
 		Command,
 		Engagement
 	}
-	//public bool executionPhase = false;
-	//public bool commandPhase = false;
+
 	public Phase gamePhase;
 	public Mode gameMode;
 	
 	//Modes
 	public bool movementMode = false;
 	public bool engagementMode = false;
-	//public bool endOfCycle = false;
 	
 	//Interface
 	GameObject interfaceMain;
 	ScriptInterface scriptInterface;
 	public string inputButtonName = "";
-	
 	ScriptCycleDisplay scriptCycleDisplay;
 	public GameObject damageDisplay;
 	public float damageDisplayDepth = -1;
@@ -57,6 +55,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	public GameObject conCharacter;
 	public ScriptCharacterSheet selectedSheet;
 	public ScriptCharacterSheet opposingSheet;
+	
+	//Items
+	public List<Item> itemsInPlay = new List<Item>();
 	
 	//Space
 	public Transform spawn00;
@@ -81,11 +82,14 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Effects
 	//public GameObject energyBall;
 	
-	//Database
-	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
+	//Records
+		//Database
+	ScriptDatabase scriptDatabase;
+		//Names
+	List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
 		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
 		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln"});
-	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat", "Kayla", 
+	List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat", "Kayla", 
 		"Dillon", "Reynolds", "Wild", "Rendar", "Casio", "Veis", "Ceti", "Vega", "Pavec", "Puncture", 
 		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln"});
 	
@@ -125,6 +129,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
 		scriptCycleDisplay = interfaceMain.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
+		scriptDatabase = GetComponent<ScriptDatabase>();
 		
 		//Acquire controllers
 		conCharacter = GameObject.Find ("ConCharacter");
@@ -145,13 +150,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)));
 		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)));
 		
-		//NextStep ();
 		RolloverCycle();
 		
-		//RegisterCharacter(testCharacter);	
-		
-		
-		
+		//Debug
+		Item hotItem = scriptDatabase.CreateRandomItem();
+		itemsInPlay.Add(hotItem);
+		GiveCharacterItem(charactersInPlay[0].GetComponent<ScriptCharacterSheet>(), itemsInPlay.Count - 1);
+		Debug.Log (charactersInPlay[0].GetComponent<ScriptCharacterSheet>().unequippedItems[0].attack);
 	}
 	
 	// Update is called once per frame
@@ -299,18 +304,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Stats
 		hotSheet.health = GetRandom1ToN(10);
 		hotSheet.focus = GetRandom1ToN(10);
-		//hotSheet.focus = 10;
-		
-		hotSheet.damage = GetRandom1ToN(10);
-		//hotSheet.damage = 15;
-		//hotSheet.speed = GetRandom1ToN(10);
-		hotSheet.accuracy = GetRandom1ToN(10);
-		//hotSheet.accuracy = 10;
-		hotSheet.evasion = GetRandom1ToN(5);
-		hotSheet.weaponRange = GetRandom1ToN(6);
-		//hotSheet.weaponRange = 1;
-		//hotSheet.armor = 0;
-		hotSheet.melee = 0;
+		hotSheet.baseMuscle = GetRandom1ToN(10);
+		hotSheet.baseAttack = GetRandom1ToN(10);
+		hotSheet.baseDefense = GetRandom1ToN(5);
+		hotSheet.unarmedRange = GetRandom1ToN(6);
 		
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
@@ -324,8 +321,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Assign Derived Stats
 		
-		hotSheet.weaponCooldown = GetRandom1ToN(3);
 		//hotSheet.priority = hotSheet.focus;
+		
+		
+		//Item stats
+		//hotSheet.weaponCooldown = GetRandom1ToN(3);
+		//hotSheet.weaponRange = 1;
+		//resistance
 		
 		return (character);
 		
@@ -452,25 +454,28 @@ public class ScriptGameMaster : MonoBehaviour {
 				//Get action result
 				result = GetActionResult(hotSheet, targetSheet);
 				
+				/*
 					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 			+ " attacks " + targetSheet.fullName + "! " + 
-				hotSheet.accuracy.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion. " + (result.hitPercentage).ToString() + " % chance.");
-				
+				hotSheet.finalAttack.ToString() + " Accuracy vs. " + targetSheet.evasion.ToString() + " Evasion. " + (result.hitPercentage).ToString() + " % chance.");
+				*
 				scriptInterface.SendMessage("AddNewLine", result.roll.ToString() + " <> " + result.successNumber.ToString());
+				*/
 				if(result.success)
 				{
 					//Reduce health
 					targetSheet.health -= result.damageAmount;
-					
-					//Log damage
-					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
+
+					/*scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + result.damageAmount.ToString() + " damage to "+ targetSheet.fullName
-				+ ".");
+				+ ".");*/
 				}
 				else
 				{
+					/*
 					//Log miss
 					scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " misses!");
+					*/
 				}
 				
 			/*	
@@ -512,7 +517,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
 		//Reset Wait Time to Delay
-		hotSheet.waitTime = hotSheet.weaponCooldown;
+		hotSheet.waitTime = 1; //Magic number
 		
 		//Log action
 		
@@ -550,9 +555,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			result.actingCharacter.fullName +
 					" misses.";
 		}
-				
-			
-		
 		ConsoleAddLine(hotLine);
 		
 		//Display damage
@@ -927,8 +929,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		Result result = new Result(actingCharacter);
 		result.targetCharacter = targetCharacter;
 		
-		result.actingAttack = actingCharacter.accuracy;
-		result.targetDefense = targetCharacter.evasion;
+		result.actingAttack = actingCharacter.finalAttack;
+		result.targetDefense = targetCharacter.finalDefense;
 		
 		//Calculate success number
 		result.hitPercentage = GetHitPercentage(result.actingAttack, result.targetDefense);
@@ -942,7 +944,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		{
 			result.success = true;
 			//result.hitLocation = GetHitLocation();
-			result.damageAmount = actingCharacter.damage;
+			result.damageAmount = actingCharacter.finalDamage;
 			result.damageType = DamageType.Kinetic;
 		}
 		else
@@ -963,6 +965,27 @@ public class ScriptGameMaster : MonoBehaviour {
 		return (10+actingAttack-targetDefense)*5;	
 	}
 	
+	void GiveCharacterItem (ScriptCharacterSheet character, int index)
+	{
+		Item hotItem = itemsInPlay[index];
+		
+		//If item is unowned
+		if(hotItem.owner == null)
+		{
+			//Add to unequipped items and set character as new owner
+	character.unequippedItems.Add (itemsInPlay[index]);
+			hotItem.owner = character;
+		}
+	}
 	
-	
+	void UpdateFinalStats(ScriptCharacterSheet hotChar)
+	{
+		//hotChar.finalHealth = hotChar.baseHealth;
+		//hotChar.finalFocus = hotChar.baseFocus;
+		hotChar.finalAttack = hotChar.baseAttack;
+		hotChar.finalDefense = hotChar.baseDefense;
+		hotChar.finalMuscle = hotChar.baseMuscle;
+		hotChar.maxRange = hotChar.unarmedRange;
+
+	}
 }

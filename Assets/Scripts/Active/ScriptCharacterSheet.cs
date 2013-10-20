@@ -40,28 +40,49 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//First-Order Stats
 	
+	//public StatProfile baseProfile = new StatProfile(-9999,-9999,-9999,-9999,-9999,-9999,-9999);
+	
+	//Base stats
+	
 	public int health = -9999;
 	
 	public int focus = -9999;
 	
-	//public int meleeDamage = -9999;
-	public int accuracy = -9999;
-	public int evasion = -9999;
-	public int melee = -9999;
-	//public int muscle = -9999;
+	public int baseAttack = -9999;
+	public int baseDefense = -9999;
+	//public int melee = -9999;
+	public int baseMuscle = -9999;
+	public int unarmedRange = 1;
 	
-	//Weapon
-	public int damage = -9999;
-	public float weaponRange = -9999;
-	public int weaponCooldown = -9999;
-	public int precision = -9999;
-	public DamageType damageType = DamageType.None; 
+	//public int baseBrains = -9999;
+	//public int basePresence = -9999;
+	
+	
+	//Modified stats
+	//public int finalHealth;
+	public int finalFocus;
+	public int finalAttack;
+	public int finalDefense;
+	public int finalMuscle;
+	public int finalRange;
+	//public int finalBrains;
+	//public int finalPresence;
+	public int maxRange;
+	public int priority;
+	public int finalDamage;
+	
+	
+	//Items
+	public List<Item> equippedItems = new List<Item>();
+	public List<Item> unequippedItems = new List<Item>();
+	
+	//public int damage = -9999;
+	//public float weaponRange = -9999;
+	//public int weaponCooldown = -9999;
+	//public int precision = -9999;
+	//public DamageType damageType = DamageType.None; 
 	//public int speed = -9999;
-	
-	//Equipment
-	//public int damageResistanceKinetic;
-	//public int damageResistanceThermal;
-	
+
 	//Status Effects
 	//public List<string> statusEffects = new List<string>();
 	
@@ -72,6 +93,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int rightArmHP = -9999;
 	public int leftLegHP = -9999;
 	public int rightLegHP = -9999;
+	
 	
 //Update stats
 	

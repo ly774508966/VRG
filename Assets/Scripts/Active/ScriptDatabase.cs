@@ -42,64 +42,92 @@ public enum ItemStat
 	
 }
 
-
-
-
-
-public class ScriptDatabase : MonoBehaviour {
-		
-	
-	public class Effect
-		{
-		int modifier;
-		ItemStat stat;
-			string special;
-		}
-		
-		public class Attribute
+	public class ItemStatProfile
 	{
-		public Attribute (string name, AttributeType type, int attack, int priority,
-			int damage, int maxRange, int cooldown, int maxAmmo, int size)
+	public ItemStatProfile (int attack, int priority, int damage, int maxRange, int cooldown, int maxAmmo, int size) 
 		{
-		string attributeName = name;
-		AttributeType attributeType = type;
 		int attackModifier = attack;
 		int priorityModifier = priority;
 		int damageModifier = damage;
 		int maxRangeModifier = maxRange;
 		int cooldownModifier = cooldown;
-		//int currentAmmo = -9999;
 		int maxAmmoModifier = maxAmmo;
 		int sizeModifier = size;
-		DamageType damageType = DamageType.None;
-		Effect[] effects;
-		}	
+		}
 	}
+
+	
+	public class Action
+		{
+		string actionName;
+		ItemStatProfile modifierProfile;
+		
+		}
+		
+		public class Attribute
+	{
+		public Attribute (string name, AttributeType type, ItemStatProfile profile)
+	{
+		
+		string attributeName = name;
+		AttributeType attributeType = type;
+		ItemStatProfile attributeProfile = profile;
+		DamageType damageType = DamageType.None;
+		ItemStatProfile modifierProfile;
+		Action[] basicActions;
+		//Effect[] effects;
+	}
+}
+	[System.Serializable]
 	public class Item
 	{
 		
-		string itemName;
-		int itemID;
+		public string itemName;
+		public int itemID;
 		
-		int attack = -9999;
-		int priority = -9999;
+		public ScriptCharacterSheet owner = null;
 		
-		int damage = -9999;
-		DamageType damageType = DamageType.None;
+		//Crate
+		string crateLabel;
+		Color crateColor;
 		
-		int maxRange = -9999;
-		int cooldown = -9999;
-		
-		int currentAmmo = -9999;
-		int maxAmmo = -9999;
-		
-		int size = -9999;
-		bool canBeConcealed = false;
+		//Stats
+		public int attack = -9999;
+		public int priority = -9999;
+		public int damage = -9999;
+		public int maxRange = -9999;
+		public int cooldown = -9999;
+		public int maxAmmo = -9999;
+		public int size = -9999;
+		public DamageType damageType = DamageType.None;
+	
+		//Status
+		public int currentAmmo = -9999;
+		public bool isConcealed = false;
+		public int itemWaitTime = -9999;
 }
-
+/*
+public class Statshot
+{
+	public Statshot(ScriptCharacterSheet hotChar)
+	{
+		ScriptCharacterSheet owner = hotChar;
 		
+		StatProfile hotProfile = hotChar.baseProfile;
+		hotProfile = ApplyEquippedItemProfiles(hotProfile);
+		hotProfile = ApplyTacticsProfiles(hotProfile);
+		
+	}
+}
+ */
+
+public class ScriptDatabase : MonoBehaviour {
+	
+	Item tempItem;
+	int nextItemID = 0;
+
 	Attribute[] attributes = new Attribute[]{
-		new Attribute("Pistol", AttributeType.Purpose, 0, 1, 4, 10, 0, 8, 1)
+		new Attribute("Pistol", AttributeType.Purpose, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1))
 	};
 
 	
@@ -111,7 +139,6 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
@@ -119,9 +146,13 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	}
 	
-	Item GetRandomItem(int itemID)
+	public Item CreateRandomItem()
 	{
 		Item hotItem = new Item();
+		
+		//Reigster item
+		hotItem.itemID = nextItemID;
+		nextItemID += 1;
 		
 		//Determine purpose attribute
 		
@@ -135,10 +166,22 @@ public class ScriptDatabase : MonoBehaviour {
 		
 		//Apply quality attribute
 		
+		//Increment item ID
 		
-		
+		//Debug
+		hotItem.attack = 42;
 		
 		return hotItem;
 	}
+	
+	//ModifierProfile GetModifierProfile()
+	//{
+	//	return new ModifierProfile(0,0,0,0,0,0,0);
+	//}
+	
+	//void SetModifierProfile(ModifierProfile hotProfile)
+	//{
+	//	
+	//}
 	
 }

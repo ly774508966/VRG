@@ -48,7 +48,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 		{	
 			 //calculate attack vector
 			rangedAttack = hotSheet.target.transform.position - transform.position;
-			if(hotSheet.weaponRange >= rangedAttack.magnitude + weaponRangeOffset)
+			if(hotSheet.maxRange >= rangedAttack.magnitude + weaponRangeOffset)
 			{
 				return true;
 			} 
