@@ -4,23 +4,23 @@ using System.Collections.Generic;
 
 //Damage
 public enum DamageType 
-	{
-		None,
-		Kinetic,
-		Thermal
-	}
+{
+	None,
+	Kinetic,
+	Thermal
+}
 
 //Body parts
 public enum BodyPart 
-	{
-		None,
-		Head,
-		Body,
-		LeftArm,
-		RightArm,
-		LeftLeg,
-		RightLeg
-	}
+{
+	None,
+	Head,
+	Body,
+	LeftArm,
+	RightArm,
+	LeftLeg,
+	RightLeg
+}
 
 public enum AttributeName
 {
@@ -32,6 +32,14 @@ public enum AttributeType
 	Quality,
 	Power,
 	Purpose
+}
+
+public enum TacticType
+{
+	Action,
+	Reaction,
+	Movement,
+	Style
 }
 
 //public enum Size
@@ -82,13 +90,13 @@ public class ItemStatProfile
 public class CharacterStatProfile
 {
 	//public int meat = -9999;
-	public int nerve = -9999;
-	public int readyAttack = -9999; 
-	public int readyDefense = -9999;
-	public int readyPriority = -9999; 
+	//public int nerve = -9999;
+	public int attack = -9999; 
+	public int defense = -9999;
+	public int priority = -9999; 
 	//public int readyMuscle = -9999;
-	public int readyDamage = -9999; 
-	public int readyMaxRange = -9999; 
+	public int damage = -9999; 
+	public int maxRange = -9999; 
 	//public float currentHitChance = -9999;
 	public DamageType damageType = DamageType.None; 
 	
@@ -100,16 +108,16 @@ public class CharacterStatProfile
 	//public int leftLegHP = -9999;
 	//public int rightLegHP = -9999;
 	
-	public CharacterStatProfile (int nerveArg, int readyAttackArg, int readyDefenseArg, int readyPriorityArg, 
-		int readyDamageArg, int readyMaxRangeArg, DamageType damageTypeArg) 
+	public CharacterStatProfile ( int attackArg, int defenseArg, int priorityArg, 
+		int damageArg, int maxRangeArg, DamageType damageTypeArg) 
 		{
 		
-		nerve = nerveArg;
-		readyAttack = readyAttackArg;
-		readyDefense = readyDefenseArg;
-		readyPriority = readyPriorityArg;
-		readyDamage = readyDamageArg;
-		readyMaxRange = readyMaxRangeArg;
+		//nerve = nerveArg;
+		attack = attackArg;
+		defense = defenseArg;
+		priority = priorityArg;
+		damage = damageArg;
+		maxRange = maxRangeArg;
 		//currentHitChance = currentHitChaceArg;
 		damageType = damageTypeArg;
 		
@@ -119,19 +127,19 @@ public class CharacterStatProfile
 	
 	} 
 	
-	public class Action
-		{
-	
-			public string actionName;
-		public CharacterStatProfile modifierProfile;
-	
-	public Action (string actionNameArg, CharacterStatProfile modifierProfileArg)
+public class Tactic
+{
+	public string tacticName;
+	public TacticType tacticType;
+	public CharacterStatProfile modifierProfile;
+
+	public Tactic (string tacticNameArg, TacticType tacticTypeArg, CharacterStatProfile modifierProfileArg)
 	{
-		actionName = actionNameArg;
+		tacticName = tacticNameArg;
+		tacticType = tacticTypeArg;
 		modifierProfile = modifierProfileArg;
-	}
-		
-		}
+	}	
+}
 		
 		
 		public class Attribute
@@ -140,7 +148,7 @@ public class CharacterStatProfile
 		//AttributeType attributeType = type;
 		public ItemStatProfile attributeProfile = profile;
 		//public DamageType damageType = DamageType.None; //Overrides damage type
-		public Action[] basicActions;
+		public Tactic[] basicActions;
 		//Effect[] effects;
 	
 		public Attribute (string name, ItemStatProfile profile)
@@ -213,8 +221,8 @@ public class ScriptDatabase : MonoBehaviour {
 		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0, DamageType.None))
 	};
 	
-	Action[] actionReference = new Action[]{
-		new Action("Shoot", new CharacterStatProfile(0, 0, 0, 0, 0, 0, DamageType.None))  	
+	Tactic[] tacticsReference = new Tactic[]{
+		new Tactic("Shoot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
 	};
 
 	
@@ -233,11 +241,11 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	}
 	
-	public Item PlayItem()
+	public Item GetRandomItem()
 	{
 		Item hotItem = new Item();
 		
-		//Reigster item
+		//Assign item ID
 		hotItem.itemID = nextItemID;
 		nextItemID += 1;
 		

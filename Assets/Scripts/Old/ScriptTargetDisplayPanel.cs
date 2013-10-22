@@ -63,7 +63,7 @@ public class ScriptTargetDisplayPanel : MonoBehaviour {
 			"\n Base Attack " + hotSheet.baseAttack.ToString() +
 			//"\n Melee " + hotSheet.melee.ToString() +
 			"\n Base Defense " + hotSheet.baseDefense.ToString() +
-			"\n Base Muscle " + hotSheet.baseMuscle.ToString();
+			"\n Base Muscle " + hotSheet.muscle.ToString();
 								
 	}
 

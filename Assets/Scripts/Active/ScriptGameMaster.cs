@@ -47,9 +47,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Characters
 	public GameObject characterTemplate;
-	public List<GameObject> charactersInPlay = new List<GameObject>();
+	public List<ScriptCharacterSheet> charactersInPlay = new List<ScriptCharacterSheet>();
 	public int nextCharacterID = 0;
-	public List<GameObject> activeCharacters = new List<GameObject>();
+	public List<ScriptCharacterSheet> activeCharacters = new List<ScriptCharacterSheet>();
 	public int spawn00Time = -1;
 	public int spawn01Time = -1;
 	public GameObject conCharacter;
@@ -136,26 +136,24 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Register each character object in the scene
 		foreach(GameObject character in GameObject.FindGameObjectsWithTag("Character")){
+			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(selectedSheet == null){				
-				SetAsSelected(RegisterCharacter(character));
+				SetAsSelected(RegisterCharacter(hotSheet));
 			} else {
 				//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 				//int output = hotSheet.GetCharacterPriority(0);
 				//Debug.Log (output.ToString());
-				RegisterCharacter(character);	
+				RegisterCharacter(hotSheet);	
 			}
 		}
 		
-		//Spawn a random character on the left and right spawnpoints
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)));
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)));
+		//Spawn a random character on the left and right spawnpoints and give a random item
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());
 		
 		RolloverCycle();
 		
 		//Debug
-		Item hotItem = scriptDatabase.PlayItem();
-		itemsInPlay.Add(hotItem);
-		GiveCharacterItem(charactersInPlay[0].GetComponent<ScriptCharacterSheet>(), itemsInPlay.Count - 1);
 		//Debug.Log (charactersInPlay[0].GetComponent<ScriptCharacterSheet>().unequippedItems[0].netStatProfile.attackModifier);
 	}
 	
@@ -199,7 +197,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//BEGIN FUNCTIONS
 	
 	//Character Management
-	GameObject NewCharacter(Transform spawnTransform){
+	ScriptCharacterSheet NewCharacter(Transform spawnTransform){
 	//Create character object at spawn position
 		//if(spawnPosition == 0)
 		//{
@@ -226,7 +224,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 			
 			
-			return hotChar;
+			return hotSheet;
 		//}
 		//else if(spawnPosition == 1)
 		//{
@@ -249,19 +247,19 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 			//new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
 	
-	GameObject RegisterCharacter(GameObject character){
-		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+	ScriptCharacterSheet RegisterCharacter(ScriptCharacterSheet hotSheet){
+		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
-		scriptPhysicsController.SendMessage("Unragdollify", character);
+		scriptPhysicsController.SendMessage("Unragdollify", hotSheet.gameObject);
 		
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
-		charactersInPlay.Add (character);
+		charactersInPlay.Add (hotSheet);
 		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName + hotSheet.lastName;
 		hotSheet.fullName = hotSheet.stringID;
 		
 		//Assign object character name
-		character.name = hotSheet.stringID;
+		hotSheet.gameObject.name = hotSheet.stringID;
 		
 		//Set color
 		GameObject hotModel = hotSheet.gameObject.transform.FindChild("ObjectCharacterModel").gameObject;
@@ -269,26 +267,26 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotModel.SendMessage("ColorCharacter");
 		
 		//Set Derived Stats
-			  hotSheet.headHP = 4;
-	  hotSheet.bodyHP = 7;
-	  hotSheet.leftArmHP = 4;
-	  hotSheet.rightArmHP = 4;
-	  hotSheet.leftLegHP = 5;
-	  hotSheet.rightLegHP = 5;
+		hotSheet.headHP = 4;
+		hotSheet.bodyHP = 7;
+		hotSheet.leftArmHP = 4;
+		hotSheet.rightArmHP = 4;
+		hotSheet.leftLegHP = 5;
+		hotSheet.rightLegHP = 5;
+		hotSheet.unarmedDamage = hotSheet.muscle / 2;
 		
-		
-		return character;
+		return hotSheet;
 	}
 	
-	GameObject SetAsSelected(GameObject character){
+	ScriptCharacterSheet SetAsSelected(ScriptCharacterSheet hotSheet){
 				//If first character, assign as selected
 		
-			selectedSheet = character.GetComponent<ScriptCharacterSheet>();
-		return character;
+			selectedSheet = hotSheet;
+		return hotSheet;
 		
 	}
-	GameObject RandomizeCharacterValues(GameObject character){
-		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+	ScriptCharacterSheet RandomizeCharacterValues(ScriptCharacterSheet hotSheet){
+		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
 		//Set name and update game object
 		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
@@ -304,10 +302,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Stats
 		hotSheet.meat = GetRandom1ToN(10);
 		hotSheet.nerve = GetRandom1ToN(10);
-		hotSheet.baseMuscle = GetRandom1ToN(10);
+		hotSheet.muscle = GetRandom1ToN(10);
 		hotSheet.baseAttack = GetRandom1ToN(10);
 		hotSheet.baseDefense = GetRandom1ToN(5);
-		hotSheet.unarmedRange = GetRandom1ToN(6);
+		//hotSheet.unarmedRange = GetRandom1ToN(6);
 		
 		//Assign Tactics
 		//hotSheet.targetReassess = GetRandomBool();
@@ -326,18 +324,20 @@ public class ScriptGameMaster : MonoBehaviour {
 		//hotSheet.priority = hotSheet.focus;
 		
 		
-		//Item stats
+		
+		
+		
 		//hotSheet.weaponCooldown = GetRandom1ToN(3);
 		//hotSheet.weaponRange = 1;
 		//resistance
 		
-		return (character);
+		return hotSheet;
 		
 	}
 	
-	int GetCharactersInPlayIndex(GameObject character){
+	int GetCharactersInPlayIndex(ScriptCharacterSheet hotSheet){
 		for(int i = 0; i < charactersInPlay.Count; i++){
-			if(character == charactersInPlay[i])
+			if(hotSheet == charactersInPlay[i])
 			{
 			return i;	
 			}
@@ -351,7 +351,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				
 		//Debug.Log (hotSheet.characterID + "killed");
 		//Remove dead character from characters in play 
-		charactersInPlay.RemoveAt(GetCharactersInPlayIndex(hotSheet.gameObject));
+		charactersInPlay.RemoveAt(GetCharactersInPlayIndex(hotSheet));
 		//Set character's inPlay to false
 		hotSheet.inPlay = false;
 		
@@ -362,9 +362,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		//transform.Find ("ObjectCharacterObjectCharacterModelheadfacefaceImage").gameObject.SetActive(false);
 		
 		//Remove character as an valid target
-		foreach(GameObject character in charactersInPlay){
-			ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
-			if(otherHotSheet.target == hotSheet.gameObject){
+		foreach(ScriptCharacterSheet otherHotSheet in charactersInPlay){
+			//ScriptCharacterSheet otherHotSheet = character.GetComponent<ScriptCharacterSheet>();
+			if(otherHotSheet.target == hotSheet){
 				otherHotSheet.target = null;
 			}
 		}
@@ -434,12 +434,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			Debug.Log ("Error: Attempt to resolve engagement outside of engagement mode");
 		}
 	}
-	void ExecuteAction(GameObject actingCharacter){
+	void ExecuteAction(ScriptCharacterSheet hotSheet){
 		
 		Result result = null;
 		
 			//Get 1st character in queue and its target
-		ScriptCharacterSheet hotSheet = actingCharacter.GetComponent<ScriptCharacterSheet>();
+		//ScriptCharacterSheet hotSheet = actingCharacter.GetComponent<ScriptCharacterSheet>();
 		if(hotSheet.target){
 		
 			//Debug.Log (hotSheet.characterID.ToString());
@@ -586,8 +586,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//StartCoroutine("RedLight");
 		
 		//Reduce all characters' wait time by 1
-		foreach(GameObject character in charactersInPlay){
-			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+			//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(hotSheet.waitTime > 0)
 			{
 			hotSheet.waitTime -= 1;
@@ -613,19 +613,18 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Prepare queue
 	void GetActiveCharacters(){
 		
-
-		activeCharacters = new List<GameObject>();
-		foreach(GameObject character in charactersInPlay){
-			ScriptCharacterSheet currentSheet = character.GetComponent<ScriptCharacterSheet>();
+		activeCharacters = new List<ScriptCharacterSheet>();
+		foreach(ScriptCharacterSheet currentSheet in charactersInPlay){
+			//ScriptCharacterSheet currentSheet = character.GetComponent<ScriptCharacterSheet>();
 			if(currentSheet.waitTime == 0 && currentSheet.isInActingPosition){
-				activeCharacters.Add (character);
+				activeCharacters.Add (currentSheet);
 			}
 		}
 		
 	}
 	void SortActiveCharacters(){
 		int initialCount = activeCharacters.Count;
-		List<GameObject> tempList = new List<GameObject>();
+		List<ScriptCharacterSheet> tempList = new List<ScriptCharacterSheet>();
 		while(tempList.Count < initialCount){	
 			//Determine highest priority of remaining active characters
 			float maxPriority = 0.0F;
@@ -656,7 +655,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Maintenence
 	void CharacterCleanup(){
 		//Debug.Break ();
-		List<GameObject> tempCharactersInPlay = new List<GameObject>(charactersInPlay);
+		List<ScriptCharacterSheet> tempCharactersInPlay = new List<ScriptCharacterSheet>(charactersInPlay);
 		//Debug.Log ("temp contains " + tempCharactersInPlay.Count);
 		
 		for(int i = 0; i < tempCharactersInPlay.Count; i++){
@@ -677,8 +676,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	void UpdateCharacterValues(){
 		
 		//Update targets
-		foreach(GameObject character in charactersInPlay){
-			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+			//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			
 			if(hotSheet.target == null){
 				//For all charactersInPlay without Targets:
@@ -692,10 +691,10 @@ public class ScriptGameMaster : MonoBehaviour {
 				//int i = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
 				//while(assigningNewTarget){
 				int randomCharacterIndex = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
-				GameObject otherCharacter = charactersInPlay[randomCharacterIndex];
+				ScriptCharacterSheet otherCharacter = charactersInPlay[randomCharacterIndex];
 				
 				//If random character is not first character, assign as target (no character can be a target of him/herself
-				if(otherCharacter != hotSheet.gameObject){
+				if(otherCharacter != hotSheet){
 						hotSheet.target = otherCharacter;
 						//assigningNewTarget = false;
 				} else {
@@ -704,20 +703,49 @@ public class ScriptGameMaster : MonoBehaviour {
 				}
 				}
 			}
+			
+			//Update Equipment modifiers
+			hotSheet.netEquipmentAttack = hotSheet.activeItem.netStatProfile.attackModifier;
+			hotSheet.netEquipmentDamage = hotSheet.activeItem.netStatProfile.damageModifier;
+			//hotSheet.netEquipmentDefense = hotSheet.activeItem.netStatProfile.
+			hotSheet.netEquipmentPriority = hotSheet.activeItem.netStatProfile.priorityModifier;
+			hotSheet.netEquipmentRange = hotSheet.activeItem.netStatProfile.maxRangeAspect;
+	
+			//Update Tactic modifiers --only works for first tactic at the moment
+			hotSheet.netTacticsAttack = hotSheet.activeTactics[0].modifierProfile.attack;
+			hotSheet.netTacticsDamage = hotSheet.activeTactics[0].modifierProfile.damage;
+			hotSheet.netTacticsDefense = hotSheet.activeTactics[0].modifierProfile.defense;
+			hotSheet.netTacticsPriority = hotSheet.activeTactics[0].modifierProfile.priority;
+			hotSheet.netTacticsRange = hotSheet.activeTactics[0].modifierProfile.maxRange;
+			
+			//Update character's readyStatProfile
+			
+			hotSheet.readyAttack = hotSheet.baseAttack + hotSheet.netEquipmentAttack + hotSheet.netTacticsAttack;		
+			hotSheet.readyDefense = hotSheet.baseDefense + hotSheet.netTacticsDefense;
+			hotSheet.readyPriority = hotSheet.nerve + hotSheet.netEquipmentPriority + hotSheet.netTacticsPriority;
+			if(hotSheet.activeItem == null)
+			{
+					hotSheet.readyDamage = hotSheet.unarmedDamage;
+					hotSheet.readyRange = hotSheet.unarmedRange;
+			}
+			else
+			{
+				hotSheet.readyDamage = hotSheet.netEquipmentDamage + hotSheet.netTacticsDamage;
+				hotSheet.readyRange = hotSheet.netEquipmentRange + hotSheet.netTacticsRange;
+			}
+	
+		//Update currentHitChance
+			
 		}
 		
 		//Update isInActingPosition
-		foreach(GameObject character in charactersInPlay)
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay)
 		{
-			ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			hotSheet.isInActingPosition = character.GetComponentInChildren<ScriptControllerTargeting>().IsInActingPosition(hotSheet);
+			//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+			hotSheet.isInActingPosition = hotSheet.GetComponentInChildren<ScriptControllerTargeting>().GetActingPosition(hotSheet);
 		}
 		
-		//Update readyStatProfile
 		
-		
-		
-		//Update currentHitChance
 		
 						
 	}
@@ -812,16 +840,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 	}
 	
-	int GetCharacterPriority(GameObject character){
-		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-		//Start with character focus and add/ subtract due to conditions
-		int total = hotSheet.nerve;
-		//if(hotSheet.aggressiveFire){
-		//	total += aggressiveFirePriorityBonus;
-		//}
-		
-		
-		return total;
+	int GetCharacterPriority(ScriptCharacterSheet hotSheet){
+		return hotSheet.nerve;
 	}
 	
 	
@@ -833,7 +853,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	gamePhase = Phase.Execution;
 		
 		//Adjust Stats according to Tactics
-		ApplyTactics();
+		//ApplyTactics();
 		
 		
 		//Spawn characters if necessary
@@ -871,8 +891,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//commandPhase = false;
 		engagementMode = false;
 		movementMode = true;
-		foreach(GameObject character in charactersInPlay){
-		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+		ScriptCharacterMove hotScript = hotSheet.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = true;
 			hotScript.startLerp = true;
 		}
@@ -892,8 +912,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	IEnumerator RedLight(){
 		//Debug.Log ("RedLight");
 		yield return 0;
-		foreach(GameObject character in charactersInPlay){
-		ScriptCharacterMove hotScript = character.GetComponent<ScriptCharacterMove>();
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+		ScriptCharacterMove hotScript = hotSheet.GetComponent<ScriptCharacterMove>();
 			hotScript.greenLight = false;
 		}
 		if(engagementMode){
@@ -905,8 +925,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	//Queries
 	bool MovementIsOver(){
-		foreach(GameObject character in charactersInPlay){
-			if(character.GetComponent<ScriptCharacterMove>().atDestination == false){
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+			if(hotSheet.GetComponent<ScriptCharacterMove>().atDestination == false){
 				//Debug.Log (character.GetComponent<ScriptCharacterMove>().fracJourney);
 				return false;
 		}
@@ -917,8 +937,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	
 	void ApplyTactics(){
-		foreach(GameObject character in charactersInPlay){
-		ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
+		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
+		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 			
 			
 			//Apply firing mode
@@ -973,18 +993,27 @@ public class ScriptGameMaster : MonoBehaviour {
 		return (10+actingAttack-targetDefense)*5;	
 	}
 	
-	void GiveCharacterItem (ScriptCharacterSheet character, int index)
+	void GiveCharacterItem (ScriptCharacterSheet character, Item hotItem)
 	{
-		Item hotItem = itemsInPlay[index];
-		
 		//If item is unowned
 		if(hotItem.owner == null)
 		{
-			//Add to unequipped items and set character as new owner
-	character.unequippedItems.Add (itemsInPlay[index]);
+			//Add to equipped items and set character as new owner
+	character.equippedItems.Add (hotItem);
+			character.activeItem = hotItem;
 			hotItem.owner = character;
 		}
+		else
+		{
+			Debug.Log ("Item is already owned");
 	}
 	
-
+	}
+	Item CreateRandomItem()
+		{
+		Item hotItem = scriptDatabase.GetRandomItem();
+		itemsInPlay.Add(hotItem);
+		return hotItem;
+		}
+		
 }

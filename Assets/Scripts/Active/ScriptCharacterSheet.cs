@@ -48,10 +48,15 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int nerve = -9999;
 	public int baseAttack = -9999;
 	public int baseDefense = -9999;
-	public int baseMuscle = -9999;
-	public int unarmedRange = 1;
+	public int muscle = -9999;
+	
+
+	
 	
 	//Second-Order Stats
+	public int unarmedDamage = -9999;
+	
+		//HP
 	public int headHP = -9999;
 	public int bodyHP = -9999;
 	public int leftArmHP = -9999;
@@ -59,18 +64,26 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int leftLegHP = -9999;
 	public int rightLegHP = -9999;
 	
+	//Constant Stats
+	
+	public int unarmedRange = 1;
+	
 	//public int baseBrains = -9999;
 	//public int basePresence = -9999;
 	
 	//public int melee = -9999; OLD
 	
 	//Updated, useable stats
-	public int readyPriority;
+	
 	public int readyAttack;
 	public int readyDefense;
-	public int readyMuscle;
-	public int readyRange;
+	public int readyPriority;
 	public int readyDamage;
+	//public int readyMuscle;
+	public int readyRange;
+	
+	
+	
 	public float currentHitChance;
 	
 	//public int readyBrains = -9999;
@@ -78,8 +91,15 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	
 	//Items
+	public Item activeItem = null;
 	public List<Item> equippedItems = new List<Item>();
 	public List<Item> unequippedItems = new List<Item>();
+	
+	public int netEquipmentAttack = -9999;
+	//public int netEquipmentDefense = -9999;
+	public int netEquipmentPriority = -9999;
+	public int netEquipmentDamage = -9999;
+	public int netEquipmentRange = -9999;
 	
 	//public int damage = -9999;
 	//public float weaponRange = -9999;
@@ -92,7 +112,17 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public List<string> statusEffects = new List<string>();
 	
 	//Tactics
-	Action currentAction;
+	public Tactic[] activeTactics = new Tactic[] {
+		new Tactic("Shoot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None)) 
+	};
+	
+	public int netTacticsAttack = -9999;
+	public int netTacticsDefense = -9999;
+	public int netTacticsPriority = -9999;
+	public int netTacticsDamage = -9999;
+	public int netTacticsRange = -9999;
+	
+	
 	
 	//public bool engageAtRange = true;
 	//public bool engageInMelee = false;
@@ -107,7 +137,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public bool suspendPositionObjective = false;
 	
 	//Objectives
-	public GameObject target = null;
+	public ScriptCharacterSheet target = null;
 	
 
 	
@@ -137,7 +167,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	void Start () {
 	//positionObjective = transform.position;
 		
-		
+
 	//waitTime = 1;
 	}
 	

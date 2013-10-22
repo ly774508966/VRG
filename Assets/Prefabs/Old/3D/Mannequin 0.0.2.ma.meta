@@ -953,6 +953,7 @@ ModelImporter:
     101894: Wrist_globalLocator
     101896: Wrist_L
     101898: Wrist_R
+    101900: transform1
     400000: AimAnnotationEye_L
     400002: AimAnnotationEye_R
     400004: AimCrossEye_M
@@ -1903,6 +1904,7 @@ ModelImporter:
     401894: Wrist_globalLocator
     401896: Wrist_L
     401898: Wrist_R
+    401900: transform1
     2300000: polySurface101
     2300002: polySurface103
     2300004: polySurface105
