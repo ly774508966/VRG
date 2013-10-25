@@ -34,10 +34,18 @@ public enum AttributeType
 	Purpose
 }
 
+//public enum TacticName
+//{
+//	BasicShot,
+//	QuickShot,
+//	CalledShot,
+//	SteadyShot
+//}
+
 public enum TacticType
 {
 	Action,
-	Reaction,
+	Stance,
 	Movement,
 	Style
 }
@@ -127,15 +135,18 @@ public class CharacterStatProfile
 	
 	} 
 	
+[System.Serializable]
 public class Tactic
 {
-	public string tacticName;
+	//public TacticName tacticName;
+	public string stringName;
 	public TacticType tacticType;
 	public CharacterStatProfile modifierProfile;
 
-	public Tactic (string tacticNameArg, TacticType tacticTypeArg, CharacterStatProfile modifierProfileArg)
+	public Tactic (string stringNameArg, TacticType tacticTypeArg, CharacterStatProfile modifierProfileArg)
 	{
-		tacticName = tacticNameArg;
+		//tacticName = tacticNameArg;
+		stringName = stringNameArg;
 		tacticType = tacticTypeArg;
 		modifierProfile = modifierProfileArg;
 	}	
@@ -221,9 +232,14 @@ public class ScriptDatabase : MonoBehaviour {
 		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0, DamageType.None))
 	};
 	
-	Tactic[] tacticsReference = new Tactic[]{
-		new Tactic("Shoot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
+	public Dictionary<string, Tactic> tacticsLookup = new Dictionary<string, Tactic>(){
+		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile(0, 0, 0, 0, 0, DamageType.None))}  	
+
 	};
+	
+	//Tactic[] tacticsLookup = new Tactic[]{
+	//	new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
+	//};
 
 	
 	//public Dictionary<AttributeName,Attribute> attributeInfo = 

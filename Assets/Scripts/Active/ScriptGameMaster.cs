@@ -191,18 +191,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 	}
 	
-	
-
-	
 	//BEGIN FUNCTIONS
 	
 	//Character Management
 	ScriptCharacterSheet NewCharacter(Transform spawnTransform){
-	//Create character object at spawn position
-		//if(spawnPosition == 0)
-		//{
 	
-			
 		//Create character at spawn point
 			GameObject hotChar = Instantiate(characterTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
 			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
@@ -221,34 +214,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			Debug.Log ("Invalid spawn position");	
 			}
 			
-			
-			
-			
 			return hotSheet;
-		//}
-		//else if(spawnPosition == 1)
-		//{
-		//	GameObject hotChar = Instantiate(characterTemplate, spawn01.position, spawn01.rotation) as GameObject;
-		//	ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
-		//	hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
-		//	return hotChar;
-			
-		//}
-		//else 
-		//{
-		//	Debug.Log ("Invalid Spawn Position");
-		//	return null;
-		
-			
 		}
 		
-		//return hotChar;
-		//return Instantiate(characterTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
-			
-			//new Vector3(spawnPosition.x + nextCharacterID * 2, spawnPosition.y, spawnPosition.z), transform.rotation) as GameObject;
-	
 	ScriptCharacterSheet RegisterCharacter(ScriptCharacterSheet hotSheet){
-		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
 		scriptPhysicsController.SendMessage("Unragdollify", hotSheet.gameObject);
 		
@@ -275,16 +244,17 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.rightLegHP = 5;
 		hotSheet.unarmedDamage = hotSheet.muscle / 2;
 		
+		//Set Tactics
+		hotSheet.activeTactics.Add(scriptDatabase.tacticsLookup["Basic Shot"]);
+	
 		return hotSheet;
+	}
+		
+	ScriptCharacterSheet SetAsSelected(ScriptCharacterSheet hotSheet){
+		selectedSheet = hotSheet;
+		return hotSheet;	
 	}
 	
-	ScriptCharacterSheet SetAsSelected(ScriptCharacterSheet hotSheet){
-				//If first character, assign as selected
-		
-			selectedSheet = hotSheet;
-		return hotSheet;
-		
-	}
 	ScriptCharacterSheet RandomizeCharacterValues(ScriptCharacterSheet hotSheet){
 		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
@@ -322,11 +292,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Assign Derived Stats
 		
 		//hotSheet.priority = hotSheet.focus;
-		
-		
-		
-		
-		
+
 		//hotSheet.weaponCooldown = GetRandom1ToN(3);
 		//hotSheet.weaponRange = 1;
 		//resistance

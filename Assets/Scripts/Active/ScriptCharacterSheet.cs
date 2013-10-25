@@ -20,11 +20,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Status
 	public bool inPlay = true;
 	
-	
-	
-	
-	
-	
 //Appearance	
 	public Color primaryColor;
 	public Color secondaryColor;
@@ -49,9 +44,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int baseAttack = -9999;
 	public int baseDefense = -9999;
 	public int muscle = -9999;
-	
-
-	
 	
 	//Second-Order Stats
 	public int unarmedDamage = -9999;
@@ -82,8 +74,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public int readyMuscle;
 	public int readyRange;
 	
-	
-	
 	public float currentHitChance;
 	
 	//public int readyBrains = -9999;
@@ -109,20 +99,16 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public int speed = -9999;
 
 	//Status Effects
-	//public List<string> statusEffects = new List<string>();
+	//public List<StatusEffect> statusEffects = new List<StatusEffect>();
 	
 	//Tactics
-	public Tactic[] activeTactics = new Tactic[] {
-		new Tactic("Shoot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None)) 
-	};
+	public List<Tactic> activeTactics = new List<Tactic>();
 	
 	public int netTacticsAttack = -9999;
 	public int netTacticsDefense = -9999;
 	public int netTacticsPriority = -9999;
 	public int netTacticsDamage = -9999;
 	public int netTacticsRange = -9999;
-	
-	
 	
 	//public bool engageAtRange = true;
 	//public bool engageInMelee = false;
