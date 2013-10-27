@@ -123,7 +123,6 @@ public class ScriptGameMaster : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-		
 		//Acquire scripts
 		interfaceMain = GameObject.Find ("InterfaceMain");
 		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
@@ -650,8 +649,6 @@ public class ScriptGameMaster : MonoBehaviour {
 				//bool assigningNewTarget = true;
 				
 				if(charactersInPlay.Count > 1){
-				 	
-				
 				//Choose random character
 				
 				//int i = (int)Mathf.Floor(Random.value*charactersInPlay.Count);
@@ -684,8 +681,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotSheet.netTacticsPriority = hotSheet.activeTactics[0].modifierProfile.priority;
 			hotSheet.netTacticsRange = hotSheet.activeTactics[0].modifierProfile.maxRange;
 			
-			//Update character's readyStatProfile
-			
+			//Update ready stats
 			hotSheet.readyAttack = hotSheet.baseAttack + hotSheet.netEquipmentAttack + hotSheet.netTacticsAttack;		
 			hotSheet.readyDefense = hotSheet.baseDefense + hotSheet.netTacticsDefense;
 			hotSheet.readyPriority = hotSheet.nerve + hotSheet.netEquipmentPriority + hotSheet.netTacticsPriority;
@@ -699,7 +695,6 @@ public class ScriptGameMaster : MonoBehaviour {
 				hotSheet.readyDamage = hotSheet.netEquipmentDamage + hotSheet.netTacticsDamage;
 				hotSheet.readyRange = hotSheet.netEquipmentRange + hotSheet.netTacticsRange;
 			}
-	
 		//Update currentHitChance
 			
 		}
@@ -824,11 +819,16 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Spawn characters if necessary
 		if(spawn00Time == cycle){
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)))	;
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());	;
+		//ScriptCharacterSheet hotSheet = NewCharacter(spawn00);
+		//RegisterCharacter(RandomizeCharacterValues(hotSheet));
+			//hotSheet.activeItem = null;
+		//	Debug.Log (hotSheet.activeItem.currentAmmo.ToString());
+		
 			//Debug.Log ("RespawnLeft");
 		} 
 		if(spawn01Time == cycle){
-		RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01)))	;
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());	;
 			//Debug.Log ("RespawnRight");
 		}
 		
@@ -971,8 +971,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log ("Item is already owned");
-	}
+			Debug.Log("Item is already owned");
+		}
 	
 	}
 	Item CreateRandomItem()

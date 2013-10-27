@@ -2,12 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
 //Damage
 public enum DamageType 
 {
 	None,
 	Kinetic,
-	Thermal
+	Thermal,
+	Sonic
 }
 
 //Body parts
@@ -176,10 +178,10 @@ public class Tactic
 	{
 		
 		public string fullName;
-		public int itemID;
-	public string namePart0 = "";
-	public string namePart1 = "";
-	public string namePart2 = "";
+		public int itemID = -9999;
+		public string namePart0 = "";
+		public string namePart1 = "";
+		public string namePart2 = "";
 		
 		public ScriptCharacterSheet owner = null;
 		
@@ -196,6 +198,11 @@ public class Tactic
 		public int currentAmmo = -9999;
 		public bool isConcealed = false;
 		public int itemWaitTime = -9999;
+	
+		public Item (){
+	    //itemID = nextItemID;
+		//fullName = fullNameArg;
+	}
 	}
 /*
 public class Statshot
@@ -215,8 +222,9 @@ public class Statshot
 public class ScriptDatabase : MonoBehaviour {
 	
 	Item tempItem;
-	int nextItemID = 0;
-
+	public int nextItemID = 0;
+	
+	//Attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
 		new Attribute("Pistol", new ItemStatProfile(0, 1, 4, 10, 0, 8, 1, DamageType.Kinetic)),
 		new Attribute("Shotgun", new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Kinetic))
@@ -232,10 +240,15 @@ public class ScriptDatabase : MonoBehaviour {
 		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0, DamageType.None))
 	};
 	
+	//Tactic records
 	public Dictionary<string, Tactic> tacticsLookup = new Dictionary<string, Tactic>(){
-		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile(0, 0, 0, 0, 0, DamageType.None))}  	
+		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile(0, 0, 0, 0, 0, DamageType.None))},
+		{"Wild Shot", new Tactic("Wild Shot", TacticType.Action, new CharacterStatProfile(-2, 0, 3, 0, 0, DamageType.None))}	
 
 	};
+	
+	//Premade items
+	//Item unarmed = new Item();
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
