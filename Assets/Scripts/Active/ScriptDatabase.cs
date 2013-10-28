@@ -9,7 +9,8 @@ public enum DamageType
 	None,
 	Kinetic,
 	Thermal,
-	Sonic
+	Sonic,
+	Corrosive
 }
 
 //Body parts
@@ -24,10 +25,6 @@ public enum BodyPart
 	RightLeg
 }
 
-public enum AttributeName
-{
-	Pistol
-}
 
 public enum AttributeType
 {
@@ -227,12 +224,14 @@ public class ScriptDatabase : MonoBehaviour {
 	//Attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
 		new Attribute("Pistol", new ItemStatProfile(0, 1, 4, 10, 0, 8, 1, DamageType.Kinetic)),
-		new Attribute("Shotgun", new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Kinetic))
+		new Attribute("Shotgun", new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Kinetic)),
+		new Attribute("Machine Gun", new ItemStatProfile(2, 2, 6, 8, 1, 3, 3, DamageType.Kinetic))
 	};
 	
 	Attribute[] powerAttributes = new Attribute[]{
 		new Attribute("Gauss", new ItemStatProfile(0, 0, 2, 2, 1, 0, 0, DamageType.Kinetic)),
-		new Attribute("Powder", new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0, DamageType.Kinetic))
+		new Attribute("Powder", new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0, DamageType.Kinetic)),
+		new Attribute("Sonic", new ItemStatProfile(3, -2, 4, 4, 3, 3, 1, DamageType.Sonic))
 	};
 	
 	Attribute[] qualityAttributes = new Attribute[]{
