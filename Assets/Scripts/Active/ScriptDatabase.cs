@@ -74,20 +74,20 @@ public class ItemStatProfile
 	public int damageModifier = 0; //Additive- Add to muscle for certain weapons and damage from tactics
 	public int maxRangeAspect = 0; //Native- Primitive/ overrides other
 	public int cooldownAspect = 0; //Native
-	public int maxAmmoAspect = 0; //Native
+	public int usesStarting = 0; //Native
 	public int sizeAspect = 0; //Native - 0: Tiny, 1: Small, 2: Large, 3: Huge
 	public DamageType damageTypeAspect = DamageType.None; //Native
 	
 	public ItemStatProfile(){}
 	
-	public ItemStatProfile (int attack, int priority, int damage, int maxRange, int cooldown, int maxAmmo, int size, DamageType damageType) 
+	public ItemStatProfile (int attack, int priority, int damage, int maxRange, int cooldown, int startingUsesArg, int size, DamageType damageType) 
 		{
 		attackModifier = attack;
 		priorityModifier = priority;
 		damageModifier = damage;
 		maxRangeAspect = maxRange;
 		cooldownAspect = cooldown;
-		maxAmmoAspect = maxAmmo;
+		usesStarting = startingUsesArg;
 		sizeAspect = size;
 		damageTypeAspect = damageType;
 		}
@@ -183,22 +183,26 @@ public class Tactic
 		public ScriptCharacterSheet owner = null;
 		
 		//Crate
-		string crateLabel;
-		Color crateColor;
+		//string crateLabel;
+		//Color crateColor;
 		
 		//Stats
-		public ItemStatProfile netStatProfile = new ItemStatProfile();
+		public ItemStatProfile itemStatProfile = new ItemStatProfile();
 	
 		public DamageType damageType = DamageType.None;
 	
 		//Status
-		public int currentAmmo = -9999;
+		public int usesRemaining = -9999;
 		public bool isConcealed = false;
 		public int itemWaitTime = -9999;
 	
-		public Item (){
+		public Item (){}
+		public Item (string fullNameArg, ItemStatProfile itemStatProfileArg ){
 	    //itemID = nextItemID;
-		//fullName = fullNameArg;
+		fullName = fullNameArg;
+		itemStatProfile = itemStatProfileArg;
+		
+		
 	}
 	}
 /*
@@ -247,6 +251,7 @@ public class ScriptDatabase : MonoBehaviour {
 	};
 	
 	//Premade items
+	public Item debugItem = new Item("Debugger", new ItemStatProfile(99999, 99999, 99999, 99999, 99999, 99999, 99999, DamageType.Corrosive));
 	//Item unarmed = new Item();
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
@@ -302,7 +307,7 @@ public class ScriptDatabase : MonoBehaviour {
 		hotItem.fullName = hotItem.namePart0 + " " + hotItem.namePart1 + " " + hotItem.namePart2;
 		
 		//Fill clip
-		hotItem.currentAmmo = hotItem.netStatProfile.maxAmmoAspect;
+		hotItem.usesRemaining = hotItem.itemStatProfile.usesStarting;
 		
 		return hotItem;
 	}
@@ -338,18 +343,18 @@ public class ScriptDatabase : MonoBehaviour {
 		}
 		
 		//Add both profiles
-		hotItem.netStatProfile.attackModifier += hotAttribute.attributeProfile.attackModifier;
-		hotItem.netStatProfile.cooldownAspect += hotAttribute.attributeProfile.cooldownAspect;
-		hotItem.netStatProfile.damageModifier += hotAttribute.attributeProfile.damageModifier;
-		hotItem.netStatProfile.maxAmmoAspect += hotAttribute.attributeProfile.maxAmmoAspect;
-		hotItem.netStatProfile.maxRangeAspect += hotAttribute.attributeProfile.maxRangeAspect;
-		hotItem.netStatProfile.priorityModifier += hotAttribute.attributeProfile.priorityModifier;
-		hotItem.netStatProfile.sizeAspect = hotAttribute.attributeProfile.sizeAspect;
+		hotItem.itemStatProfile.attackModifier += hotAttribute.attributeProfile.attackModifier;
+		hotItem.itemStatProfile.cooldownAspect += hotAttribute.attributeProfile.cooldownAspect;
+		hotItem.itemStatProfile.damageModifier += hotAttribute.attributeProfile.damageModifier;
+		hotItem.itemStatProfile.usesStarting += hotAttribute.attributeProfile.usesStarting;
+		hotItem.itemStatProfile.maxRangeAspect += hotAttribute.attributeProfile.maxRangeAspect;
+		hotItem.itemStatProfile.priorityModifier += hotAttribute.attributeProfile.priorityModifier;
+		hotItem.itemStatProfile.sizeAspect = hotAttribute.attributeProfile.sizeAspect;
 		
 		//Overwrite current damage type if new one exists
 		if(hotAttribute.attributeProfile.damageTypeAspect != DamageType.None)
 		{
-		hotItem.netStatProfile.damageTypeAspect = hotAttribute.attributeProfile.damageTypeAspect;
+		hotItem.itemStatProfile.damageTypeAspect = hotAttribute.attributeProfile.damageTypeAspect;
 		}
 		
 		//Do something with actions

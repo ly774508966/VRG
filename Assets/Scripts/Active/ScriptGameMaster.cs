@@ -147,7 +147,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		
 		//Spawn a random character on the left and right spawnpoints and give a random item
-		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
+		//GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), scriptDatabase.debugItem);	
+
 		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());
 		
 		RolloverCycle();
@@ -379,7 +381,8 @@ public class ScriptGameMaster : MonoBehaviour {
 				ExecuteAction(activeCharacters[0]);
 				
 				//3. If more than one character and characters are tied for priority, both actions resolve before registering new states
-				if(activeCharacters.Count > 1 && GetCharacterPriority(activeCharacters[0]) == GetCharacterPriority(activeCharacters[1]))
+				//Warning: It seems like this will not work for more than one tied charcter
+				if(activeCharacters.Count > 1 && activeCharacters[0].readyPriority == activeCharacters[1].readyPriority)
 				{
 				ExecuteAction(activeCharacters[1]);	
 				}
@@ -594,7 +597,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Determine highest priority of remaining active characters
 			float maxPriority = 0.0F;
 			for(int i = 0; i < activeCharacters.Count; i++){
-			float currentPriority = GetCharacterPriority(activeCharacters[i]);
+			float currentPriority = activeCharacters[i].readyPriority;
 			if(currentPriority > maxPriority)
 				maxPriority = currentPriority;
 			}	
@@ -603,7 +606,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			bool findingNextCharacter = true;
 			int j = 0;
 			while(findingNextCharacter){	
-				if(GetCharacterPriority(activeCharacters[j]) == maxPriority){
+				if(activeCharacters[j].readyPriority == maxPriority){
 					tempList.Add (activeCharacters[j]);
 					findingNextCharacter = false;
 					activeCharacters.RemoveAt (j);
@@ -668,11 +671,11 @@ public class ScriptGameMaster : MonoBehaviour {
 			}
 			
 			//Update Equipment modifiers
-			hotSheet.netEquipmentAttack = hotSheet.activeItem.netStatProfile.attackModifier;
-			hotSheet.netEquipmentDamage = hotSheet.activeItem.netStatProfile.damageModifier;
+			hotSheet.netEquipmentAttack = hotSheet.activeItem.itemStatProfile.attackModifier;
+			hotSheet.netEquipmentDamage = hotSheet.activeItem.itemStatProfile.damageModifier;
 			//hotSheet.netEquipmentDefense = hotSheet.activeItem.netStatProfile.
-			hotSheet.netEquipmentPriority = hotSheet.activeItem.netStatProfile.priorityModifier;
-			hotSheet.netEquipmentRange = hotSheet.activeItem.netStatProfile.maxRangeAspect;
+			hotSheet.netEquipmentPriority = hotSheet.activeItem.itemStatProfile.priorityModifier;
+			hotSheet.netEquipmentRange = hotSheet.activeItem.itemStatProfile.maxRangeAspect;
 	
 			//Update Tactic modifiers --only works for first tactic at the moment
 			hotSheet.netTacticsAttack = hotSheet.activeTactics[0].modifierProfile.attack;
@@ -801,9 +804,9 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 	}
 	
-	int GetCharacterPriority(ScriptCharacterSheet hotSheet){
-		return hotSheet.nerve;
-	}
+	//int GetCharacterPriority(ScriptCharacterSheet hotSheet){
+	//	return hotSheet.nerve;
+	//}
 	
 	
 	//MODE TOGGLE

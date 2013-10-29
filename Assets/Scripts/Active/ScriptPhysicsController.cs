@@ -9,6 +9,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	public float wallThresholdVelocity = 1.0F;
 	public float headExplodeForce = 1000;
 	public float propelForce = 10000F;
+	public GameObject panelContainer;
 	
 	
 	//Local variables
@@ -22,8 +23,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
+	panelContainer = GameObject.Find ("ConPanel");
+		
 	//foreach(GameObject wall in GameObject.Find ("ObjectBreakableWall")){
-	RegisterAllPanels(GameObject.Find ("ContainerPanel"));
+	RegisterAllPanels(panelContainer);
 	//GameObject poorBastard = GameObject.Find ("ObjectCharacterModel");
 	//PropelChunk(poorBastard, propelForce);
 	
