@@ -203,12 +203,12 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotChar.transform.parent = conCharacter.transform;		
 			
 		//Assign left character as selected and right as opposing; assign position objective
-		if(spawnTransform == spawn00){
+		if(spawnTransform == spawn01){
 			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
-			selectedSheet = hotSheet;
-		} else if(spawnTransform == spawn01){		
+			opposingSheet = hotSheet;
+		} else if(spawnTransform == spawn00){		
 			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
-		opposingSheet = hotSheet;	
+		selectedSheet = hotSheet;	
 		} else {
 			Debug.Log ("Invalid spawn position");	
 			}
@@ -273,7 +273,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.nerve = GetRandom1ToN(10);
 		hotSheet.muscle = GetRandom1ToN(10);
 		hotSheet.baseAttack = GetRandom1ToN(10);
-		hotSheet.baseDefense = GetRandom1ToN(5);
+		hotSheet.baseDefense = GetRandom1ToN(10);
 		//hotSheet.unarmedRange = GetRandom1ToN(6);
 		
 		//Assign Tactics
@@ -347,11 +347,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Set new character spawn time
 		if(hotSheet.gameObject.transform.rotation.y == 0){
 			
-					spawn01Time = cycle + 3;
+					spawn00Time = cycle + 3;
 		} else
 		//if(hotSheet.gameObject.transform.rotation.y == 180)
 		{
-					spawn00Time = cycle + 3;
+					spawn01Time = cycle + 3;
 		}
 		//} else {
 		//Debug.Log ("Unexpected");	

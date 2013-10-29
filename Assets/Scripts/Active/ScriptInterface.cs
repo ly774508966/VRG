@@ -46,6 +46,7 @@ public class ScriptInterface : MonoBehaviour {
 			"\n Defense " + hotSheet.readyDefense.ToString() +
 			"\n Muscle " + hotSheet.muscle.ToString() +
 			"\n Range " + hotSheet.readyRange.ToString() +
+			"\n Damage " + hotSheet.readyDamage.ToString() +
 			//"\n Cooldown " + hotSheet.weaponCooldown.ToString() +
 			"\n Hit % " + hotSheet.currentHitChance.ToString() +
 			"\n Item: " + hotSheet.activeItem.fullName;
