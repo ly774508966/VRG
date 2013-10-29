@@ -46,7 +46,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public float damageDisplayDepth = -1;
 	
 	//Characters
-	public GameObject characterTemplate;
+	public GameObject characterGameObjectTemplate;
 	public List<ScriptCharacterSheet> charactersInPlay = new List<ScriptCharacterSheet>();
 	public int nextCharacterID = 0;
 	public List<ScriptCharacterSheet> activeCharacters = new List<ScriptCharacterSheet>();
@@ -148,7 +148,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Spawn a random character on the left and right spawnpoints and give a random item
 		//GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
-		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), scriptDatabase.debugItem);	
+		//GiveCharacterItem(
+			RegisterCharacter(SetCharacterValues(NewCharacter(spawn00), scriptDatabase.coppermouth));
+		//scriptDatabase.debugItem);	
 
 		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());
 		
@@ -198,7 +200,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	ScriptCharacterSheet NewCharacter(Transform spawnTransform){
 	
 		//Create character at spawn point
-			GameObject hotChar = Instantiate(characterTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
+			GameObject hotChar = Instantiate(characterGameObjectTemplate, spawnTransform.position, spawnTransform.rotation) as GameObject;
 			ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
 			
 			//Place in character container
@@ -225,8 +227,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.characterID = nextCharacterID;
 		nextCharacterID += 1;
 		charactersInPlay.Add (hotSheet);
-		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName + hotSheet.lastName;
-		hotSheet.fullName = hotSheet.stringID;
+		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.fullName;
+		//hotSheet.fullName = hotSheet.stringID;
 		
 		//Assign object character name
 		hotSheet.gameObject.name = hotSheet.stringID;
@@ -243,10 +245,15 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.rightArmHP = 4;
 		hotSheet.leftLegHP = 5;
 		hotSheet.rightLegHP = 5;
-		hotSheet.unarmedDamage = hotSheet.muscle / 2;
+		hotSheet.unarmedDamage = hotSheet.baseMuscle / 2;
+		
+		//Set as unarmed
+		hotSheet.activeItem = scriptDatabase.unarmed;
 		
 		//Set Tactics
 		hotSheet.activeTactics.Add(scriptDatabase.tacticsLookup["Basic Shot"]);
+		
+		
 	
 		return hotSheet;
 	}
@@ -257,25 +264,31 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	ScriptCharacterSheet RandomizeCharacterValues(ScriptCharacterSheet hotSheet){
-		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
 		
 		//Set name and update game object
 		hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
 		hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
 		hotSheet.fullName = hotSheet.firstName+ " " + hotSheet.lastName;
-		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName.ToString() + hotSheet.lastName.ToString();
-		hotSheet.name = hotSheet.stringID;
+		//hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.firstName.ToString() + hotSheet.lastName.ToString();
+		//hotSheet.name = hotSheet.stringID;
 		
 		//Assign Colors
 		hotSheet.primaryColor = GetRandomColor();
 		hotSheet.secondaryColor = GetRandomColor();
 		
 		//Assign Stats
-		hotSheet.meat = GetRandom1ToN(10);
-		hotSheet.nerve = GetRandom1ToN(10);
-		hotSheet.muscle = GetRandom1ToN(10);
-		hotSheet.baseAttack = GetRandom1ToN(10);
-		hotSheet.baseDefense = GetRandom1ToN(10);
+		hotSheet.baseToughness = GetRandom1ToN(10);
+		hotSheet.currentFocus = GetRandom1ToN(10);
+		hotSheet.baseMuscle = GetRandom1ToN(10);
+		hotSheet.baseBrawl = GetRandom1ToN(10);
+		hotSheet.baseMelee = GetRandom1ToN(10);
+		hotSheet.baseShot = GetRandom1ToN(10);
+		hotSheet.baseEvasion = GetRandom1ToN(10);
+		hotSheet.baseIntelligence = GetRandom1ToN(10);
+		hotSheet.basePresence = GetRandom1ToN(10);
+		/*
+		//hotSheet.baseAttack = GetRandom1ToN(10);
+		//hotSheet.baseDefense = GetRandom1ToN(10);
 		//hotSheet.unarmedRange = GetRandom1ToN(6);
 		
 		//Assign Tactics
@@ -297,9 +310,37 @@ public class ScriptGameMaster : MonoBehaviour {
 		//hotSheet.weaponCooldown = GetRandom1ToN(3);
 		//hotSheet.weaponRange = 1;
 		//resistance
-		
+		*/
 		return hotSheet;
 		
+	}
+	
+	ScriptCharacterSheet SetCharacterValues (ScriptCharacterSheet hotSheet, CharacterTemplate hotTemplate)
+	{
+		//Set name and update game object
+		//hotSheet.firstName = firstNames[(int)Mathf.Floor(Random.value*firstNames.Count)];
+		//hotSheet.lastName = lastNames[(int)Mathf.Floor(Random.value*lastNames.Count)];
+		hotSheet.fullName = hotTemplate.fullName;
+		hotSheet.stringID = hotSheet.characterID.ToString() + hotSheet.fullName;
+		hotSheet.name = hotSheet.stringID;
+		
+		//Assign Colors
+		hotSheet.primaryColor = hotTemplate.primaryColor;
+		hotSheet.secondaryColor = hotTemplate.secondaryColor;
+		hotSheet.skinColor = hotTemplate.skinColor;
+		
+		//Assign Stats
+		hotSheet.baseToughness = hotTemplate.characterStatProfile.toughness;
+		hotSheet.currentFocus = hotTemplate.characterStatProfile.focus;
+		hotSheet.baseMuscle = hotTemplate.characterStatProfile.muscle;
+		hotSheet.baseBrawl = hotTemplate.characterStatProfile.brawl;
+		hotSheet.baseMelee = hotTemplate.characterStatProfile.muscle;
+		hotSheet.baseShot = hotTemplate.characterStatProfile.shot;
+		hotSheet.baseEvasion = hotTemplate.characterStatProfile.evasion;
+		hotSheet.baseIntelligence = hotTemplate.characterStatProfile.intelligence;
+		hotSheet.basePresence = hotTemplate.characterStatProfile.presence;
+
+		return hotSheet;
 	}
 	
 	int GetCharactersInPlayIndex(ScriptCharacterSheet hotSheet){
@@ -434,7 +475,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				if(result.success)
 				{
 					//Reduce health
-					targetSheet.meat -= result.damageAmount;
+					targetSheet.baseToughness -= result.damageAmount;
 
 					/*scriptInterface.SendMessage("AddNewLine",hotSheet.fullName
 				+ " deals " + result.damageAmount.ToString() + " damage to "+ targetSheet.fullName
@@ -630,7 +671,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Debug.Log (charactersInPlay[1].GetComponent<ScriptCharacterSheet>().characterID + "charactercleanup");
 			ScriptCharacterSheet hotSheet = tempCharactersInPlay[i].GetComponent<ScriptCharacterSheet>();
 			//Debug.Log(hotSheet.characterID + " has health of " + hotSheet.health.ToString());
-			if(hotSheet.meat <= 0){
+			if(hotSheet.baseToughness <= 0){
 				KillCharacter(hotSheet);
 
 			}
@@ -676,29 +717,56 @@ public class ScriptGameMaster : MonoBehaviour {
 			//hotSheet.netEquipmentDefense = hotSheet.activeItem.netStatProfile.
 			hotSheet.netEquipmentPriority = hotSheet.activeItem.itemStatProfile.priorityModifier;
 			hotSheet.netEquipmentRange = hotSheet.activeItem.itemStatProfile.maxRangeAspect;
-	
+		
+
+			
 			//Update Tactic modifiers --only works for first tactic at the moment
-			hotSheet.netTacticsAttack = hotSheet.activeTactics[0].modifierProfile.attack;
-			hotSheet.netTacticsDamage = hotSheet.activeTactics[0].modifierProfile.damage;
-			hotSheet.netTacticsDefense = hotSheet.activeTactics[0].modifierProfile.defense;
-			hotSheet.netTacticsPriority = hotSheet.activeTactics[0].modifierProfile.priority;
-			hotSheet.netTacticsRange = hotSheet.activeTactics[0].modifierProfile.maxRange;
+			hotSheet.netTacticsAttack = hotSheet.activeTactics[0].tacticStatProfile.attack;
+			hotSheet.netTacticsDamage = hotSheet.activeTactics[0].tacticStatProfile.damage;
+			hotSheet.netTacticsDefense = hotSheet.activeTactics[0].tacticStatProfile.defense;
+			hotSheet.netTacticsPriority = hotSheet.activeTactics[0].tacticStatProfile.priority;
+			hotSheet.netTacticsRange = hotSheet.activeTactics[0].tacticStatProfile.maxRange;
 			
 			//Update ready stats
-			hotSheet.readyAttack = hotSheet.baseAttack + hotSheet.netEquipmentAttack + hotSheet.netTacticsAttack;		
-			hotSheet.readyDefense = hotSheet.baseDefense + hotSheet.netTacticsDefense;
-			hotSheet.readyPriority = hotSheet.nerve + hotSheet.netEquipmentPriority + hotSheet.netTacticsPriority;
-			if(hotSheet.activeItem == null)
+			
+				//Update ready attack
+			int baseAttack;
+			switch(hotSheet.activeItem.attackType)
 			{
-					hotSheet.readyDamage = hotSheet.unarmedDamage;
-					hotSheet.readyRange = hotSheet.unarmedRange;
+			case AttackType.Brawl:
+				baseAttack = hotSheet.baseBrawl;
+				break;
+			case AttackType.Melee:
+				baseAttack = hotSheet.baseMelee;
+				break;
+			case AttackType.Shot:
+				baseAttack = hotSheet.baseShot;
+				break;
+			default:
+				Debug.Log ("Invalid Attack Type " + hotSheet.activeItem.attackType.ToString());
+				baseAttack = -9999;
+				break;
+			}
+			
+			hotSheet.readyAttack = baseAttack + hotSheet.netEquipmentAttack + hotSheet.netTacticsAttack;		
+			hotSheet.readyDefense = hotSheet.baseEvasion + hotSheet.netTacticsDefense;
+			hotSheet.readyPriority = hotSheet.currentFocus + hotSheet.netEquipmentPriority + hotSheet.netTacticsPriority;
+			hotSheet.readyRange = hotSheet.netEquipmentRange + hotSheet.netTacticsRange;
+			
+			//Add muscle only if close combat
+			if(hotSheet.activeItem.attackType == AttackType.Shot)
+			{
+			hotSheet.readyDamage = hotSheet.netEquipmentDamage + hotSheet.netTacticsDamage;
+			} 
+			else if(hotSheet.activeItem.attackType == AttackType.Brawl || hotSheet.activeItem.attackType == AttackType.Melee)
+			{
+				hotSheet.readyDamage = hotSheet.baseMuscle + hotSheet.netEquipmentDamage + hotSheet.netTacticsDamage;
 			}
 			else
 			{
-				hotSheet.readyDamage = hotSheet.netEquipmentDamage + hotSheet.netTacticsDamage;
-				hotSheet.readyRange = hotSheet.netEquipmentRange + hotSheet.netTacticsRange;
+				Debug.Log ("Invalid Attack Type: " + hotSheet.activeItem.attackType);
 			}
-		//Update currentHitChance
+			//Update currentHitChance
 			
 		}
 		
@@ -942,7 +1010,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			result.success = true;
 			//result.hitLocation = GetHitLocation();
 			result.damageAmount = actingCharacter.readyDamage;
-			result.damageType = DamageType.Kinetic;
+			//result.damageType = DamageType.Kinetic;
 		}
 		else
 		{

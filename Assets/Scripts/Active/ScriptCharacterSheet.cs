@@ -39,11 +39,18 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//Base/ innate stats
 	
-	public int meat = -9999;
-	public int nerve = -9999;
-	public int baseAttack = -9999;
-	public int baseDefense = -9999;
-	public int muscle = -9999;
+	public int baseToughness = -9999;
+	public int currentFocus = -9999;
+	
+	//public int baseAttack = -9999;
+	//public int baseDefense = -9999;
+	public int baseEvasion = -9999;
+	public int baseMuscle = -9999;
+	public int baseIntelligence = -9999;
+	public int basePresence = -9999;
+	public int baseBrawl = -9999;
+	public int baseMelee = -9999;
+	public int baseShot = -9999;
 	
 	//Second-Order Stats
 	public int unarmedDamage = -9999;
@@ -55,16 +62,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int rightArmHP = -9999;
 	public int leftLegHP = -9999;
 	public int rightLegHP = -9999;
-	
-	//Constant Stats
-	
-	public int unarmedRange = 1;
-	
-	//public int baseBrains = -9999;
-	//public int basePresence = -9999;
-	
-	//public int melee = -9999; OLD
-	
+
 	//Updated, useable stats
 	
 	public int readyAttack;
@@ -75,10 +73,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int readyRange;
 	
 	public float currentHitChance;
-	
-	//public int readyBrains = -9999;
-	//public int readyFace
-	
 	
 	//Items
 	public Item activeItem = null;

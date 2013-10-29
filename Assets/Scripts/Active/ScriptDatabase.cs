@@ -2,18 +2,22 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//Enums
 
-//Damage
+
 public enum DamageType 
 {
 	None,
-	Kinetic,
-	Thermal,
+	Piercing,
+	Slashing,
+	Bludgeoning,
+	Burning,
 	Sonic,
-	Corrosive
+	Corrosive,
+	Electrical,
+	Disintegrating
 }
 
-//Body parts
 public enum BodyPart 
 {
 	None,
@@ -33,14 +37,6 @@ public enum AttributeType
 	Purpose
 }
 
-//public enum TacticName
-//{
-//	BasicShot,
-//	QuickShot,
-//	CalledShot,
-//	SteadyShot
-//}
-
 public enum TacticType
 {
 	Action,
@@ -49,22 +45,122 @@ public enum TacticType
 	Style
 }
 
-//public enum Size
-//{
-//	None, //Initialization value
-//	Tiny, //Can carry infinite, concealable
-//	Small, //Can carry a few(?), concealable
-//	Large, //Can carry one, not concealable
-//	Huge //Can carry one, must be equipped to carry
-//}
+public enum AttackType
+{
+	None,
+	Brawl,
+	Melee,
+	Shot
+}
 
-//public enum ItemStat
-//{
-//	AttackBonus,
-//	PriorityBonus,
-//	Damage,
-//	
-//}
+//Character classes
+
+public class CharacterTemplate
+{
+	public string fullName;
+	public CharacterStatProfile characterStatProfile;
+	public Color primaryColor;
+	public Color secondaryColor;
+	public Color skinColor;
+	
+	public CharacterTemplate (string fullNameArg, Color primaryColorArg, Color secondaryColorArg, Color skinColorArg, CharacterStatProfile characterStatProfileArg)
+	{
+	fullName = fullNameArg;
+	primaryColor = primaryColorArg;
+	secondaryColor = secondaryColorArg;
+	skinColor = skinColorArg;
+	characterStatProfile = characterStatProfileArg;
+	}
+
+}
+
+[System.Serializable]
+public class CharacterStatProfile
+{
+	//public int meat = -9999;
+	//public int nerve = -9999;
+	public int focus = -9999; 
+	public int brawl = -9999;
+	public int melee = -9999;
+	public int shot = -9999;
+	public int evasion = -9999;
+	public int toughness = -9999;
+	public int muscle = -9999;
+	public int intelligence = -9999;
+	public int presence = -9999;
+	
+	public int damage = -9999; 
+	public int maxRange = -9999; 
+	//public float currentHitChance = -9999;
+	public DamageType damageType = DamageType.None; 
+	
+	//Second-Order Stats
+	//public int headHP = -9999;
+	//public int bodyHP = -9999;
+	//public int leftArmHP = -9999;
+	//public int rightArmHP = -9999;
+	//public int leftLegHP = -9999;
+	//public int rightLegHP = -9999;
+	
+	public CharacterStatProfile(){}
+	
+	public CharacterStatProfile ( int focusArg, int brawlArg, int meleeArg, int shotArg, int evasionArg, 
+		int toughnessArg, int muscleArg, int intelligenceArg, int presenceArg) 
+		{
+		//nerve = nerveArg;
+		focus = focusArg;
+		brawl = brawlArg;
+		melee = meleeArg;
+		shot = shotArg;
+		evasion = evasionArg;
+		toughness = toughnessArg;
+		muscle = muscleArg;
+		intelligence = intelligenceArg;
+		presence = presenceArg;
+		
+		//damage = damageArg;
+		//maxRange = maxRangeArg;
+		//currentHitChance = currentHitChaceArg;
+		//damageType = damageTypeArg;
+		}
+} 
+
+//Item classes
+	[System.Serializable]
+	public class Item
+	{
+		
+		public string fullName;
+		public int itemID = -9999;
+		public string namePart0 = "";
+		public string namePart1 = "";
+		public string namePart2 = "";
+		
+		public ScriptCharacterSheet owner = null;
+		
+		//Crate
+		//string crateLabel;
+		//Color crateColor;
+		
+		//Stats
+		public AttackType attackType;
+		public ItemStatProfile itemStatProfile = new ItemStatProfile();
+	
+		//public DamageType damageType = DamageType.None;
+	
+		//Status
+		public int usesRemaining = -9999;
+		public bool isConcealed = false;
+		public int itemWaitTime = -9999;
+	
+		public Item (){}
+		public Item (string fullNameArg, AttackType attackTypeArg, ItemStatProfile itemStatProfileArg ){
+	    //itemID = nextItemID;
+		fullName = fullNameArg;
+		attackType = attackTypeArg;
+		itemStatProfile = itemStatProfileArg;	
+		}
+	}
 
 [System.Serializable]
 public class ItemStatProfile
@@ -93,70 +189,12 @@ public class ItemStatProfile
 		}
 	}
 
-[System.Serializable]
-public class CharacterStatProfile
-{
-	//public int meat = -9999;
-	//public int nerve = -9999;
-	public int attack = -9999; 
-	public int defense = -9999;
-	public int priority = -9999; 
-	//public int readyMuscle = -9999;
-	public int damage = -9999; 
-	public int maxRange = -9999; 
-	//public float currentHitChance = -9999;
-	public DamageType damageType = DamageType.None; 
-	
-	//Second-Order Stats
-	//public int headHP = -9999;
-	//public int bodyHP = -9999;
-	//public int leftArmHP = -9999;
-	//public int rightArmHP = -9999;
-	//public int leftLegHP = -9999;
-	//public int rightLegHP = -9999;
-	
-	public CharacterStatProfile ( int attackArg, int defenseArg, int priorityArg, 
-		int damageArg, int maxRangeArg, DamageType damageTypeArg) 
-		{
-		
-		//nerve = nerveArg;
-		attack = attackArg;
-		defense = defenseArg;
-		priority = priorityArg;
-		damage = damageArg;
-		maxRange = maxRangeArg;
-		//currentHitChance = currentHitChaceArg;
-		damageType = damageTypeArg;
-		
-		}
-	
-	public CharacterStatProfile(){}
-	
-	} 
-	
-[System.Serializable]
-public class Tactic
-{
-	//public TacticName tacticName;
-	public string stringName;
-	public TacticType tacticType;
-	public CharacterStatProfile modifierProfile;
-
-	public Tactic (string stringNameArg, TacticType tacticTypeArg, CharacterStatProfile modifierProfileArg)
+public class Attribute
 	{
-		//tacticName = tacticNameArg;
-		stringName = stringNameArg;
-		tacticType = tacticTypeArg;
-		modifierProfile = modifierProfileArg;
-	}	
-}
-		
-		
-		public class Attribute
-	{
-		public string attributeName = name;
+		public string attributeName;
 		//AttributeType attributeType = type;
-		public ItemStatProfile attributeProfile = profile;
+		public AttackType attackType = AttackType.None;
+		public ItemStatProfile attributeProfile;
 		//public DamageType damageType = DamageType.None; //Overrides damage type
 		public Tactic[] basicActions;
 		//Effect[] effects;
@@ -169,42 +207,59 @@ public class Tactic
 		attributeProfile = profile;
 		//damageType = DamageType.None; //Overrides damage type
 	}
-}
-	[System.Serializable]
-	public class Item
+	
+			public Attribute (string attributeNameArg, AttackType attackTypeArg, ItemStatProfile itemStatProfileArg)
 	{
 		
-		public string fullName;
-		public int itemID = -9999;
-		public string namePart0 = "";
-		public string namePart1 = "";
-		public string namePart2 = "";
-		
-		public ScriptCharacterSheet owner = null;
-		
-		//Crate
-		//string crateLabel;
-		//Color crateColor;
-		
-		//Stats
-		public ItemStatProfile itemStatProfile = new ItemStatProfile();
-	
-		public DamageType damageType = DamageType.None;
-	
-		//Status
-		public int usesRemaining = -9999;
-		public bool isConcealed = false;
-		public int itemWaitTime = -9999;
-	
-		public Item (){}
-		public Item (string fullNameArg, ItemStatProfile itemStatProfileArg ){
-	    //itemID = nextItemID;
-		fullName = fullNameArg;
-		itemStatProfile = itemStatProfileArg;
-		
-		
+		attributeName = attributeNameArg;
+		//AttributeType attributeType = type;
+		attackType = attackTypeArg;
+		attributeProfile = itemStatProfileArg;
+		//damageType = DamageType.None; //Overrides damage type
 	}
+}
+
+	//Tactic classes
+[System.Serializable]
+public class Tactic
+{
+	//public TacticName tacticName;
+	public string stringName;
+	public TacticType tacticType;
+	public TacticStatProfile tacticStatProfile;
+
+	public Tactic (string stringNameArg, TacticType tacticTypeArg, TacticStatProfile tacticStatProfileArg)
+	{
+		//tacticName = tacticNameArg;
+		stringName = stringNameArg;
+		tacticType = tacticTypeArg;
+		tacticStatProfile = tacticStatProfileArg;
+	}	
+}
+
+[System.Serializable]
+public class TacticStatProfile
+{
+	public int attack = -9999; //Additive- Add to base attack and attack from tactics
+	public int defense = -9999;
+	public int priority = -9999; //Additive- Add to focus
+	public int damage = -9999; //Additive- Add to muscle for certain weapons and damage from tactics
+	public int maxRange = -9999; //Native- Primitive/ overrides other
+	public int cooldown = -9999; //Native
+
+	
+	public TacticStatProfile(){}
+	
+	public TacticStatProfile (int attackArg, int defenseArg, int priorityArg, int damageArg, int maxRangeArg, int cooldownArg) 
+	{
+		attack = attackArg;
+		defense = defenseArg;
+		priority = priorityArg;
+		damage = damageArg;
+		maxRange = maxRangeArg;
+		cooldown = cooldownArg;
 	}
+}
 /*
 public class Statshot
 {
@@ -227,14 +282,14 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	//Attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
-		new Attribute("Pistol", new ItemStatProfile(0, 1, 4, 10, 0, 8, 1, DamageType.Kinetic)),
-		new Attribute("Shotgun", new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Kinetic)),
-		new Attribute("Machine Gun", new ItemStatProfile(2, 2, 6, 8, 1, 3, 3, DamageType.Kinetic))
+		new Attribute("Pistol", AttackType.Shot, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1, DamageType.Piercing)),
+		new Attribute("Shotgun", AttackType.Shot, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Piercing)),
+		new Attribute("Machine Gun", AttackType.Shot, new ItemStatProfile(2, 2, 6, 8, 1, 3, 3, DamageType.Piercing))
 	};
 	
 	Attribute[] powerAttributes = new Attribute[]{
-		new Attribute("Gauss", new ItemStatProfile(0, 0, 2, 2, 1, 0, 0, DamageType.Kinetic)),
-		new Attribute("Powder", new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0, DamageType.Kinetic)),
+		new Attribute("Gauss", new ItemStatProfile(0, 0, 2, 2, 1, 0, 0, DamageType.Piercing)),
+		new Attribute("Powder", new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0, DamageType.Piercing)),
 		new Attribute("Sonic", new ItemStatProfile(3, -2, 4, 4, 3, 3, 1, DamageType.Sonic))
 	};
 	
@@ -245,14 +300,19 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	//Tactic records
 	public Dictionary<string, Tactic> tacticsLookup = new Dictionary<string, Tactic>(){
-		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile(0, 0, 0, 0, 0, DamageType.None))},
-		{"Wild Shot", new Tactic("Wild Shot", TacticType.Action, new CharacterStatProfile(-2, 0, 3, 0, 0, DamageType.None))}	
+		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new TacticStatProfile(0, 0, 0, 0, 0, 0))}
+		//,
+		//{"Wild Shot", new Tactic("Wild Shot", TacticType.Action, new CharacterStatProfile(-2, 0, 3, 0, 0, DamageType.None))}	
 
 	};
 	
 	//Premade items
-	public Item debugItem = new Item("Debugger", new ItemStatProfile(99999, 99999, 99999, 99999, 99999, 99999, 99999, DamageType.Corrosive));
-	//Item unarmed = new Item();
+	public Item debugItem = new Item("Debugger", AttackType.Brawl, new ItemStatProfile(99999, 99999, 99999, 99999, 99999, 99999, 99999, DamageType.Corrosive));
+	public Item unarmed = new Item("Unarmed", AttackType.Brawl, new ItemStatProfile(0, 0, 0, 1, 0, 0, 0, DamageType.Bludgeoning));
+	
+	//Premade characters
+	//public CharacterTemplate coppermouth = new CharacterTemplate("Coppermouth", new CharacterStatProfile(
+	public CharacterTemplate coppermouth = new CharacterTemplate("Coppermouth", Color.green, Color.yellow, Color.white, new CharacterStatProfile(10, 10, 8, 4, 10, 7, 5, 8, 4));
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
@@ -357,7 +417,12 @@ public class ScriptDatabase : MonoBehaviour {
 		hotItem.itemStatProfile.damageTypeAspect = hotAttribute.attributeProfile.damageTypeAspect;
 		}
 		
-		//Do something with actions
+		//Overwrite attack type if new one exists
+		if(hotAttribute.attackType != AttackType.None)
+		{
+		hotItem.attackType = hotAttribute.attackType;
+		}
+		
 		
 		return hotItem;
 	}
