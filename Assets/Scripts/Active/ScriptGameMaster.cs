@@ -1010,7 +1010,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			result.success = true;
 			//result.hitLocation = GetHitLocation();
 			result.damageAmount = actingCharacter.readyDamage;
-			//result.damageType = DamageType.Kinetic;
+			result.damageType = actingCharacter.activeItem.damageType;
 		}
 		else
 		{

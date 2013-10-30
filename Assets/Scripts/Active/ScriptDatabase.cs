@@ -144,9 +144,10 @@ public class CharacterStatProfile
 		
 		//Stats
 		public AttackType attackType;
+		public DamageType damageType = DamageType.None;
 		public ItemStatProfile itemStatProfile = new ItemStatProfile();
 	
-		//public DamageType damageType = DamageType.None;
+		
 	
 		//Status
 		public int usesRemaining = -9999;
@@ -176,7 +177,7 @@ public class ItemStatProfile
 	
 	public ItemStatProfile(){}
 	
-	public ItemStatProfile (int attack, int priority, int damage, int maxRange, int cooldown, int startingUsesArg, int size, DamageType damageType) 
+	public ItemStatProfile (int attack, int priority, int damage, int maxRange, int cooldown, int startingUsesArg, int size) 
 		{
 		attackModifier = attack;
 		priorityModifier = priority;
@@ -185,7 +186,7 @@ public class ItemStatProfile
 		cooldownAspect = cooldown;
 		usesStarting = startingUsesArg;
 		sizeAspect = size;
-		damageTypeAspect = damageType;
+		//damageTypeAspect = damageType;
 		}
 	}
 
@@ -194,6 +195,7 @@ public class Attribute
 		public string attributeName;
 		//AttributeType attributeType = type;
 		public AttackType attackType = AttackType.None;
+		public DamageType damageType = DamageType.None;
 		public ItemStatProfile attributeProfile;
 		//public DamageType damageType = DamageType.None; //Overrides damage type
 		public Tactic[] basicActions;
@@ -208,12 +210,13 @@ public class Attribute
 		//damageType = DamageType.None; //Overrides damage type
 	}
 	
-			public Attribute (string attributeNameArg, AttackType attackTypeArg, ItemStatProfile itemStatProfileArg)
+			public Attribute (string attributeNameArg, AttackType attackTypeArg, DamageType damageTypeArg, ItemStatProfile itemStatProfileArg)
 	{
 		
 		attributeName = attributeNameArg;
 		//AttributeType attributeType = type;
 		attackType = attackTypeArg;
+		damageType = damageTypeArg;
 		attributeProfile = itemStatProfileArg;
 		//damageType = DamageType.None; //Overrides damage type
 	}
@@ -282,20 +285,20 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	//Attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
-		new Attribute("Pistol", AttackType.Shot, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1, DamageType.Piercing)),
-		new Attribute("Shotgun", AttackType.Shot, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2, DamageType.Piercing)),
-		new Attribute("Machine Gun", AttackType.Shot, new ItemStatProfile(2, 2, 6, 8, 1, 3, 3, DamageType.Piercing))
+		new Attribute("Pistol", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1)),
+		new Attribute("Shotgun", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2)),
+		new Attribute("Machine Gun", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(2, 2, 6, 8, 1, 3, 3))
 	};
 	
 	Attribute[] powerAttributes = new Attribute[]{
-		new Attribute("Gauss", new ItemStatProfile(0, 0, 2, 2, 1, 0, 0, DamageType.Piercing)),
-		new Attribute("Powder", new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0, DamageType.Piercing)),
-		new Attribute("Sonic", new ItemStatProfile(3, -2, 4, 4, 3, 3, 1, DamageType.Sonic))
+		new Attribute("Gauss", DamageType.Piercing, new ItemStatProfile(0, 0, 2, 2, 1, 0, 0)),
+		new Attribute("Powder", DamageType.Piercing, new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0)),
+		new Attribute("Sonic", DamageType.Sonic, new ItemStatProfile(3, -2, 4, 4, 3, 3, 1))
 	};
 	
 	Attribute[] qualityAttributes = new Attribute[]{
-		new Attribute("Overclocked", new ItemStatProfile(0, 0, 2, 0, 1, 0, 0, DamageType.None)),
-		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0, DamageType.None))
+		new Attribute("Overclocked", DamageType.Piercing, new ItemStatProfile(0, 0, 2, 0, 1, 0, 0)),
+		new Attribute("Crummy", DamageType.Piercing, new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0))
 	};
 	
 	//Tactic records

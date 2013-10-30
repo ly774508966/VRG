@@ -84,13 +84,6 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public int netEquipmentPriority = -9999;
 	public int netEquipmentDamage = -9999;
 	public int netEquipmentRange = -9999;
-	
-	//public int damage = -9999;
-	//public float weaponRange = -9999;
-	//public int weaponCooldown = -9999;
-	//public int precision = -9999;
-	//public DamageType damageType = DamageType.None; 
-	//public int speed = -9999;
 
 	//Status Effects
 	//public List<StatusEffect> statusEffects = new List<StatusEffect>();
