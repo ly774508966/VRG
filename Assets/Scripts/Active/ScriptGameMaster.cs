@@ -208,10 +208,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 		//Assign left character as selected and right as opposing; assign position objective
 		if(spawnTransform == spawn01){
-			hotSheet.positionObjective = new Vector3(-1.75F, hotChar.transform.position.y, hotChar.transform.position.z);
+			hotSheet.positionObjective = new Vector3(-3.75F, hotChar.transform.position.y, hotChar.transform.position.z);
 			opposingSheet = hotSheet;
 		} else if(spawnTransform == spawn00){		
-			hotSheet.positionObjective = new Vector3(-3.25F, hotChar.transform.position.y, hotChar.transform.position.z);
+			hotSheet.positionObjective = new Vector3(-5.25F, hotChar.transform.position.y, hotChar.transform.position.z);
 		selectedSheet = hotSheet;	
 		} else {
 			Debug.Log ("Invalid spawn position");	
@@ -555,6 +555,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			result.targetCharacter.fullName + 
 			" for " + 
 			result.damageAmount.ToString() +
+			" " +
 			result.damageType +
 			" damage.";	
 		}

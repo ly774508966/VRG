@@ -129,7 +129,7 @@ public class CharacterStatProfile
 	[System.Serializable]
 	public class Item
 	{
-		
+		//Name
 		public string fullName;
 		public int itemID = -9999;
 		public string namePart0 = "";
@@ -147,18 +147,17 @@ public class CharacterStatProfile
 		public DamageType damageType = DamageType.None;
 		public ItemStatProfile itemStatProfile = new ItemStatProfile();
 	
-		
-	
 		//Status
 		public int usesRemaining = -9999;
 		public bool isConcealed = false;
 		public int itemWaitTime = -9999;
 	
 		public Item (){}
-		public Item (string fullNameArg, AttackType attackTypeArg, ItemStatProfile itemStatProfileArg ){
+		public Item (string fullNameArg, AttackType attackTypeArg, DamageType damageTypeArg, ItemStatProfile itemStatProfileArg ){
 	    //itemID = nextItemID;
 		fullName = fullNameArg;
 		attackType = attackTypeArg;
+		damageType = damageTypeArg;
 		itemStatProfile = itemStatProfileArg;	
 		}
 	}
@@ -173,7 +172,7 @@ public class ItemStatProfile
 	public int cooldownAspect = 0; //Native
 	public int usesStarting = 0; //Native
 	public int sizeAspect = 0; //Native - 0: Tiny, 1: Small, 2: Large, 3: Huge
-	public DamageType damageTypeAspect = DamageType.None; //Native
+	//public DamageType damageTypeAspect = DamageType.None; //Native
 	
 	public ItemStatProfile(){}
 	
@@ -285,20 +284,20 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	//Attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
-		new Attribute("Pistol", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1)),
-		new Attribute("Shotgun", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2)),
-		new Attribute("Machine Gun", AttackType.Shot, DamageType.Piercing, new ItemStatProfile(2, 2, 6, 8, 1, 3, 3))
+		new Attribute("Pistol", AttackType.Shot, DamageType.None, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1)),
+		new Attribute("Shotgun", AttackType.Shot, DamageType.None, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2)),
+		new Attribute("Machine Gun", AttackType.Shot, DamageType.None, new ItemStatProfile(2, 2, 6, 8, 1, 3, 3))
 	};
 	
 	Attribute[] powerAttributes = new Attribute[]{
-		new Attribute("Gauss", DamageType.Piercing, new ItemStatProfile(0, 0, 2, 2, 1, 0, 0)),
-		new Attribute("Powder", DamageType.Piercing, new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0)),
-		new Attribute("Sonic", DamageType.Sonic, new ItemStatProfile(3, -2, 4, 4, 3, 3, 1))
+		new Attribute("Gauss", AttackType.None, DamageType.Piercing, new ItemStatProfile(0, 0, 2, 2, 1, 0, 0)),
+		new Attribute("Powder", AttackType.None, DamageType.Piercing, new ItemStatProfile(-1, 0, 0, -2, 0, 0, 0)),
+		new Attribute("Sonic", AttackType.None, DamageType.Sonic, new ItemStatProfile(3, -2, 4, 4, 3, 3, 1))
 	};
 	
 	Attribute[] qualityAttributes = new Attribute[]{
-		new Attribute("Overclocked", DamageType.Piercing, new ItemStatProfile(0, 0, 2, 0, 1, 0, 0)),
-		new Attribute("Crummy", DamageType.Piercing, new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0))
+		new Attribute("Overclocked", new ItemStatProfile(0, 0, 2, 0, 1, 0, 0)),
+		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0))
 	};
 	
 	//Tactic records
@@ -310,8 +309,8 @@ public class ScriptDatabase : MonoBehaviour {
 	};
 	
 	//Premade items
-	public Item debugItem = new Item("Debugger", AttackType.Brawl, new ItemStatProfile(99999, 99999, 99999, 99999, 99999, 99999, 99999, DamageType.Corrosive));
-	public Item unarmed = new Item("Unarmed", AttackType.Brawl, new ItemStatProfile(0, 0, 0, 1, 0, 0, 0, DamageType.Bludgeoning));
+	public Item debugItem = new Item("Debugger", AttackType.Brawl, DamageType.Corrosive, new ItemStatProfile(99999, 99999, 99999, 99999, 99999, 99999, 99999));
+	public Item unarmed = new Item("Unarmed", AttackType.Brawl, DamageType.Bludgeoning, new ItemStatProfile(0, 0, 0, 1, 0, 0, 0));
 	
 	//Premade characters
 	//public CharacterTemplate coppermouth = new CharacterTemplate("Coppermouth", new CharacterStatProfile(
@@ -415,10 +414,11 @@ public class ScriptDatabase : MonoBehaviour {
 		hotItem.itemStatProfile.sizeAspect = hotAttribute.attributeProfile.sizeAspect;
 		
 		//Overwrite current damage type if new one exists
-		if(hotAttribute.attributeProfile.damageTypeAspect != DamageType.None)
+		if(hotAttribute.damageType != DamageType.None)
 		{
-		hotItem.itemStatProfile.damageTypeAspect = hotAttribute.attributeProfile.damageTypeAspect;
+		hotItem.damageType = hotAttribute.damageType;
 		}
+
 		
 		//Overwrite attack type if new one exists
 		if(hotAttribute.attackType != AttackType.None)

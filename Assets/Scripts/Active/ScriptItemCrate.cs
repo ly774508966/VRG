@@ -40,13 +40,10 @@ public class ScriptItemCrate : MonoBehaviour {
 	{
 		lid.rigidbody.isKinematic = false;
 		lid.rigidbody.WakeUp();
-		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, 500, (Random.value * 2 - 1) * 100);
+		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, 750, Random.value * -500);
 		crateMaterial.SetColor("_Color", Color.white);
 		crateLight.gameObject.SetActive(false);
-		
 		audioSource.Play ();
-		
-		Debug.Log ("Open");
 	}
 	
 	Color GetRandomCrateColor()
