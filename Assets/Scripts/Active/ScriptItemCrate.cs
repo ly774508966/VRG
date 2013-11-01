@@ -48,12 +48,19 @@ public class ScriptItemCrate : MonoBehaviour {
 	
 	Color GetRandomCrateColor()
 	{
+		Debug.Log ("Random number call");
 	return new Color(Random.value, Random.value, Random.value, 255);
 		
 	}
 	void SetCrateColor(Color crateColor)
 	{
-		crateMaterial.SetColor("_Color", crateColor);
+		Debug.Log ("Set color call");
+		foreach(Transform child in transform)
+		{
+		child.gameObject.renderer.material.color = crateColor;		
+		}
+		
+		//crateMaterial.SetColor("_Color", crateColor);
 		crateLight.color = crateColor;
 		
 	}

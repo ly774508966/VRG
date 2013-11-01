@@ -67,7 +67,6 @@ public class ScriptInterface : MonoBehaviour {
 			"\n" + hotSheet.readyRange.ToString() +  " Range"  +
 			"\n" + hotSheet.readyDamage.ToString() + " Damage" + 
 			"\n" + hotSheet.currentHitChance.ToString() + " Hit %";
-			//"\n Item: " + hotSheet.activeItem.fullName;
 	}
 	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
 	{
