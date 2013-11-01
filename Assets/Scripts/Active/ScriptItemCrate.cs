@@ -3,11 +3,12 @@ using System.Collections;
 
 public class ScriptItemCrate : MonoBehaviour {
 	
-	GameObject lid;
-	Light crateLight;
+	public GameObject lid;
+	public Light crateLight;
 	public Color crateColor;
 	public Material crateMaterial;
 	AudioSource audioSource;
+	public const float Y_FORCE = 1000;
 	
 	
 	// Use this for initialization
@@ -38,9 +39,10 @@ public class ScriptItemCrate : MonoBehaviour {
 	
 	void PopOpen ()
 	{
+		Debug.Log ("Pop open call received");
 		lid.rigidbody.isKinematic = false;
 		lid.rigidbody.WakeUp();
-		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, 750, Random.value * -500);
+		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, Y_FORCE, Random.value * -500);
 		crateMaterial.SetColor("_Color", Color.white);
 		crateLight.gameObject.SetActive(false);
 		audioSource.Play ();
@@ -48,19 +50,19 @@ public class ScriptItemCrate : MonoBehaviour {
 	
 	Color GetRandomCrateColor()
 	{
-		Debug.Log ("Random number call");
+		//Debug.Log ("Random number call");
 	return new Color(Random.value, Random.value, Random.value, 255);
 		
 	}
 	void SetCrateColor(Color crateColor)
 	{
-		Debug.Log ("Set color call");
-		foreach(Transform child in transform)
-		{
-		child.gameObject.renderer.material.color = crateColor;		
-		}
+		//Debug.Log ("Set color call");
+		//foreach(Transform child in transform)
+		//{
+		//child.gameObject.renderer.material.color = crateColor;		
+		//}
 		
-		//crateMaterial.SetColor("_Color", crateColor);
+		crateMaterial.SetColor("_Color", crateColor);
 		crateLight.color = crateColor;
 		
 	}
