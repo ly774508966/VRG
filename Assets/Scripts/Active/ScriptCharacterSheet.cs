@@ -13,6 +13,11 @@ public class ScriptCharacterSheet : MonoBehaviour {
 //Metagame Properties
 	//Identification
 	public int characterID = -1;
+
+	//Identification
+	public string firstName;
+	public string lastName;
+	public string stringID;
 	
 	//Timing
 	public int waitTime = -9999;
@@ -27,11 +32,10 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 //Proper fields
 	
-	//Identification
-	public string firstName;
-	public string lastName;
 	public string fullName;
-	public string stringID;
+	
+	public FrameSize frameSize = FrameSize.None;
+	public int frameNumber = -9999;
 	
 	//First-Order Stats
 	
@@ -39,8 +43,10 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	//Base/ innate stats
 	
-	public int baseToughness = -9999;
+	//public int baseToughness = -9999;
+	
 	public int currentFocus = -9999;
+	public int maxFocus = -9999;
 	
 	//public int baseAttack = -9999;
 	//public int baseDefense = -9999;
@@ -55,16 +61,23 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Second-Order Stats
 	public int unarmedDamage = -9999;
 	
-		//HP
-	public int headHP = -9999;
-	public int bodyHP = -9999;
-	public int leftArmHP = -9999;
-	public int rightArmHP = -9999;
-	public int leftLegHP = -9999;
-	public int rightLegHP = -9999;
+	//Max HP
+	public int maxHeadHP = -9999;
+	public int maxBodyHP = -9999;
+	public int maxLeftArmHP = -9999;
+	public int maxRightArmHP = -9999;
+	public int maxLeftLegHP = -9999;
+	public int maxRightLegHP = -9999;
+	
+	//Current HP
+	public int currentHeadHP = -9999;
+	public int currentBodyHP = -9999;
+	public int currentLeftArmHP = -9999;
+	public int currentRightArmHP = -9999;
+	public int currentLeftLegHP = -9999;
+	public int currentRightLegHP = -9999;
 
 	//Updated, useable stats
-	
 	public int readyAttack;
 	public int readyDefense;
 	public int readyPriority;
@@ -72,6 +85,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public int readyMuscle;
 	public int readyRange;
 	
+
 	public float currentHitChance;
 	
 	//Items
@@ -126,11 +140,11 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	
 //Physics
-	public GameObject lastAttacker;
+	public ScriptCharacterSheet lastAttacker;
 	
 		//Attack properties
-	public bool propel;
-	public bool blowUpHead;
+	//public bool propel;
+	//public bool blowUpHead;
 	
 	
 	

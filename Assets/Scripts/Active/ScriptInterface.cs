@@ -43,7 +43,7 @@ public class ScriptInterface : MonoBehaviour {
 	string GetStandardCharacterComparison(ScriptCharacterSheet hotSheet){
 		return 
 			//hotSheet.stringID + 
-			"\n HP " + hotSheet.baseToughness.ToString() +
+			//"\n HP " + hotSheet.baseToughness.ToString() +
 			"\n Priority " + hotSheet.readyPriority.ToString() +
 			"\n Attack " + hotSheet.readyAttack.ToString() +
 			//"\n Melee " + hotSheet.melee.ToString() +
@@ -59,10 +59,10 @@ public class ScriptInterface : MonoBehaviour {
 		string GetMirroredCharacterComparison(ScriptCharacterSheet hotSheet){
 		return 
 			//hotSheet.stringID + 
-			"\n" + hotSheet.baseToughness.ToString() + " HP" +
+			//"\n" + hotSheet.baseToughness.ToString() + " HP" +
 			"\n" + hotSheet.readyPriority.ToString() + " Priority" +
-			"\n" + hotSheet.readyAttack.ToString() + " Attack" + 
 			"\n" + hotSheet.readyDefense.ToString() +" Defense" + 
+			"\n" + hotSheet.readyAttack.ToString() + " Attack" + 
 			"\n" + hotSheet.baseMuscle.ToString() + " Muscle" + 
 			"\n" + hotSheet.readyRange.ToString() +  " Range"  +
 			"\n" + hotSheet.readyDamage.ToString() + " Damage" + 
@@ -71,6 +71,12 @@ public class ScriptInterface : MonoBehaviour {
 	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
 	{
 		return hotSheet.stringID +
+			"\n Head: " + hotSheet.currentHeadHP.ToString() + "/" + hotSheet.maxHeadHP.ToString() +
+				"\n Body: " + hotSheet.currentBodyHP.ToString() + "/" + hotSheet.maxBodyHP.ToString() +
+				"\n Left Arm: " + hotSheet.currentLeftArmHP.ToString() + "/" + hotSheet.maxLeftArmHP.ToString() +
+				"\n Right Arm: " + hotSheet.currentRightArmHP.ToString() + "/" + hotSheet.maxRightArmHP.ToString() +
+				"\n Left Leg: " + hotSheet.currentLeftLegHP.ToString() + "/" + hotSheet.maxLeftLegHP.ToString() +
+				"\n Right Leg: " + hotSheet.currentRightLegHP.ToString() + "/" + hotSheet.maxRightLegHP.ToString() +
 			"\n Item: " + hotSheet.activeItem.fullName;
 	}
 	

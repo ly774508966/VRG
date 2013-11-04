@@ -39,6 +39,7 @@ public enum AttributeType
 
 public enum TacticType
 {
+	None,
 	Action,
 	Stance,
 	Movement,
@@ -53,6 +54,14 @@ public enum AttackType
 	Shot
 }
 
+public enum FrameSize
+{
+	None,
+	Small,
+	Medium,
+	Large
+}
+
 //Character classes
 
 public class CharacterTemplate
@@ -62,12 +71,16 @@ public class CharacterTemplate
 	public Color primaryColor;
 	public Color secondaryColor;
 	public Color skinColor;
+	public FrameSize frameSize;
 	
-	public CharacterTemplate (string fullNameArg, Color primaryColorArg, Color secondaryColorArg, Color skinColorArg, CharacterStatProfile characterStatProfileArg)
+	public CharacterTemplate (string fullNameArg, Color primaryColorArg, 
+		Color secondaryColorArg, Color skinColorArg, FrameSize frameSizeArg,
+		CharacterStatProfile characterStatProfileArg)
 	{
 	fullName = fullNameArg;
 	primaryColor = primaryColorArg;
 	secondaryColor = secondaryColorArg;
+	frameSize = frameSizeArg;
 	skinColor = skinColorArg;
 	characterStatProfile = characterStatProfileArg;
 	}
@@ -84,7 +97,7 @@ public class CharacterStatProfile
 	public int melee = -9999;
 	public int shot = -9999;
 	public int evasion = -9999;
-	public int toughness = -9999;
+	//public int toughness = -9999;
 	public int muscle = -9999;
 	public int intelligence = -9999;
 	public int presence = -9999;
@@ -105,7 +118,7 @@ public class CharacterStatProfile
 	public CharacterStatProfile(){}
 	
 	public CharacterStatProfile ( int focusArg, int brawlArg, int meleeArg, int shotArg, int evasionArg, 
-		int toughnessArg, int muscleArg, int intelligenceArg, int presenceArg) 
+		 int muscleArg, int intelligenceArg, int presenceArg) 
 		{
 		//nerve = nerveArg;
 		focus = focusArg;
@@ -113,7 +126,7 @@ public class CharacterStatProfile
 		melee = meleeArg;
 		shot = shotArg;
 		evasion = evasionArg;
-		toughness = toughnessArg;
+		//toughness = toughnessArg;
 		muscle = muscleArg;
 		intelligence = intelligenceArg;
 		presence = presenceArg;
@@ -262,20 +275,28 @@ public class TacticStatProfile
 		cooldown = cooldownArg;
 	}
 }
-/*
-public class Statshot
-{
-	public Statshot(ScriptCharacterSheet hotChar)
+
+//Action classes
+	[System.Serializable]
+public class Result
 	{
-		ScriptCharacterSheet owner = hotChar;
-		
-		StatProfile hotProfile = hotChar.baseProfile;
-		hotProfile = ApplyEquippedItemProfiles(hotProfile);
-		hotProfile = ApplyTacticsProfiles(hotProfile);
-		
+		public ScriptCharacterSheet actingCharacter = null;
+		public ScriptCharacterSheet targetCharacter = null;
+		public bool success = false;
+		public DamageType damageType = DamageType.None;
+		public int damageAmount = -9999;
+		public int successNumber = -9999;
+		public int hitPercentage = -9999;
+		public int roll = -9999;
+		public int rollExcess = -9999;
+		public int actingAttack = -9999;
+		public int targetDefense = -9999;
+		public BodyPart hitLocation = BodyPart.None;
+		public Result(ScriptCharacterSheet actingCharacterSheet)
+		{
+			actingCharacter = actingCharacterSheet;
+		}
 	}
-}
- */
 
 public class ScriptDatabase : MonoBehaviour {
 	
@@ -313,8 +334,9 @@ public class ScriptDatabase : MonoBehaviour {
 	public Item unarmed = new Item("Unarmed", AttackType.Brawl, DamageType.Bludgeoning, new ItemStatProfile(0, 0, 0, 1, 0, 0, 0));
 	
 	//Premade characters
-	//public CharacterTemplate coppermouth = new CharacterTemplate("Coppermouth", new CharacterStatProfile(
-	public CharacterTemplate coppermouth = new CharacterTemplate("Coppermouth", Color.green, Color.yellow, Color.white, new CharacterStatProfile(10, 10, 8, 4, 10, 7, 5, 8, 4));
+	public CharacterTemplate coppermouth = new CharacterTemplate(
+		"Coppermouth", Color.green, Color.yellow, Color.white, FrameSize.Medium,
+		new CharacterStatProfile(10, 10, 8, 4, 10, 5, 8, 4));
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	

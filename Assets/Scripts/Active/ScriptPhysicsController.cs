@@ -14,8 +14,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	
 	//Local variables
-	public bool propel;
-	public bool blowUpHead;
+	//public bool propel;
+	//public bool blowUpHead;
 	
 	
 	
@@ -100,7 +100,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	
+	/*
 	void ExecuteCharacter(GameObject targetCharacter){
 		Ragdollify(targetCharacter);
 		//GameObject lastAttacker = targetCharacter.GetComponent<ScriptCharacterSheet>().lastAttacker ;
@@ -121,6 +121,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 		}
 	}
+	*/
 	/*
 	IEnumerator KillCam(){
 		yield return new WaitForSeconds(0.1);
@@ -128,11 +129,6 @@ public class ScriptPhysicsController : MonoBehaviour {
 		Debug.Break();
 	}
 	*/
-	
-	//void PopOpenItemBox(ScriptItemCrate itemCrate)
-	//{
-	//	
-	//}
 	
 	void BlastWall(Vector3 blastForce, GameObject hotWall)
 	{
@@ -152,4 +148,32 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
+	void InitiateActionEffect(Result hotResult)
+	{
+		if(!hotResult.targetCharacter.inPlay)
+		{
+			Ragdollify(hotResult.targetCharacter.gameObject);
+		}
+		/*
+		GameObject bloodEffectLocation;
+		switch(hotResult.hitLocation)
+		{
+		case BodyPart.Head:
+			bloodEffectLocation = hotResult.targetCharacter.GetComponentInChildren<ScriptModelController>().head;
+			if(hotResult.targetCharacter.currentHeadHP <= 0)
+			{
+				Ragdollify(hotResult.targetCharacter);
+			}
+			else
+			{
+				//Head is still intact		
+		}
+		*/
+		
+		//if(hotResult.targetCharacter.currentHeadHP <= 0 || hotResult.targetCharacter.currentBodyHP <= 0)
+		//{
+		//Ragdollify(hotResult.targetCharacter.gameObject);
+			
+		//}
+	}
 }
