@@ -138,6 +138,9 @@ public class CharacterStatProfile
 		}
 } 
 
+
+
+
 //Item classes
 	[System.Serializable]
 	public class Item

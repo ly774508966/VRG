@@ -1,7 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-
+public class EffectInfo
+{
+	//public ScriptCharacterSheet owner;
+	public int hp;
+	//public GameObject modelBodyPart;
+	public GameObject breakBox;
+	public Vector3 attackVector;
+	public Vector3 attackForce;
+}
 
 public class ScriptPhysicsController : MonoBehaviour {
 	
@@ -150,30 +158,80 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	void InitiateActionEffect(Result hotResult)
 	{
+		//Ragdoll entire character if dead
 		if(!hotResult.targetCharacter.inPlay)
 		{
 			Ragdollify(hotResult.targetCharacter.gameObject);
 		}
+		
+		EffectInfo effectInfo = GetEffectInfo(hotResult.targetCharacter, hotResult.hitLocation);
+		
+		
+		//Ragdoll limb if applicable and assign hit part of model
+		
 		/*
-		GameObject bloodEffectLocation;
+		GameObject targetPart;
 		switch(hotResult.hitLocation)
 		{
 		case BodyPart.Head:
-			bloodEffectLocation = hotResult.targetCharacter.GetComponentInChildren<ScriptModelController>().head;
+			targetPart = hotResult.targetCharacter.
+				GetComponentInChildren<ScriptModelController>().head;
 			if(hotResult.targetCharacter.currentHeadHP <= 0)
 			{
-				Ragdollify(hotResult.targetCharacter);
+				//Destroy limb
+				targetPart.SendMessage("HeadExplode", headExplodeForce);
+				//Ragdollify(hotResult.targetCharacter);
 			}
-			else
+		case BodyPart.Body:
+			targetPart = hotResult.targetCharacter.
+				GetComponentInChildren<ScriptModelController>().body;
+			if(hotResult.targetCharacter.currentBodyHP <= 0)
 			{
-				//Head is still intact		
+				//Destroy limb
+				DestroyLimb();
+				//targetPart.SendMessage("HeadExplode", headExplodeForce);
+				//Ragdollify(hotResult.targetCharacter);
+			}
+		break;
+		default:
+		Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
+			break;
 		}
 		*/
-		
 		//if(hotResult.targetCharacter.currentHeadHP <= 0 || hotResult.targetCharacter.currentBodyHP <= 0)
 		//{
 		//Ragdollify(hotResult.targetCharacter.gameObject);
 			
 		//}
+	}
+	
+	EffectInfo GetEffectInfo(ScriptCharacterSheet character, BodyPart bodyPart)
+	{
+		EffectInfo effectInfo = new EffectInfo();
+		GameObject modelPart;
+	switch(bodyPart)
+		{
+		case BodyPart.Head:
+			modelPart = character.GetComponentInChildren<ScriptModelController>().head;
+			effectInfo.hp = character.currentHeadHP;
+			//effectInfo.breakBox = modelPart.transform[0];
+				//(int)Mathf.Floor(Random.value*modelPart.transform.childCount)
+		case BodyPart.Body:
+			return character.GetComponentInChildren<ScriptModelController>().body;
+		case BodyPart.LeftArm:
+			return character.GetComponentInChildren<ScriptModelController>().leftArm;
+		case BodyPart.RightArm:
+			return character.GetComponentInChildren<ScriptModelController>().rightArm;
+		case BodyPart.LeftLeg:
+			return character.GetComponentInChildren<ScriptModelController>().leftLeg;
+		case BodyPart.RightLeg:
+			return character.GetComponentInChildren<ScriptModelController>().rightLeg;
+		default:
+			Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
+			return null;
+		}
+		
+		
+		
 	}
 }

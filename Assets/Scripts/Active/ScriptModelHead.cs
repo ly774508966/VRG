@@ -48,7 +48,7 @@ public class ScriptModelHead : MonoBehaviour {
 			}
 			
 			
-			bloodEffect.Play();
+			//bloodEffect.Play();
 			Rigidbody boxRigid = child.GetComponent<Rigidbody>();
 			boxRigid.WakeUp();
 			boxRigid.AddExplosionForce(explosiveForce, brainBox.transform.position, 5.0F);

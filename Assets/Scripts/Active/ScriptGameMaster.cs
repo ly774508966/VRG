@@ -126,10 +126,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//Spawn a random character on the left and right spawnpoints and give a random item
 		//GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
-		//GiveCharacterItem(
-			RegisterCharacter(SetCharacterValues(NewCharacter(spawn00), scriptDatabase.coppermouth));
-		//scriptDatabase.debugItem);	
-
+		
+		//	RegisterCharacter(SetCharacterValues(NewCharacter(spawn00), scriptDatabase.coppermouth));
+		
+		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
 		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());
 		
 		RolloverCycle();
@@ -483,9 +483,14 @@ public class ScriptGameMaster : MonoBehaviour {
 			KillCharacter(targetSheet);	
 			}
 			
+			Debug.Log (result.hitLocation.ToString());
+			
 			//Apply action effect profile
+			if(result.success)
+			{
 			scriptPhysicsController.SendMessage("InitiateActionEffect", result);
-		
+			}
+			
 		} else {
 			//Character attacks nothing
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
