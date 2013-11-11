@@ -1,25 +1,20 @@
 using UnityEngine;
 using System.Collections;
 
-public class EffectInfo
-{
-	//public ScriptCharacterSheet owner;
-	public int hp;
-	//public GameObject modelBodyPart;
-	public GameObject breakBox;
-	public Vector3 attackVector;
-	public Vector3 attackForce;
-}
+
 
 public class ScriptPhysicsController : MonoBehaviour {
 	
 	public float wallJointStrength = 1.0F;
 	public float wallThresholdVelocity = 1.0F;
 	public float headExplodeForce = 1000;
-	public float propelForce = 10000F;
+	//public float propelForce = 10000F;
 	public GameObject panelContainer;
 	public GameObject debug;
 	
+	//Local variables
+	GameObject modelPart;
+	GameObject breakBox;
 	
 	//Local variables
 	//public bool propel;
@@ -98,12 +93,12 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	void Propel(Vector3 propelDirection, GameObject targetCharacter){
+	void Propel(Vector3 propelVector, GameObject targetCharacter){
 		foreach(Transform child in targetCharacter.transform){
 			if(child.rigidbody != null){
-				child.rigidbody.AddForce( propelDirection * propelForce);	
+				child.rigidbody.AddForce( propelVector);	
 				} else {
-			Propel(propelDirection, child.gameObject);
+			Propel(propelVector, child.gameObject);
 			}
 		}
 	}
@@ -158,16 +153,75 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	void InitiateActionEffect(Result hotResult)
 	{
+		
 		//Ragdoll entire character if dead
 		if(!hotResult.targetCharacter.inPlay)
 		{
 			Ragdollify(hotResult.targetCharacter.gameObject);
 		}
 		
-		EffectInfo effectInfo = GetEffectInfo(hotResult.targetCharacter, hotResult.hitLocation);
+		//EffectInfo effectInfo = GetEffectInfo(hotResult.targetCharacter, hotResult.hitLocation);
 		
+		ScriptModelController hotModelController = hotResult.targetCharacter.
+			GetComponentInChildren<ScriptModelController>();
 		
-		//Ragdoll limb if applicable and assign hit part of model
+		//Assign model part and break box
+
+	switch(hotResult.hitLocation)
+		{
+		case BodyPart.Head:
+			modelPart = hotModelController.head;
+			breakBox = modelPart.transform.FindChild("headBox1").gameObject;
+			break;
+		case BodyPart.Body:
+			modelPart = hotModelController.spine;
+			breakBox = modelPart.transform.FindChild("spineBox4").gameObject;
+			break;
+		case BodyPart.LeftArm:
+			modelPart = hotModelController.leftArm;
+			breakBox = modelPart.transform.FindChild("leftArmBox3").gameObject;
+			break;
+		case BodyPart.RightArm:
+			modelPart = hotModelController.rightArm;
+			breakBox = modelPart.transform.FindChild("rightArmBox3").gameObject;
+			break;
+		case BodyPart.LeftLeg:
+			modelPart = hotModelController.leftLeg;
+			breakBox = modelPart.transform.FindChild("leftLegBox3").gameObject;
+			break;
+		case BodyPart.RightLeg:
+			modelPart = hotModelController.rightLeg;
+			breakBox = modelPart.transform.FindChild("rightLegBox3").gameObject;
+			break;
+		default:
+			Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
+			break;
+		}
+		
+		Debug.Log (modelPart.ToString() + breakBox.ToString());
+		
+		Vector3 rangedAttack = hotResult.actingCharacter.
+			GetComponentInChildren<ScriptControllerTargeting>().rangedAttack;
+		
+		if(hotResult.hitLocation == BodyPart.Head)
+		{
+					if(hotResult.targetCharacter.currentHeadHP <= 0)
+			{
+			modelPart.SendMessage("HeadExplode", headExplodeForce);	
+		}
+		}
+		else if(hotResult.hitLocation == BodyPart.Body)
+		{
+			Ragdollify(modelPart);
+			BreakJoints(breakBox);
+			Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
+		}
+			{
+		Ragdollify(modelPart);
+		BreakJoints(breakBox);
+		breakBox.rigidbody.AddForce(rangedAttack * 500);
+		Debug.Log ("Broke the " + hotResult.hitLocation);
+			}
 		
 		/*
 		GameObject targetPart;
@@ -205,33 +259,13 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//}
 	}
 	
-	EffectInfo GetEffectInfo(ScriptCharacterSheet character, BodyPart bodyPart)
+	void BreakJoints(GameObject breakBox)
 	{
-		EffectInfo effectInfo = new EffectInfo();
-		GameObject modelPart;
-	switch(bodyPart)
+		foreach(FixedJoint hotJoint in breakBox.GetComponents<FixedJoint>())
 		{
-		case BodyPart.Head:
-			modelPart = character.GetComponentInChildren<ScriptModelController>().head;
-			effectInfo.hp = character.currentHeadHP;
-			//effectInfo.breakBox = modelPart.transform[0];
-				//(int)Mathf.Floor(Random.value*modelPart.transform.childCount)
-		case BodyPart.Body:
-			return character.GetComponentInChildren<ScriptModelController>().body;
-		case BodyPart.LeftArm:
-			return character.GetComponentInChildren<ScriptModelController>().leftArm;
-		case BodyPart.RightArm:
-			return character.GetComponentInChildren<ScriptModelController>().rightArm;
-		case BodyPart.LeftLeg:
-			return character.GetComponentInChildren<ScriptModelController>().leftLeg;
-		case BodyPart.RightLeg:
-			return character.GetComponentInChildren<ScriptModelController>().rightLeg;
-		default:
-			Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
-			return null;
+			Destroy (hotJoint);	
 		}
-		
-		
-		
+			
 	}
+	
 }
