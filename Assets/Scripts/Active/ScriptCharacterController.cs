@@ -1,8 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-public class ScriptCharacterMove : MonoBehaviour {
+public class ScriptCharacterController : MonoBehaviour {
 	
+	
+	//Cameras
+	public Camera cinematicCamera0;
+	public Camera cinematicCamera1;
+	
+	//Movement
 	ScriptCharacterSheet scriptCharacterSheet;
 	public Vector3 startMarker;
 	public Vector3 endMarker;
@@ -10,7 +16,6 @@ public class ScriptCharacterMove : MonoBehaviour {
 	public float journeyLength;
 	public float startTime;
 	public bool greenLight = false;
-	//public bool redLight = false;
 	public bool startLerp;
 	public float fracJourney;
 	public bool atDestination;
@@ -22,9 +27,8 @@ public class ScriptCharacterMove : MonoBehaviour {
 	void Start () {
 		scriptCharacterSheet = GetComponent<ScriptCharacterSheet>();
 		
-		
-		//GreenLight();
-		//RedLight();
+		cinematicCamera0.enabled = false;
+		cinematicCamera1.enabled = false;
 		
 	
 		

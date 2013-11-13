@@ -93,8 +93,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	void Propel(Vector3 propelVector, GameObject targetCharacter){
-		foreach(Transform child in targetCharacter.transform){
+	void Propel(Vector3 propelVector, GameObject targetObject){
+		foreach(Transform child in targetObject.transform){
 			if(child.rigidbody != null){
 				child.rigidbody.AddForce( propelVector);	
 				} else {
@@ -198,7 +198,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 			break;
 		}
 		
-		Debug.Log (modelPart.ToString() + breakBox.ToString());
+		//Debug.Log (modelPart.ToString() + breakBox.ToString());
 		
 		Vector3 rangedAttack = hotResult.actingCharacter.
 			GetComponentInChildren<ScriptControllerTargeting>().rangedAttack;
@@ -210,53 +210,20 @@ public class ScriptPhysicsController : MonoBehaviour {
 			modelPart.SendMessage("HeadExplode", headExplodeForce);	
 		}
 		}
-		else if(hotResult.hitLocation == BodyPart.Body)
-		{
-			Ragdollify(modelPart);
-			BreakJoints(breakBox);
-			Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
-		}
+		//else if(hotResult.hitLocation == BodyPart.Body)
+		//{
+		//	Ragdollify(modelPart);
+		//	BreakJoints(breakBox);
+		//	Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
+		//}
+		else
 			{
 		Ragdollify(modelPart);
 		BreakJoints(breakBox);
-		breakBox.rigidbody.AddForce(rangedAttack * 500);
-		Debug.Log ("Broke the " + hotResult.hitLocation);
+		Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
+		//breakBox.rigidbody.AddForce(rangedAttack * 500);
+		//Debug.Log ("Broke the " + hotResult.hitLocation);
 			}
-		
-		/*
-		GameObject targetPart;
-		switch(hotResult.hitLocation)
-		{
-		case BodyPart.Head:
-			targetPart = hotResult.targetCharacter.
-				GetComponentInChildren<ScriptModelController>().head;
-			if(hotResult.targetCharacter.currentHeadHP <= 0)
-			{
-				//Destroy limb
-				targetPart.SendMessage("HeadExplode", headExplodeForce);
-				//Ragdollify(hotResult.targetCharacter);
-			}
-		case BodyPart.Body:
-			targetPart = hotResult.targetCharacter.
-				GetComponentInChildren<ScriptModelController>().body;
-			if(hotResult.targetCharacter.currentBodyHP <= 0)
-			{
-				//Destroy limb
-				DestroyLimb();
-				//targetPart.SendMessage("HeadExplode", headExplodeForce);
-				//Ragdollify(hotResult.targetCharacter);
-			}
-		break;
-		default:
-		Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
-			break;
-		}
-		*/
-		//if(hotResult.targetCharacter.currentHeadHP <= 0 || hotResult.targetCharacter.currentBodyHP <= 0)
-		//{
-		//Ragdollify(hotResult.targetCharacter.gameObject);
-			
-		//}
 	}
 	
 	void BreakJoints(GameObject breakBox)

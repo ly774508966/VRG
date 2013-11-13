@@ -74,7 +74,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Tactics
 	//public int aggressiveFirePriorityBonus = 10;
 	
-		
+	//Camera
+	Camera overviewCamera;
 	
 	//Physics
 	ScriptPhysicsController scriptPhysicsController;
@@ -107,6 +108,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		scriptCycleDisplay = interfaceMain.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		scriptDatabase = GetComponent<ScriptDatabase>();
+		
+		//Acquire camera
+		overviewCamera = Camera.main;
 		
 		//Acquire controllers
 		conCharacter = GameObject.Find ("ConCharacter");
@@ -448,8 +452,21 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Get action result
 			result = GetActionResult(hotSheet, targetSheet);
 			
+			//Start encounter cam on random character in encounter
+			ScriptCharacterController thirdPersonCharacter;
+			if(Random.value >= .5)
+			{
+			thirdPersonCharacter = result.actingCharacter.GetComponent<ScriptCharacterController>();
+			}
+			else
+			{
+			thirdPersonCharacter = result.targetCharacter.GetComponent<ScriptCharacterController>();	
+			}
+			RunCinematicCamera(thirdPersonCharacter);
+			
 			if(result.success)
 			{
+			
 					//Reduce health
 					switch(result.hitLocation)
 				{
@@ -483,7 +500,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			KillCharacter(targetSheet);	
 			}
 			
-			Debug.Log (result.hitLocation.ToString());
+			//Debug.Log (result.hitLocation.ToString());
 			
 			//Apply action effect profile
 			if(result.success)
@@ -634,11 +651,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Kill appropriate characters
 		for(int i = 0; i < tempCharactersInPlay.Count; i++){
 			ScriptCharacterSheet hotSheet = tempCharactersInPlay[i];
-			
-			//CHARACTERS DON'T DIE!
-			//if(hotSheet.baseToughness <= 0){
-			//	KillCharacter(hotSheet);
-			//}
 		}
 	}
 	void UpdateCharacterValues(){
@@ -919,7 +931,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		engagementMode = false;
 		movementMode = true;
 		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
-		ScriptCharacterMove hotScript = hotSheet.GetComponent<ScriptCharacterMove>();
+		ScriptCharacterController hotScript = hotSheet.GetComponent<ScriptCharacterController>();
 			hotScript.greenLight = true;
 			hotScript.startLerp = true;
 		}
@@ -940,7 +952,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Debug.Log ("RedLight");
 		yield return 0;
 		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
-		ScriptCharacterMove hotScript = hotSheet.GetComponent<ScriptCharacterMove>();
+		ScriptCharacterController hotScript = hotSheet.GetComponent<ScriptCharacterController>();
 			hotScript.greenLight = false;
 		}
 		if(engagementMode){
@@ -953,7 +965,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Queries
 	bool MovementIsOver(){
 		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
-			if(hotSheet.GetComponent<ScriptCharacterMove>().atDestination == false){
+			if(hotSheet.GetComponent<ScriptCharacterController>().atDestination == false){
 				//Debug.Log (character.GetComponent<ScriptCharacterMove>().fracJourney);
 				return false;
 		}
@@ -1063,4 +1075,32 @@ public class ScriptGameMaster : MonoBehaviour {
 		return hotItem;
 		}
 		
+	void RunCinematicCamera (ScriptCharacterController character)
+	{
+		Camera hotCam;
+		if(Random.value >= 0.5)
+		{
+			//character.cinematicCamera0.enabled = true;
+			hotCam = character.cinematicCamera0;
+		}
+		else
+		{
+			//character.cinematicCamera1.enabled = true;
+			hotCam = character.cinematicCamera1;
+		}
+		Debug.Log (hotCam.ToString());
+		overviewCamera.enabled = false;
+		hotCam.enabled = true;
+		//Debug.Break();
+		//StartCoroutine("StopCinematicCamera", hotCam);
+		//yield return new WaitForSeconds(2.0);
+	}
+	
+	IEnumerator StopCinematicCamera(Camera hotCam)
+	{
+		yield return new WaitForSeconds(2.0F);
+		
+		hotCam.enabled = false;
+		overviewCamera.enabled = true;
+	}
 }
