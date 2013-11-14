@@ -45,6 +45,12 @@ public class ScriptPhysicsController : MonoBehaviour {
 	{
 	BlastWall(new Vector3(1000, 1000, 1000), debug);	
 	}
+	
+	if(Input.GetKeyDown(KeyCode.D))
+		{
+		BlastWall (Vector3.zero, panelContainer);	
+		//	Debug.Log ("D received");
+		}
 		
 	}
 	/*
@@ -133,20 +139,28 @@ public class ScriptPhysicsController : MonoBehaviour {
 	}
 	*/
 	
-	void BlastWall(Vector3 blastForce, GameObject hotWall)
+	void BlastWall(Vector3 blastForce, GameObject hotChunk)
 	{
-		foreach(Transform panel in hotWall.transform)
+		Debug.Log ("BlastWall");
+		foreach(Transform child in hotChunk.transform)
 		{
-			if(Random.value <= 0.75)
+			if(child.collider)
 			{
-			panel.gameObject.AddComponent<Rigidbody>();
-			panel.rigidbody.mass = 1;
-			panel.rigidbody.drag = 0;
-			panel.rigidbody.angularDrag = 0.05F;
-			panel.rigidbody.useGravity = true;
-			panel.rigidbody.isKinematic = false;
-			panel.rigidbody.WakeUp();
-			panel.rigidbody.AddForce(blastForce);
+			//if(Random.value <= 0.75)
+			//{
+			child.gameObject.AddComponent<Rigidbody>();
+			child.rigidbody.mass = 1;
+			child.rigidbody.drag = 0;
+			child.rigidbody.angularDrag = 0.05F;
+			child.rigidbody.useGravity = true;
+			child.rigidbody.isKinematic = false;
+			child.rigidbody.WakeUp();
+			child.rigidbody.AddForce(blastForce);
+			//	}
+			}
+			else
+			{
+				BlastWall(blastForce, child.gameObject);	
 			}
 		}
 	}

@@ -1088,7 +1088,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//character.cinematicCamera1.enabled = true;
 			hotCam = character.cinematicCamera1;
 		}
-		Debug.Log (hotCam.ToString());
+		//Debug.Log (hotCam.ToString());
 		overviewCamera.enabled = false;
 		hotCam.enabled = true;
 		//Debug.Break();
