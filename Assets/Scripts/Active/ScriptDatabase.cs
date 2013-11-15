@@ -154,9 +154,9 @@ public class CharacterStatProfile
 		
 		public ScriptCharacterSheet owner = null;
 		
-		//Crate
-		//string crateLabel;
-		//Color crateColor;
+		//Appearance
+	//Color itemColor;
+	//ItemStyle itemStyle;
 		
 		//Stats
 		public AttackType attackType;

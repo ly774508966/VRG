@@ -181,6 +181,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 		
 		//Assign model part and break box
 
+
 	switch(hotResult.hitLocation)
 		{
 		case BodyPart.Head:
@@ -232,6 +233,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//}
 		else
 			{
+
 		Ragdollify(modelPart);
 		BreakJoints(breakBox);
 		Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);

@@ -530,7 +530,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			
 			if(result.success)
 		{
-			hotLine += " >= " +
+			hotLine += " > " +
 			result.successNumber.ToString() + 
 			". " +
 			result.actingCharacter.fullName + 
@@ -544,7 +544,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		else
 		{
-			hotLine += " < " +
+			hotLine += " <= " +
 			result.successNumber.ToString() + 
 			". " +
 			result.actingCharacter.fullName +
