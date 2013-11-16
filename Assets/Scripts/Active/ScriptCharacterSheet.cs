@@ -61,21 +61,25 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Second-Order Stats
 	public int unarmedDamage = -9999;
 	
-	//Max HP
-	public int maxHeadHP = -9999;
-	public int maxBodyHP = -9999;
-	public int maxLeftArmHP = -9999;
-	public int maxRightArmHP = -9999;
-	public int maxLeftLegHP = -9999;
-	public int maxRightLegHP = -9999;
+	//HP and armor
+	public CharacterHitProfile maxHitProfile;
+	public CharacterHitProfile currentHitProfile;
+	public CharacterHitProfile resistanceHitProfile;
+
+	//public int maxHeadHP = -9999;
+	//public int maxBodyHP = -9999;
+	//public int maxLeftArmHP = -9999;
+	//public int maxRightArmHP = -9999;
+	//public int maxLeftLegHP = -9999;
+	//public int maxRightLegHP = -9999;
 	
 	//Current HP
-	public int currentHeadHP = -9999;
-	public int currentBodyHP = -9999;
-	public int currentLeftArmHP = -9999;
-	public int currentRightArmHP = -9999;
-	public int currentLeftLegHP = -9999;
-	public int currentRightLegHP = -9999;
+	//public int currentHeadHP = -9999;
+	//public int currentBodyHP = -9999;
+	//public int currentLeftArmHP = -9999;
+	//public int currentRightArmHP = -9999;
+	//public int currentLeftLegHP = -9999;
+	//public int currentRightLegHP = -9999;
 
 	//Updated, useable stats
 	public int readyAttack;

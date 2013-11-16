@@ -223,19 +223,24 @@ public class ScriptGameMaster : MonoBehaviour {
 		//Set Derived Stats
 		hotSheet.frameNumber = GetFrameNumber(hotSheet);
 		
-		hotSheet.maxHeadHP = 2 + hotSheet.frameNumber;
-		hotSheet.maxBodyHP = 5 + hotSheet.frameNumber;
-		hotSheet.maxLeftArmHP = 3 + hotSheet.frameNumber;
-		hotSheet.maxRightArmHP = 3 + hotSheet.frameNumber;
-		hotSheet.maxLeftLegHP = 4 + hotSheet.frameNumber;
-		hotSheet.maxRightLegHP = 4 + hotSheet.frameNumber;
+		//hotSheet.maxHeadHP = 2 + hotSheet.frameNumber;
+		//hotSheet.maxBodyHP = 5 + hotSheet.frameNumber;
+		//hotSheet.maxLeftArmHP = 3 + hotSheet.frameNumber;
+		//hotSheet.maxRightArmHP = 3 + hotSheet.frameNumber;
+		//hotSheet.maxLeftLegHP = 4 + hotSheet.frameNumber;
+		//hotSheet.maxRightLegHP = 4 + hotSheet.frameNumber;
 		
-		hotSheet.currentHeadHP = hotSheet.maxHeadHP;
-		hotSheet.currentBodyHP = hotSheet.maxBodyHP;
-		hotSheet.currentLeftArmHP = hotSheet.maxLeftArmHP;
-		hotSheet.currentRightArmHP = hotSheet.maxRightArmHP;
-		hotSheet.currentLeftLegHP = hotSheet.maxLeftLegHP;
-		hotSheet.currentRightLegHP = hotSheet.maxRightLegHP;
+		//hotSheet.currentHeadHP = hotSheet.maxHeadHP;
+		//hotSheet.currentBodyHP = hotSheet.maxBodyHP;
+		//hotSheet.currentLeftArmHP = hotSheet.maxLeftArmHP;
+		//hotSheet.currentRightArmHP = hotSheet.maxRightArmHP;
+		//hotSheet.currentLeftLegHP = hotSheet.maxLeftLegHP;
+		//hotSheet.currentRightLegHP = hotSheet.maxRightLegHP;
+
+		hotSheet.maxHitProfile = new CharacterHitProfile(2 + hotSheet.frameNumber, 5 + hotSheet.frameNumber, 
+		                                                 3 + hotSheet.frameNumber, 3 + hotSheet.frameNumber,
+		                                                 4 + hotSheet.frameNumber, 4 + hotSheet.frameNumber);
+		hotSheet.currentHitProfile = new CharacterHitProfile(hotSheet.maxHitProfile);
 
 		hotSheet.unarmedDamage = hotSheet.baseMuscle / 2;
 		
@@ -453,6 +458,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			result = GetActionResult(hotSheet, targetSheet);
 			
 			//Start encounter cam on random character in encounter
+			/*
 			ScriptCharacterController thirdPersonCharacter;
 			if(Random.value >= .5)
 			{
@@ -463,12 +469,31 @@ public class ScriptGameMaster : MonoBehaviour {
 			thirdPersonCharacter = result.targetCharacter.GetComponent<ScriptCharacterController>();	
 			}
 			RunCinematicCamera(thirdPersonCharacter);
+			*/
 			
 			if(result.success)
 			{
 			
 					//Reduce health
-					switch(result.hitLocation)
+
+				//result.targetCharacter.currentHitProfile
+				//result.targetNetDamageProfile
+				//Debug.Log(result.targetCharacter.maxHitProfile.head.ToString() + result.targetCharacter.maxHitProfile.body.ToString() + 
+				  //        result.targetCharacter.maxHitProfile.leftArm.ToString() + result.targetCharacter.maxHitProfile.rightArm.ToString() + 
+				    //      result.targetCharacter.maxHitProfile.leftLeg.ToString() + result.targetCharacter.maxHitProfile.rightLeg.ToString());
+
+
+				SumHitProfiles(result.targetCharacter.currentHitProfile, result.targetNetHitProfile);
+
+				//Debug.Log(result.targetCharacter.maxHitProfile.head.ToString() + result.targetCharacter.maxHitProfile.body.ToString() + 
+				  //        result.targetCharacter.maxHitProfile.leftArm.ToString() + result.targetCharacter.maxHitProfile.rightArm.ToString() + 
+				    //      result.targetCharacter.maxHitProfile.leftLeg.ToString() + result.targetCharacter.maxHitProfile.rightLeg.ToString());
+
+
+				/*
+				foreach(BodyPart bodyPart in result.hitLocations)
+				{
+					switch(bodyPart)
 				{
 				case BodyPart.Head:
 					targetSheet.currentHeadHP -= result.damageAmount;
@@ -492,10 +517,12 @@ public class ScriptGameMaster : MonoBehaviour {
 					Debug.Log ("Invalid hit location " + result.hitLocation.ToString());
 					break;
 				}
+				}
+				*/
 			}
 			
 			//Apply damage results
-			if(targetSheet.currentHeadHP <= 0 || targetSheet.currentBodyHP <= 0)
+			if(targetSheet.currentHitProfile.head <= 0 || targetSheet.currentHitProfile.body <= 0)
 			{
 			KillCharacter(targetSheet);	
 			}
@@ -537,7 +564,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			" shoots " +
 			result.targetCharacter.fullName + 
 			" for " + 
-			result.damageAmount.ToString() +
+			result.grossDamage.ToString() +
 			" " +
 			result.damageType +
 			" damage.";	
@@ -559,7 +586,7 @@ public class ScriptGameMaster : MonoBehaviour {
 				
 				if(result.success)
 				{
-					statusChangeText.text = "-" + result.damageAmount + "HP";
+					statusChangeText.text = "-" + result.grossDamage + "HP";
 				}
 				else
 				{
@@ -993,9 +1020,13 @@ public class ScriptGameMaster : MonoBehaviour {
 	
 	Result GetActionResult(ScriptCharacterSheet actingCharacter, ScriptCharacterSheet targetCharacter)
 	{
+
+
 		Result result = new Result(actingCharacter);
 		result.targetCharacter = targetCharacter;
-		
+
+	
+
 		result.actingAttack = actingCharacter.readyAttack;
 		result.targetDefense = targetCharacter.readyDefense;
 		
@@ -1011,9 +1042,27 @@ public class ScriptGameMaster : MonoBehaviour {
 		if(result.rollExcess >= 1)
 		{
 			result.success = true;
-			result.hitLocation = GetHitLocation(result.rollExcess);
-			result.damageAmount = actingCharacter.readyDamage;
+
+			//Record damage
+			result.grossDamage = actingCharacter.readyDamage;
 			result.damageType = actingCharacter.activeItem.damageType;
+			result.targetGrossHitProfile = GetGrossHitProfile(result);
+
+			//Debug.Log(result.targetGrossHitProfile.head.ToString() + result.targetGrossHitProfile.body.ToString() + 
+			  //        result.targetGrossHitProfile.leftArm.ToString() + result.targetGrossHitProfile.rightArm.ToString() + 
+			    //      result.targetGrossHitProfile.leftLeg.ToString() + result.targetGrossHitProfile.rightLeg.ToString());
+
+
+			//Debug.Log(result.grossDamage);
+
+
+			//Apply armor
+			
+			result.targetNetHitProfile = SumHitProfiles(result.targetGrossHitProfile, result.targetCharacter.resistanceHitProfile);
+
+
+			//result.hitLocation = GetHitLocation(result.rollExcess);
+
 			
 			//Debug.Log (result.damageAmount.ToString() + " damage to " + result.hitLocation.ToString());
 		}
@@ -1045,26 +1094,30 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 	}
 	
-	BodyPart GetHitLocation(int rollExcess)
+	CharacterHitProfile GetGrossHitProfile(Result result)
 	{
+		//List<BodyPart> hitLocations = new List<BodyPart>();
 		int bodyPartNumber = GetRandom1ToN(6);
+
+		int hitModifier = -result.grossDamage;
+
 		switch(bodyPartNumber)
 		{
 		case 1:
-			return BodyPart.Head;
+			return new CharacterHitProfile(hitModifier, 0, 0, 0, 0, 0);
 		case 2:
-			return BodyPart.Body;
+			return new CharacterHitProfile(0, hitModifier, 0, 0, 0, 0);
 		case 3:
-			return BodyPart.LeftArm;
+			return new CharacterHitProfile(0, 0, hitModifier, 0, 0, 0);
 		case 4:
-			return BodyPart.RightArm;
+			return new CharacterHitProfile(0, 0, 0, hitModifier, 0, 0);
 		case 5:
-			return BodyPart.LeftLeg;
+			return new CharacterHitProfile(0, 0, 0, 0, hitModifier, 0);
 		case 6:
-			return BodyPart.RightLeg;
+			return new CharacterHitProfile(0, 0, 0, 0, 0, hitModifier);
 		default:
 			Debug.Log ("Invalid Body Part Number" + bodyPartNumber.ToString());
-			return BodyPart.None;	
+			return new CharacterHitProfile();	
 		}
 	}
 	
@@ -1103,4 +1156,17 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotCam.enabled = false;
 		overviewCamera.enabled = true;
 	}
+
+	CharacterHitProfile SumHitProfiles (CharacterHitProfile hotProfile, CharacterHitProfile otherProfile)
+	{
+		hotProfile.head += otherProfile.head;
+		hotProfile.body += otherProfile.body;
+		hotProfile.leftArm += otherProfile.leftArm;
+		hotProfile.rightArm += otherProfile.rightArm;
+		hotProfile.leftLeg += otherProfile.leftLeg;
+		hotProfile.rightLeg += otherProfile.rightLeg;
+
+		return hotProfile;
+	}
+
 }

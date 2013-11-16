@@ -4,7 +4,9 @@ using System.Collections;
 
 
 public class ScriptPhysicsController : MonoBehaviour {
-	
+
+	public float propelForceConstant = 100F;
+
 	public float wallJointStrength = 1.0F;
 	public float wallThresholdVelocity = 1.0F;
 	public float headExplodeForce = 1000;
@@ -13,8 +15,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 	public GameObject debug;
 	
 	//Local variables
-	GameObject modelPart;
-	GameObject breakBox;
+	public GameObject modelPart;
+	public GameObject breakBox;
+	public Vector3 rangedAttack;
+	public Vector3 propelVector;
 	
 	//Local variables
 	//public bool propel;
@@ -49,7 +53,6 @@ public class ScriptPhysicsController : MonoBehaviour {
 	if(Input.GetKeyDown(KeyCode.D))
 		{
 		BlastWall (Vector3.zero, panelContainer);	
-		//	Debug.Log ("D received");
 		}
 		
 	}
@@ -141,7 +144,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	void BlastWall(Vector3 blastForce, GameObject hotChunk)
 	{
-		Debug.Log ("BlastWall");
+		//Debug.Log ("BlastWall");
 		foreach(Transform child in hotChunk.transform)
 		{
 			if(child.collider)
@@ -165,23 +168,94 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 	}
 	
-	void InitiateActionEffect(Result hotResult)
+	void InitiateActionEffect(Result result)
 	{
-		
+		modelPart = null;
+		breakBox = null;
+		propelVector = Vector3.zero;
+
 		//Ragdoll entire character if dead
-		if(!hotResult.targetCharacter.inPlay)
+		if(!result.targetCharacter.inPlay)
 		{
-			Ragdollify(hotResult.targetCharacter.gameObject);
+			Ragdollify(result.targetCharacter.gameObject);
 		}
 		
-		//EffectInfo effectInfo = GetEffectInfo(hotResult.targetCharacter, hotResult.hitLocation);
+		//EffectInfo effectInfo = GetEffectInfo(result.targetCharacter, result.hitLocation);
 		
-		ScriptModelController hotModelController = hotResult.targetCharacter.
+		ScriptModelController targetModelController = result.targetCharacter.
 			GetComponentInChildren<ScriptModelController>();
-		
+
+		//For all damage, if limb is broken, spurt blood and dismember. If not, spurt blood only
+
+		//Get attack direction
+		rangedAttack = result.actingCharacter.
+			GetComponentInChildren<ScriptControllerTargeting>().rangedAttack;
+		rangedAttack.Normalize();
+
+
+		//Debug.Log(result.targetNetHitProfile.head.ToString() + result.targetNetHitProfile.body.ToString() + 
+		  //      result.targetNetHitProfile.leftArm.ToString() + result.targetNetHitProfile.rightArm.ToString() + 
+		    //  result.targetNetHitProfile.leftLeg.ToString() + result.targetNetHitProfile.rightLeg.ToString());
+
+		//If damage is inflicted on body part and that body part is destroyed
+		if(result.targetNetHitProfile.head < 0 && result.targetCharacter.currentHitProfile.head <= 0)
+		{
+			//Assign execution variables
+			modelPart = targetModelController.head;
+			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.head.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.head * propelForceConstant;
+		}
+
+		if(result.targetNetHitProfile.body < 0 && result.targetCharacter.currentHitProfile.body <= 0)
+		{
+			modelPart = targetModelController.spine;
+			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.spine.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.body * propelForceConstant;
+		}
+
+		if(result.targetNetHitProfile.leftArm < 0 && result.targetCharacter.currentHitProfile.leftArm <= 0)
+		{
+			modelPart = targetModelController.leftArm;
+			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftArm.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.leftArm * propelForceConstant;
+		}
+
+		if(result.targetNetHitProfile.rightArm < 0 && result.targetCharacter.currentHitProfile.rightArm <= 0)
+		{
+			modelPart = targetModelController.rightArm;
+			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightArm.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightArm * propelForceConstant;
+		}
+
+		if(result.targetNetHitProfile.leftLeg < 0 && result.targetCharacter.currentHitProfile.leftLeg <= 0)
+		{
+			modelPart = targetModelController.leftLeg;
+			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftLeg.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.leftLeg * propelForceConstant;
+		}
+
+		if(result.targetNetHitProfile.rightLeg < 0 && result.targetCharacter.currentHitProfile.rightLeg <= 0)
+		{
+			modelPart = targetModelController.rightLeg;
+			breakBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightLeg.transform.childCount)).gameObject;
+			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightLeg * propelForceConstant;
+		}
+
+		//Dismember
+		if(modelPart && breakBox)
+		{
+		Ragdollify(modelPart);
+		BreakJoints(breakBox);
+		Propel (propelVector, modelPart);
+		}
+
+		//Spurt blood
+
+
+
 		//Assign model part and break box
 
-
+		/*
 	switch(hotResult.hitLocation)
 		{
 		case BodyPart.Head:
@@ -214,7 +288,9 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 		
 		//Debug.Log (modelPart.ToString() + breakBox.ToString());
-		
+
+
+
 		Vector3 rangedAttack = hotResult.actingCharacter.
 			GetComponentInChildren<ScriptControllerTargeting>().rangedAttack;
 		
@@ -224,22 +300,20 @@ public class ScriptPhysicsController : MonoBehaviour {
 			{
 			modelPart.SendMessage("HeadExplode", headExplodeForce);	
 		}
-		}
-		//else if(hotResult.hitLocation == BodyPart.Body)
-		//{
-		//	Ragdollify(modelPart);
-		//	BreakJoints(breakBox);
-		//	Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
-		//}
-		else
-			{
 
+		if(hotResult.hitLocation == BodyPart.Body)
+			{
+				if(hotResult.targetCharacter.currentBodyHP <= 0)
+				{
+
+				}
+			}
 		Ragdollify(modelPart);
 		BreakJoints(breakBox);
 		Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
 		//breakBox.rigidbody.AddForce(rangedAttack * 500);
 		//Debug.Log ("Broke the " + hotResult.hitLocation);
-			}
+*/
 	}
 	
 	void BreakJoints(GameObject breakBox)

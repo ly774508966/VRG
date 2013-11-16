@@ -67,7 +67,7 @@ public enum FrameSize
 public class CharacterTemplate
 {
 	public string fullName;
-	public CharacterStatProfile characterStatProfile;
+	public CharacterPoolProfile characterStatProfile;
 	public Color primaryColor;
 	public Color secondaryColor;
 	public Color skinColor;
@@ -75,7 +75,7 @@ public class CharacterTemplate
 	
 	public CharacterTemplate (string fullNameArg, Color primaryColorArg, 
 		Color secondaryColorArg, Color skinColorArg, FrameSize frameSizeArg,
-		CharacterStatProfile characterStatProfileArg)
+		CharacterPoolProfile characterStatProfileArg)
 	{
 	fullName = fullNameArg;
 	primaryColor = primaryColorArg;
@@ -88,7 +88,7 @@ public class CharacterTemplate
 }
 
 [System.Serializable]
-public class CharacterStatProfile
+public class CharacterPoolProfile
 {
 	//public int meat = -9999;
 	//public int nerve = -9999;
@@ -115,9 +115,9 @@ public class CharacterStatProfile
 	//public int leftLegHP = -9999;
 	//public int rightLegHP = -9999;
 	
-	public CharacterStatProfile(){}
+	public CharacterPoolProfile(){}
 	
-	public CharacterStatProfile ( int focusArg, int brawlArg, int meleeArg, int shotArg, int evasionArg, 
+	public CharacterPoolProfile ( int focusArg, int brawlArg, int meleeArg, int shotArg, int evasionArg, 
 		 int muscleArg, int intelligenceArg, int presenceArg) 
 		{
 		//nerve = nerveArg;
@@ -137,6 +137,39 @@ public class CharacterStatProfile
 		//damageType = damageTypeArg;
 		}
 } 
+
+[System.Serializable]
+public class CharacterHitProfile
+{
+	public int head;
+	public int body;
+	public int leftArm;
+	public int rightArm;
+	public int leftLeg;
+	public int rightLeg;
+
+	public CharacterHitProfile(){}
+
+	public CharacterHitProfile(CharacterHitProfile originalHitProfile)
+	{
+		head = originalHitProfile.head;
+		body = originalHitProfile.body;
+		leftArm = originalHitProfile.leftArm;
+		rightArm = originalHitProfile.rightArm;
+		leftLeg = originalHitProfile.leftLeg;
+		rightLeg = originalHitProfile.rightLeg;
+	}
+
+	public CharacterHitProfile(int headArg, int bodyArg, int leftArmArg, int rightArmArg, int leftLegArg, int rightLegArg)
+	{
+		head = headArg;
+		body = bodyArg;
+		leftArm = leftArmArg;
+		rightArm = rightArmArg;
+		leftLeg = leftLegArg;
+		rightLeg = rightLegArg;
+	}
+}
 
 
 
@@ -282,19 +315,24 @@ public class TacticStatProfile
 //Action classes
 	[System.Serializable]
 public class Result
-	{
-		public ScriptCharacterSheet actingCharacter = null;
-		public ScriptCharacterSheet targetCharacter = null;
-		public bool success = false;
-		public DamageType damageType = DamageType.None;
-		public int damageAmount = -9999;
-		public int successNumber = -9999;
-		public int hitPercentage = -9999;
-		public int roll = -9999;
-		public int rollExcess = -9999;
-		public int actingAttack = -9999;
-		public int targetDefense = -9999;
-		public BodyPart hitLocation = BodyPart.None;
+{
+	public ScriptCharacterSheet actingCharacter = null;
+	public ScriptCharacterSheet targetCharacter = null;
+	public bool success = false;
+	public DamageType damageType = DamageType.None;
+	public int grossDamage = -9999;
+	public int successNumber = -9999;
+	public int hitPercentage = -9999;
+	public int roll = -9999;
+	public int rollExcess = -9999;
+	public int actingAttack = -9999;
+	public int targetDefense = -9999;
+	//public List<BodyPart> hitLocations = new List<BodyPart>();
+	public CharacterHitProfile targetGrossHitProfile = new CharacterHitProfile();
+	//public CharacterHitProfile targetHitResistanceProfile = new CharacterHitProfile();
+	public CharacterHitProfile targetNetHitProfile = new CharacterHitProfile();
+
+	
 		public Result(ScriptCharacterSheet actingCharacterSheet)
 		{
 			actingCharacter = actingCharacterSheet;
@@ -328,7 +366,7 @@ public class ScriptDatabase : MonoBehaviour {
 	public Dictionary<string, Tactic> tacticsLookup = new Dictionary<string, Tactic>(){
 		{"Basic Shot", new Tactic("Basic Shot", TacticType.Action, new TacticStatProfile(0, 0, 0, 0, 0, 0))}
 		//,
-		//{"Wild Shot", new Tactic("Wild Shot", TacticType.Action, new CharacterStatProfile(-2, 0, 3, 0, 0, DamageType.None))}	
+		//{"Wild Shot", new Tactic("Wild Shot", TacticType.Action, new CharacterPoolProfile(-2, 0, 3, 0, 0, DamageType.None))}	
 
 	};
 	
@@ -339,10 +377,10 @@ public class ScriptDatabase : MonoBehaviour {
 	//Premade characters
 	public CharacterTemplate coppermouth = new CharacterTemplate(
 		"Coppermouth", Color.green, Color.yellow, Color.white, FrameSize.Medium,
-		new CharacterStatProfile(10, 10, 8, 4, 10, 5, 8, 4));
+		new CharacterPoolProfile(10, 10, 8, 4, 10, 5, 8, 4));
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
-	//	new Tactic("Basic Shot", TacticType.Action, new CharacterStatProfile( 0, 0, 0, 0, 0, DamageType.None))  	
+	//	new Tactic("Basic Shot", TacticType.Action, new CharacterPoolProfile( 0, 0, 0, 0, 0, DamageType.None))  	
 	//};
 
 	

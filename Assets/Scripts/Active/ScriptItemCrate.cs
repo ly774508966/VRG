@@ -46,7 +46,7 @@ public class ScriptItemCrate : MonoBehaviour {
 	
 	void PopOpen ()
 	{
-		Debug.Log ("Pop open call received");
+		//Debug.Log ("Pop open call received");
 		lid.rigidbody.isKinematic = false;
 		lid.rigidbody.WakeUp();
 		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, Y_FORCE, Random.value * -500);

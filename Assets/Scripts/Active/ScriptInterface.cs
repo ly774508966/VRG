@@ -71,12 +71,12 @@ public class ScriptInterface : MonoBehaviour {
 	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
 	{
 		return hotSheet.stringID +
-			"\n Head: " + hotSheet.currentHeadHP.ToString() + "/" + hotSheet.maxHeadHP.ToString() +
-				"\n Body: " + hotSheet.currentBodyHP.ToString() + "/" + hotSheet.maxBodyHP.ToString() +
-				"\n Left Arm: " + hotSheet.currentLeftArmHP.ToString() + "/" + hotSheet.maxLeftArmHP.ToString() +
-				"\n Right Arm: " + hotSheet.currentRightArmHP.ToString() + "/" + hotSheet.maxRightArmHP.ToString() +
-				"\n Left Leg: " + hotSheet.currentLeftLegHP.ToString() + "/" + hotSheet.maxLeftLegHP.ToString() +
-				"\n Right Leg: " + hotSheet.currentRightLegHP.ToString() + "/" + hotSheet.maxRightLegHP.ToString() +
+			"\n Head: " + hotSheet.currentHitProfile.head.ToString() + "/" + hotSheet.maxHitProfile.head.ToString() +
+				"\n Body: " + hotSheet.currentHitProfile.body.ToString() + "/" + hotSheet.maxHitProfile.body.ToString() +
+				"\n Left Arm: " + hotSheet.currentHitProfile.leftArm.ToString() + "/" + hotSheet.maxHitProfile.leftArm.ToString() +
+				"\n Right Arm: " + hotSheet.currentHitProfile.rightArm.ToString() + "/" + hotSheet.maxHitProfile.rightArm.ToString() +
+				"\n Left Leg: " + hotSheet.currentHitProfile.leftLeg.ToString() + "/" + hotSheet.maxHitProfile.leftLeg.ToString() +
+				"\n Right Leg: " + hotSheet.currentHitProfile.rightLeg.ToString() + "/" + hotSheet.maxHitProfile.rightLeg.ToString() +
 			"\n Item: " + hotSheet.activeItem.fullName;
 	}
 	
