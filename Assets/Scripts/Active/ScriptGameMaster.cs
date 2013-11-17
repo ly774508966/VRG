@@ -425,11 +425,10 @@ public class ScriptGameMaster : MonoBehaviour {
 				{
 				ExecuteAction(activeCharacters[1]);	
 				}
+
+				//CharacterCleanup();
 				
-				//4. Kill necessary characters
-				CharacterCleanup();
-				
-				//5. Update character target, destination, stats
+				//4. Update character target, destination, stats
 				UpdateCharacterValues();
 				ResolveEngagements ();
 			} 
@@ -667,16 +666,11 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	
 	//Maintenence
-	void CharacterCleanup(){
+	//void CharacterCleanup(){
 		//Debug.Break ();
-		List<ScriptCharacterSheet> tempCharactersInPlay = new List<ScriptCharacterSheet>(charactersInPlay);
+		//List<ScriptCharacterSheet> tempCharactersInPlay = new List<ScriptCharacterSheet>(charactersInPlay);
 		//Debug.Log ("temp contains " + tempCharactersInPlay.Count);
-		
-		//Kill appropriate characters
-		for(int i = 0; i < tempCharactersInPlay.Count; i++){
-			ScriptCharacterSheet hotSheet = tempCharactersInPlay[i];
-		}
-	}
+	//}
 	void UpdateCharacterValues(){
 		
 		//Update targets
@@ -798,9 +792,10 @@ public class ScriptGameMaster : MonoBehaviour {
 	}
 	*/
 	//HANDLER FUNCTIONS
+
 	void ButtonHandler(){
 			if(charactersInPlay.Count >= 1){
-			ScriptCharacterSheet selectedSheet = charactersInPlay[0].GetComponent<ScriptCharacterSheet>();
+			//ScriptCharacterSheet selectedSheet = charactersInPlay[0].GetComponent<ScriptCharacterSheet>();
 					
 			string hotButton = inputButtonName;
 			//playerPrompt = false;

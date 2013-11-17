@@ -6,7 +6,7 @@ public class ScriptModelHead : MonoBehaviour {
 	//public GameObject impactBox;
 	public AudioSource audioSource;
 	//public int impactBoxNumber = 14;
-	ParticleSystem bloodEffect;
+	//ParticleSystem bloodEffect;
 	public GameObject severPoint;
 	public GameObject brainBox;
 	
@@ -17,7 +17,7 @@ public class ScriptModelHead : MonoBehaviour {
 		brainBox = transform.FindChild("brain").FindChild("brainBox").gameObject;
 		audioSource = gameObject.GetComponent<AudioSource>();
 		
-		bloodEffect = severPoint.GetComponent<ParticleSystem>();
+		//bloodEffect = severPoint.GetComponent<ParticleSystem>();
 		
 		foreach(Transform child in transform){
 			

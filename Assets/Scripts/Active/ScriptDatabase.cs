@@ -200,6 +200,12 @@ public class CharacterHitProfile
 		public int usesRemaining = -9999;
 		public bool isConcealed = false;
 		public int itemWaitTime = -9999;
+
+		//Aesthetics
+	public AudioClip itemSound;
+	public Color projectileColor;
+	public Color effectColor;
+	public Color itemColor;
 	
 		public Item (){}
 		public Item (string fullNameArg, AttackType attackTypeArg, DamageType damageTypeArg, ItemStatProfile itemStatProfileArg ){
@@ -207,7 +213,8 @@ public class CharacterHitProfile
 		fullName = fullNameArg;
 		attackType = attackTypeArg;
 		damageType = damageTypeArg;
-		itemStatProfile = itemStatProfileArg;	
+		itemStatProfile = itemStatProfileArg;
+	
 		}
 	}
 
