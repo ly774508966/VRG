@@ -246,7 +246,15 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//Shoot projectile
 
 		//Fire weapon at target's part if hit, randomly if miss
+		if(breakBox)
+		{
 		result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", breakBox);
+		Debug.Log(breakBox.name);
+		}
+		else
+		{
+			Debug.Log("breakBox requested but not assigned");
+		}
 		//	hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
 
 

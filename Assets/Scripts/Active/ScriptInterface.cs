@@ -26,8 +26,8 @@ public class ScriptInterface : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		selectedCharacterComparisonDisplay.guiText.text = GetStandardCharacterComparison(scriptGameMaster.selectedSheet);
-		opposingCharacterComparisonDisplay.guiText.text = GetMirroredCharacterComparison(scriptGameMaster.opposingSheet);
+		selectedCharacterComparisonDisplay.guiText.text = GetCharacterComparison(scriptGameMaster.selectedSheet, scriptGameMaster.opposingSheet);
+		//opposingCharacterComparisonDisplay.guiText.text = GetMirroredCharacterComparison(scriptGameMaster.opposingSheet);
 		selectedCharacterSheetDisplay.guiText.text = GetCharacterSheet(scriptGameMaster.selectedSheet);
 		opposingCharacterSheetDisplay.guiText.text = GetCharacterSheet(scriptGameMaster.opposingSheet);
 		
@@ -39,7 +39,7 @@ public class ScriptInterface : MonoBehaviour {
 		console.SendMessage("AddNewLineConsole", textLine);
 		
 	}
-	
+	/*
 	string GetStandardCharacterComparison(ScriptCharacterSheet hotSheet){
 		return 
 			//hotSheet.stringID + 
@@ -68,6 +68,28 @@ public class ScriptInterface : MonoBehaviour {
 			"\n" + hotSheet.readyDamage.ToString() + " Damage" + 
 			"\n" + hotSheet.currentHitChance.ToString() + " Hit %";
 	}
+	*/
+
+	string GetCharacterComparison(ScriptCharacterSheet selectedCharacter, ScriptCharacterSheet opposingCharacter)
+	{
+		return string.Format("{0}     {1}"
+		                     + "\n Range {2:00}     {3:00} Range"
+		                     + "\n Attack {4:00}     {5:00} Defense" 
+		                     + "\n Defense {6:00}     {7:00} Attack" 
+		                     + "\n Priority {8:00}     {9:00} Priority", 
+		                     new object[] {selectedCharacter.stringID, opposingCharacter.stringID,
+			selectedCharacter.readyRange, opposingCharacter.readyRange, selectedCharacter.readyAttack, 
+			opposingCharacter.readyDefense,	selectedCharacter.readyDefense, opposingCharacter.readyAttack, 
+			selectedCharacter.readyPriority, opposingCharacter.readyPriority});
+
+
+
+		                   //  , selectedCharacter.stringID, opposingSheet.stringID)
+			//+ "\n
+
+			//; 
+	}
+
 	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
 	{
 		return hotSheet.stringID +
