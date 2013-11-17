@@ -174,6 +174,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 		breakBox = null;
 		propelVector = Vector3.zero;
 
+	
+
 		//Ragdoll entire character if dead
 		if(!result.targetCharacter.inPlay)
 		{
@@ -240,6 +242,15 @@ public class ScriptPhysicsController : MonoBehaviour {
 			breakBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightLeg.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightLeg * propelForceConstant;
 		}
+
+		//Shoot projectile
+
+		//Fire weapon at target's part if hit, randomly if miss
+		result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", breakBox);
+		//	hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
+
+
+
 
 		//Dismember
 		if(modelPart && breakBox)

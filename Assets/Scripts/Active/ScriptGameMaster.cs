@@ -451,9 +451,6 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Set target's last attacker as attacker	
 			targetSheet.lastAttacker = hotSheet;
 		
-			//Start weapon effect
-			hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
-	
 			//Get action result
 			result = GetActionResult(hotSheet, targetSheet);
 			

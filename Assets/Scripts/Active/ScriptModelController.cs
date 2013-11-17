@@ -96,9 +96,9 @@ public class ScriptModelController : MonoBehaviour {
 		
 	}
 	
-	void WeaponEffect(){
-	weapon.SendMessage("GunshotEffect");
-	}
+	//void WeaponEffect(){
+	//weapon.SendMessage("GunshotEffect");
+	//}
 	
 	
 }
