@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ScriptCharacterController : MonoBehaviour {
 	
 	
 	//Cameras
-	public Camera cinematicCamera0;
-	public Camera cinematicCamera1;
+	public List<Camera> characterCameras = new List<Camera>();
+	public Transform cameraContainer;
+	//public Camera cinematicCamera0;
+	//public Camera cinematicCamera1;
 	
 	//Movement
 	ScriptCharacterSheet scriptCharacterSheet;
@@ -27,11 +30,20 @@ public class ScriptCharacterController : MonoBehaviour {
 	void Start () {
 		scriptCharacterSheet = GetComponent<ScriptCharacterSheet>();
 		
-		cinematicCamera0.enabled = false;
-		cinematicCamera1.enabled = false;
-		
-	
-		
+		//cinematicCamera0.enabled = false;
+		//cinematicCamera1.enabled = false;
+
+		for(int i = 0; i < cameraContainer.childCount; i++)
+		{
+				Camera hotCam = cameraContainer.GetChild(i).GetComponent<Camera>();
+				characterCameras.Add (hotCam);
+				hotCam.enabled = false;
+		}
+
+		foreach(Transform child in cameraContainer)
+		{
+			characterCameras.Add (child.GetComponent<Camera>());
+		}
 		
 		
 		

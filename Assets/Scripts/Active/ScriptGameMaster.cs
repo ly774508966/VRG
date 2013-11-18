@@ -435,46 +435,38 @@ public class ScriptGameMaster : MonoBehaviour {
 
 			//Get action result
 			result = GetActionResult(hotSheet, targetSheet);
-			
-			//Start encounter cam on random character in encounter
-			/*
-			ScriptCharacterController thirdPersonCharacter;
-			if(Random.value >= .5)
-			{
-			thirdPersonCharacter = result.actingCharacter.GetComponent<ScriptCharacterController>();
-			}
-			else
-			{
-			thirdPersonCharacter = result.targetCharacter.GetComponent<ScriptCharacterController>();	
-			}
-			RunCinematicCamera(thirdPersonCharacter);
-			*/
-			
+
+			//Change states
 			if(result.success)
 			{
-			
-					//Reduce health
+				//Reduce health
 				SumHitProfiles(result.targetCharacter.currentHitProfile, result.targetNetHitProfile);
 			}
 			
 			//Apply damage results
 			if(targetSheet.currentHitProfile.head <= 0 || targetSheet.currentHitProfile.body <= 0)
 			{
-			KillCharacter(targetSheet);	
+				KillCharacter(targetSheet);	
+
+				//Start encounter cam on dead character
+				RunCinematicCamera(result.targetCharacter.GetComponent<ScriptCharacterController>());
 			}
-			
-			//Debug.Log (result.hitLocation.ToString());
-			
-			//Apply action effect profile
+
+			//Initiate effect
 			scriptPhysicsController.SendMessage("InitiateActionEffect", result);
 
 		} else {
 			//Character attacks nothing
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
 		}
+
 		//Reset Wait Time to Delay
 		hotSheet.waitTime = 1; //Magic number
-		
+
+			
+
+			
+
 		//Log action
 			string hotLine = result.actingCharacter.fullName +
 			" attacks " +
@@ -1044,7 +1036,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 	void RunCinematicCamera (ScriptCharacterController character)
 	{
-		Camera hotCam;
+		Camera hotCam = character.characterCameras[2];
+			/*
 		if(Random.value >= 0.5)
 		{
 			//character.cinematicCamera0.enabled = true;
@@ -1056,6 +1049,9 @@ public class ScriptGameMaster : MonoBehaviour {
 			hotCam = character.cinematicCamera1;
 		}
 		//Debug.Log (hotCam.ToString());
+
+*/
+
 		overviewCamera.enabled = false;
 		hotCam.enabled = true;
 		//Debug.Break();
