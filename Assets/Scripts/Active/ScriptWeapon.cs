@@ -60,6 +60,14 @@ public class ScriptWeapon : MonoBehaviour {
 	hotFlash = Instantiate(muzzleFlashPrefab, transform.position, transform.rotation) as GameObject;
 	StartCoroutine("EndFlash");		
 	}
+
+	void GunshotEffect (ScriptModelController missedModel)
+	{
+		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+		hotProj.transform.parent = junkContainer.transform;
+		Vector3 attackVector =  (missedModel.gameObject.transform.position + new Vector3(0, (Random.value - 0.5F)*8, (Random.value - 0.5F)*8)) - projectileSpawn.position; 
+	}
+
 	
 	IEnumerator EndFlash(){
 		

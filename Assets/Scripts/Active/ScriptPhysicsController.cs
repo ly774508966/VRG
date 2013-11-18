@@ -199,6 +199,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 		  //      result.targetNetHitProfile.leftArm.ToString() + result.targetNetHitProfile.rightArm.ToString() + 
 		    //  result.targetNetHitProfile.leftLeg.ToString() + result.targetNetHitProfile.rightLeg.ToString());
 
+		//Upon successful attack
+		if(result.success)
+		{
+
 		//If damage is inflicted on body part and that body part is destroyed
 		if(result.targetNetHitProfile.head < 0 && result.targetCharacter.currentHitProfile.head <= 0)
 		{
@@ -242,14 +246,14 @@ public class ScriptPhysicsController : MonoBehaviour {
 			breakBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightLeg.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightLeg * propelForceConstant;
 		}
-
+		
 		//Shoot projectile
 
 		//Fire weapon at target's part if hit, randomly if miss
 		if(breakBox)
 		{
 		result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", breakBox);
-		Debug.Log(breakBox.name);
+		//Debug.Log(breakBox.name);
 		}
 		else
 		{
@@ -270,7 +274,18 @@ public class ScriptPhysicsController : MonoBehaviour {
 
 		//Spurt blood
 
+		}
+		else if(!result.success)
+		{
+			//Fire weapon in random direction
+			result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.
+				GetComponent<ScriptWeapon>().SendMessage("GunshotEffect");
 
+		}
+		else
+		{
+			Debug.Log ("Something went horribly wrong");
+		}
 
 		//Assign model part and break box
 
