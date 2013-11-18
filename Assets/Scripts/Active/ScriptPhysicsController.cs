@@ -5,21 +5,31 @@ using System.Collections;
 
 public class ScriptPhysicsController : MonoBehaviour {
 
-	public float propelForceConstant = 100F;
 
+
+	//Force
+	public float propelForceConstant = 100F;
+	public float headExplodeForce = 1000;
+
+	//Geometry
 	public float wallJointStrength = 1.0F;
 	public float wallThresholdVelocity = 1.0F;
-	public float headExplodeForce = 1000;
-	//public float propelForce = 10000F;
+
+	//Blood effect
+	public GameObject bloodLeak;
+
+	//Containers
 	public GameObject panelContainer;
-	public GameObject debug;
-	
+
 	//Local variables
 	public GameObject modelPart;
 	public GameObject breakBox;
 	public Vector3 rangedAttack;
 	public Vector3 propelVector;
-	
+
+	//Temp
+	public GameObject debug;
+
 	//Local variables
 	//public bool propel;
 	//public bool blowUpHead;
@@ -249,6 +259,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 		
 		//Shoot projectile
 
+
+
 		//Fire weapon at target's part if hit, randomly if miss
 		if(breakBox)
 		{
@@ -273,7 +285,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 
 		//Spurt blood
-
+			GameObject bloodBox = targetModelController.spine.transform.FindChild("spineBox1").gameObject;
+			GameObject hotLeak = Instantiate(bloodLeak, bloodBox.transform.position, bloodBox.transform.rotation) as GameObject;
+			hotLeak.transform.parent = bloodBox.transform;
+			//            targetModelController.spine.transform.FindChild("spineBox1").rotation);
 		}
 		else if(!result.success)
 		{
@@ -358,5 +373,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 		}
 			
 	}
-	
+
+	void DecapitateModel(ScriptModelController targetCharacter, int damage)
+	{
+		//Instantiate(bloodLeak, targetCharacter.spine.transform.FindChild("spineBox1"));
+	}
+
 }

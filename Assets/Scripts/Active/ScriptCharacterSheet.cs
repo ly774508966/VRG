@@ -136,15 +136,15 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//public bool retreat;
 	
 	//Firing Mode
-	public bool aggressiveFire = false;
-	public bool blindFire = false;
-	public bool aimedFire = false;
+	//public bool aggressiveFire = false;
+	//public bool blindFire = false;
+	//public bool aimedFire = false;
 	
 	//Combat
 	
 	
 //Physics
-	public ScriptCharacterSheet lastAttacker;
+	//public ScriptCharacterSheet lastAttacker;
 	
 		//Attack properties
 	//public bool propel;
