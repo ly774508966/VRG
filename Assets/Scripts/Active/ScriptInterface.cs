@@ -81,18 +81,12 @@ public class ScriptInterface : MonoBehaviour {
 			selectedCharacter.readyRange, opposingCharacter.readyRange, selectedCharacter.readyAttack, 
 			opposingCharacter.readyDefense,	selectedCharacter.readyDefense, opposingCharacter.readyAttack, 
 			selectedCharacter.readyPriority, opposingCharacter.readyPriority});
-
-
-
-		                   //  , selectedCharacter.stringID, opposingSheet.stringID)
-			//+ "\n
-
-			//; 
 	}
 
 	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
 	{
 		return hotSheet.stringID +
+			"\n Toughness: " + hotSheet.toughness +
 			"\n Head: " + hotSheet.currentHitProfile.head.ToString() + "/" + hotSheet.maxHitProfile.head.ToString() +
 				"\n Body: " + hotSheet.currentHitProfile.body.ToString() + "/" + hotSheet.maxHitProfile.body.ToString() +
 				"\n Left Arm: " + hotSheet.currentHitProfile.leftArm.ToString() + "/" + hotSheet.maxHitProfile.leftArm.ToString() +

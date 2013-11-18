@@ -14,7 +14,7 @@ public class ScriptModelHead : MonoBehaviour {
 	void Start () {
 		
 		//impactBox = transform.FindChild("headBox" + impactBoxNumber.ToString()).gameObject;
-		brainBox = transform.FindChild("brain").FindChild("brainBox").gameObject;
+		brainBox = transform.FindChild("headBox14").gameObject;
 		audioSource = gameObject.GetComponent<AudioSource>();
 		
 		//bloodEffect = severPoint.GetComponent<ParticleSystem>();

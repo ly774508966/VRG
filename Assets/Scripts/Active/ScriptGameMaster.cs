@@ -38,7 +38,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public bool engagementMode = false;
 	
 	//Interface
-	GameObject interfaceMain;
+	GameObject interfaceController;
 	ScriptInterface scriptInterface;
 	public string inputButtonName = "";
 	ScriptCycleDisplay scriptCycleDisplay;
@@ -103,9 +103,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	void Start () {
 		
 		//Acquire scripts
-		interfaceMain = GameObject.Find ("InterfaceMain");
-		scriptInterface = interfaceMain.GetComponent<ScriptInterface>();
-		scriptCycleDisplay = interfaceMain.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
+		interfaceController = GameObject.Find ("ControllerInterface");
+		scriptInterface = interfaceController.GetComponent<ScriptInterface>();
+		scriptCycleDisplay = interfaceController.transform.FindChild("PanelCycle").GetComponent<ScriptCycleDisplay>();
 		scriptPhysicsController = GameObject.Find ("ControllerPhysics").GetComponent<ScriptPhysicsController>();
 		scriptDatabase = GetComponent<ScriptDatabase>();
 		
@@ -221,25 +221,9 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotModel.SendMessage("ColorCharacter");
 		
 		//Set Derived Stats
-		hotSheet.frameNumber = GetFrameNumber(hotSheet);
-		
-		//hotSheet.maxHeadHP = 2 + hotSheet.frameNumber;
-		//hotSheet.maxBodyHP = 5 + hotSheet.frameNumber;
-		//hotSheet.maxLeftArmHP = 3 + hotSheet.frameNumber;
-		//hotSheet.maxRightArmHP = 3 + hotSheet.frameNumber;
-		//hotSheet.maxLeftLegHP = 4 + hotSheet.frameNumber;
-		//hotSheet.maxRightLegHP = 4 + hotSheet.frameNumber;
-		
-		//hotSheet.currentHeadHP = hotSheet.maxHeadHP;
-		//hotSheet.currentBodyHP = hotSheet.maxBodyHP;
-		//hotSheet.currentLeftArmHP = hotSheet.maxLeftArmHP;
-		//hotSheet.currentRightArmHP = hotSheet.maxRightArmHP;
-		//hotSheet.currentLeftLegHP = hotSheet.maxLeftLegHP;
-		//hotSheet.currentRightLegHP = hotSheet.maxRightLegHP;
-
-		hotSheet.maxHitProfile = new CharacterHitProfile(2 + hotSheet.frameNumber, 5 + hotSheet.frameNumber, 
-		                                                 3 + hotSheet.frameNumber, 3 + hotSheet.frameNumber,
-		                                                 4 + hotSheet.frameNumber, 4 + hotSheet.frameNumber);
+		hotSheet.maxHitProfile = new CharacterHitProfile(2 + hotSheet.toughness, 5 + hotSheet.toughness, 
+		                                                 3 + hotSheet.toughness, 3 + hotSheet.toughness,
+		                                                 4 + hotSheet.toughness, 4 + hotSheet.toughness);
 		hotSheet.currentHitProfile = new CharacterHitProfile(hotSheet.maxHitProfile);
 
 		hotSheet.unarmedDamage = hotSheet.baseMuscle / 2;
@@ -274,8 +258,10 @@ public class ScriptGameMaster : MonoBehaviour {
 		hotSheet.secondaryColor = GetRandomColor();
 		
 		//Assign Stats
-		hotSheet.frameSize = GetRandomFrameSize();
-		//hotSheet.baseToughness = GetRandom1ToN(10);
+		//hotSheet.frameSize = GetRandomFrameSize();
+
+		hotSheet.toughness = GetRandom1ToN(5);
+
 		hotSheet.currentFocus = GetRandom1ToN(10);
 		hotSheet.baseMuscle = GetRandom1ToN(10);
 		hotSheet.baseBrawl = GetRandom1ToN(10);
@@ -446,10 +432,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		if(hotSheet.target)
 		{
 			ScriptCharacterSheet targetSheet = hotSheet.target;
-			
-			//Set target's last attacker as attacker	
-			targetSheet.lastAttacker = hotSheet;
-		
+
 			//Get action result
 			result = GetActionResult(hotSheet, targetSheet);
 			
@@ -471,50 +454,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			{
 			
 					//Reduce health
-
-				//result.targetCharacter.currentHitProfile
-				//result.targetNetDamageProfile
-				//Debug.Log(result.targetCharacter.maxHitProfile.head.ToString() + result.targetCharacter.maxHitProfile.body.ToString() + 
-				  //        result.targetCharacter.maxHitProfile.leftArm.ToString() + result.targetCharacter.maxHitProfile.rightArm.ToString() + 
-				    //      result.targetCharacter.maxHitProfile.leftLeg.ToString() + result.targetCharacter.maxHitProfile.rightLeg.ToString());
-
-
 				SumHitProfiles(result.targetCharacter.currentHitProfile, result.targetNetHitProfile);
-
-				//Debug.Log(result.targetCharacter.maxHitProfile.head.ToString() + result.targetCharacter.maxHitProfile.body.ToString() + 
-				  //        result.targetCharacter.maxHitProfile.leftArm.ToString() + result.targetCharacter.maxHitProfile.rightArm.ToString() + 
-				    //      result.targetCharacter.maxHitProfile.leftLeg.ToString() + result.targetCharacter.maxHitProfile.rightLeg.ToString());
-
-
-				/*
-				foreach(BodyPart bodyPart in result.hitLocations)
-				{
-					switch(bodyPart)
-				{
-				case BodyPart.Head:
-					targetSheet.currentHeadHP -= result.damageAmount;
-					break;
-				case BodyPart.Body:
-					targetSheet.currentBodyHP -= result.damageAmount;
-					break;
-				case BodyPart.LeftArm:
-					targetSheet.currentLeftArmHP -= result.damageAmount;
-					break;
-				case BodyPart.LeftLeg:
-					targetSheet.currentLeftLegHP -= result.damageAmount;
-					break;
-				case BodyPart.RightArm:
-					targetSheet.currentRightArmHP -= result.damageAmount;
-					break;
-				case BodyPart.RightLeg:
-					targetSheet.currentRightLegHP  -= result.damageAmount;
-					break;
-				default:
-					Debug.Log ("Invalid hit location " + result.hitLocation.ToString());
-					break;
-				}
-				}
-				*/
 			}
 			
 			//Apply damage results
@@ -526,11 +466,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Debug.Log (result.hitLocation.ToString());
 			
 			//Apply action effect profile
-			if(result.success)
-			{
 			scriptPhysicsController.SendMessage("InitiateActionEffect", result);
-			}
-			
+
 		} else {
 			//Character attacks nothing
 			scriptInterface.SendMessage("AddNewLine",hotSheet.fullName + " attacks... nothing.");
@@ -882,7 +819,8 @@ public class ScriptGameMaster : MonoBehaviour {
 			return FrameSize.None;
 		}
 	}
-	
+
+	/*
 	int GetFrameNumber(ScriptCharacterSheet hotSheet)
 	{
 		switch(hotSheet.frameSize)
@@ -898,6 +836,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			return -9999;
 		}	
 	}
+	*/
 	//MODE TOGGLE
 	
 	void SetToExecutionPhase(){
@@ -991,23 +930,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		return true;
 		
-	}
-	
-	
-	void ApplyTactics(){
-		foreach(ScriptCharacterSheet hotSheet in charactersInPlay){
-		//ScriptCharacterSheet hotSheet = character.GetComponent<ScriptCharacterSheet>();
-			
-			
-			//Apply firing mode
-			if(hotSheet.aggressiveFire){
-				//hotSheet.priority
-			} else if(hotSheet.blindFire){
-			
-			} else if(hotSheet.aimedFire){
-				
-			}
-		}
 	}
 	
 	Result GetActionResult(ScriptCharacterSheet actingCharacter, ScriptCharacterSheet targetCharacter)

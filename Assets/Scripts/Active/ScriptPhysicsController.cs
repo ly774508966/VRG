@@ -23,9 +23,10 @@ public class ScriptPhysicsController : MonoBehaviour {
 
 	//Local variables
 	public GameObject modelPart;
-	public GameObject breakBox;
+	public GameObject struckBox;
 	public Vector3 rangedAttack;
 	public Vector3 propelVector;
+	public bool partIsDestroyed;
 
 	//Temp
 	public GameObject debug;
@@ -180,9 +181,11 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	void InitiateActionEffect(Result result)
 	{
+		//Reset "local" variables
 		modelPart = null;
-		breakBox = null;
+		struckBox = null;
 		propelVector = Vector3.zero;
+		partIsDestroyed = false;
 
 	
 
@@ -214,95 +217,117 @@ public class ScriptPhysicsController : MonoBehaviour {
 		{
 
 		//If damage is inflicted on body part and that body part is destroyed
-		if(result.targetNetHitProfile.head < 0 && result.targetCharacter.currentHitProfile.head <= 0)
+		if(result.targetNetHitProfile.head < 0)
 		{
 			//Assign execution variables
 			modelPart = targetModelController.head;
-			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.head.transform.childCount)).gameObject;
+			//struckBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.head.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.head * propelForceConstant;
-		}
+			if(result.targetCharacter.currentHitProfile.head <= 0)
+				{
+					partIsDestroyed = true;
+				}
+			}
 
-		if(result.targetNetHitProfile.body < 0 && result.targetCharacter.currentHitProfile.body <= 0)
+		if(result.targetNetHitProfile.body < 0)
 		{
 			modelPart = targetModelController.spine;
-			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.spine.transform.childCount)).gameObject;
+			//struckBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.spine.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.body * propelForceConstant;
+				if(result.targetCharacter.currentHitProfile.body <= 0)
+				{
+					partIsDestroyed = true;
+				}
 		}
 
-		if(result.targetNetHitProfile.leftArm < 0 && result.targetCharacter.currentHitProfile.leftArm <= 0)
+		if(result.targetNetHitProfile.leftArm < 0)
 		{
 			modelPart = targetModelController.leftArm;
-			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftArm.transform.childCount)).gameObject;
+			//struckBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftArm.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.leftArm * propelForceConstant;
+				if(result.targetCharacter.currentHitProfile.leftArm <= 0)
+				{
+					partIsDestroyed = true;
+				}
 		}
 
-		if(result.targetNetHitProfile.rightArm < 0 && result.targetCharacter.currentHitProfile.rightArm <= 0)
+		if(result.targetNetHitProfile.rightArm < 0)
 		{
 			modelPart = targetModelController.rightArm;
-			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightArm.transform.childCount)).gameObject;
+			//struckBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightArm.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightArm * propelForceConstant;
+				if(result.targetCharacter.currentHitProfile.rightArm <= 0)
+				{
+					partIsDestroyed = true;
+				}
 		}
 
-		if(result.targetNetHitProfile.leftLeg < 0 && result.targetCharacter.currentHitProfile.leftLeg <= 0)
+		if(result.targetNetHitProfile.leftLeg < 0)
 		{
 			modelPart = targetModelController.leftLeg;
-			breakBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftLeg.transform.childCount)).gameObject;
+			//struckBox = modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.leftLeg.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.leftLeg * propelForceConstant;
+				if(result.targetCharacter.currentHitProfile.leftLeg <= 0)
+				{
+					partIsDestroyed = true;
+				}
 		}
 
-		if(result.targetNetHitProfile.rightLeg < 0 && result.targetCharacter.currentHitProfile.rightLeg <= 0)
+		if(result.targetNetHitProfile.rightLeg < 0)
 		{
 			modelPart = targetModelController.rightLeg;
-			breakBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightLeg.transform.childCount)).gameObject;
+			//struckBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * targetModelController.rightLeg.transform.childCount)).gameObject;
 			propelVector = rangedAttack * -result.targetCharacter.currentHitProfile.rightLeg * propelForceConstant;
+				if(result.targetCharacter.currentHitProfile.rightLeg <= 0)
+				{
+					partIsDestroyed = true;
+				}
+			
 		}
 		
-		//Shoot projectile
+		//Assign struckBox randomly based on model part
+		struckBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * modelPart.transform.childCount)).gameObject;
 
 
-
-		//Fire weapon at target's part if hit, randomly if miss
-		if(breakBox)
+		//Fire weapon at target's part if there is a struckBox
+		if(struckBox)
 		{
-		result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", breakBox);
-		//Debug.Log(breakBox.name);
+		result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", struckBox);
+		//Debug.Log(struckBox.name);
 		}
 		else
 		{
-			Debug.Log("breakBox requested but not assigned");
+			Debug.Log("struckBox requested but not assigned");
 		}
 		//	hotSheet.gameObject.GetComponentInChildren<ScriptModelController>().SendMessage("WeaponEffect");
 
-
-
-
-		//Dismember
-		if(modelPart && breakBox)
+		//Dismember if destroyed
+		if(partIsDestroyed)
 		{
 		Ragdollify(modelPart);
-		BreakJoints(breakBox);
+		BreakJoints(struckBox);
 		Propel (propelVector, modelPart);
 		}
 
 		//Spurt blood
-			GameObject bloodBox = targetModelController.spine.transform.FindChild("spineBox1").gameObject;
-			GameObject hotLeak = Instantiate(bloodLeak, bloodBox.transform.position, bloodBox.transform.rotation) as GameObject;
-			hotLeak.transform.parent = bloodBox.transform;
-			//            targetModelController.spine.transform.FindChild("spineBox1").rotation);
+			//GameObject bloodBox = breakBox;
+				//targetModelController.spine.transform.FindChild("spineBox1").gameObject;
+			GameObject hotLeak = Instantiate(bloodLeak, struckBox.transform.position, struckBox.transform.rotation) as GameObject;
+			hotLeak.transform.parent = struckBox.transform;
+
 		}
-		else if(!result.success)
+		else if(result.success == false)
 		{
+
 			//Fire weapon in random direction
 			result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.
-				GetComponent<ScriptWeapon>().SendMessage("GunshotEffect");
+				GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", targetModelController);
 
 		}
 		else
 		{
 			Debug.Log ("Something went horribly wrong");
 		}
-
-		//Assign model part and break box
 
 		/*
 	switch(hotResult.hitLocation)

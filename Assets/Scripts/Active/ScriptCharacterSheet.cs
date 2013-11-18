@@ -44,6 +44,15 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Base/ innate stats
 	
 	//public int baseToughness = -9999;
+
+	//Attributes
+	public int toughness;
+	public int dexterity;
+	public int agility;
+	public int resolve;
+	public int intelligence;
+	public int presence;
+
 	
 	public int currentFocus = -9999;
 	public int maxFocus = -9999;
