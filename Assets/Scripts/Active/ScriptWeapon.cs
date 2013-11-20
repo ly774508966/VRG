@@ -63,12 +63,16 @@ public class ScriptWeapon : MonoBehaviour {
 
 	void GunshotEffect (ScriptModelController missedModel)
 	{
+		//Shoot projectile randomly
 		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
 		hotProj.transform.parent = junkContainer.transform;
 		Vector3 attackVector =  (missedModel.gameObject.transform.position 
-		                         ) + new Vector3(0, (Random.value - 0.5F)*8, (Random.value - 0.5F)*8)
+		                         ) + new Vector3(0, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
 		                          - projectileSpawn.position; 
 		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
+
+		//Sound effect
+		gunSound.Play ();
 	}
 
 	
