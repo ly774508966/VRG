@@ -74,13 +74,11 @@ public class CharacterTemplate
 	public FrameSize frameSize;
 	
 	public CharacterTemplate (string fullNameArg, Color primaryColorArg, 
-		Color secondaryColorArg, Color skinColorArg, FrameSize frameSizeArg,
-		CharacterPoolProfile characterStatProfileArg)
+		Color secondaryColorArg, Color skinColorArg, CharacterPoolProfile characterStatProfileArg)
 	{
 	fullName = fullNameArg;
 	primaryColor = primaryColorArg;
 	secondaryColor = secondaryColorArg;
-	frameSize = frameSizeArg;
 	skinColor = skinColorArg;
 	characterStatProfile = characterStatProfileArg;
 	}
@@ -97,7 +95,7 @@ public class CharacterPoolProfile
 	public int melee = -9999;
 	public int shot = -9999;
 	public int evasion = -9999;
-	//public int toughness = -9999;
+	public int toughness = -9999;
 	public int muscle = -9999;
 	public int intelligence = -9999;
 	public int presence = -9999;
@@ -118,7 +116,7 @@ public class CharacterPoolProfile
 	public CharacterPoolProfile(){}
 	
 	public CharacterPoolProfile ( int focusArg, int brawlArg, int meleeArg, int shotArg, int evasionArg, 
-		 int muscleArg, int intelligenceArg, int presenceArg) 
+		 int toughnessArg, int muscleArg, int intelligenceArg, int presenceArg) 
 		{
 		//nerve = nerveArg;
 		focus = focusArg;
@@ -126,7 +124,7 @@ public class CharacterPoolProfile
 		melee = meleeArg;
 		shot = shotArg;
 		evasion = evasionArg;
-		//toughness = toughnessArg;
+		toughness = toughnessArg;
 		muscle = muscleArg;
 		intelligence = intelligenceArg;
 		presence = presenceArg;
@@ -347,11 +345,20 @@ public class Result
 	}
 
 public class ScriptDatabase : MonoBehaviour {
-	
+
+	//Runtime variables
 	Item tempItem;
 	public int nextItemID = 0;
-	
-	//Attribute records
+
+	//Name records
+	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
+		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
+		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln"});
+	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat", "Kayla", 
+		"Dillon", "Reynolds", "Wild", "Rendar", "Casio", "Veis", "Ceti", "Vega", "Pavec", "Puncture", 
+		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln"});
+
+	//Item attribute records
 	Attribute[] purposeAttributes = new Attribute[]{
 		new Attribute("Pistol", AttackType.Shot, DamageType.None, new ItemStatProfile(0, 1, 4, 10, 0, 8, 1)),
 		new Attribute("Shotgun", AttackType.Shot, DamageType.None, new ItemStatProfile(2, 1, 10, 8, 2, 6, 2)),
@@ -383,8 +390,8 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	//Premade characters
 	public CharacterTemplate coppermouth = new CharacterTemplate(
-		"Coppermouth", Color.green, Color.yellow, Color.white, FrameSize.Medium,
-		new CharacterPoolProfile(10, 10, 8, 4, 10, 5, 8, 4));
+		"Coppermouth", Color.green, Color.yellow, Color.white,
+		new CharacterPoolProfile(10, 10, 8, 4, 10, 4, 5, 8, 4));
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterPoolProfile( 0, 0, 0, 0, 0, DamageType.None))  	

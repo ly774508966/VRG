@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ScriptModelController : MonoBehaviour {
 	
-	ScriptCharacterSheet scriptCharacterSheet;
+	public ScriptCharacterSheet scriptCharacterSheet;
 	public GameObject rightLeg;
 	public GameObject leftLeg;
 	public GameObject rightArm;
@@ -28,30 +28,25 @@ public class ScriptModelController : MonoBehaviour {
 	
 	}
 	
-	void InitializeModel(){
-		scriptCharacterSheet = transform.parent.GetComponent<ScriptCharacterSheet>();
-		leftArm = transform.FindChild("leftArm").gameObject;
-		rightArm = transform.FindChild("rightArm").gameObject;
-	    leftLeg = transform.FindChild("leftLeg").gameObject;
-		rightLeg = transform.FindChild("rightLeg").gameObject;
-		spine = transform.FindChild("spine").gameObject;
-		head = transform.FindChild("head").gameObject;
-		//face = head.transform.FindChild("face").gameObject;
-		weapon = leftArm.transform.FindChild("weapon").gameObject;
-	}
+	//void InitializeModel(){
+	//}
 	
 	void ColorCharacter(){
 		//Debug.Log ("ColorCharacter");
 		
 		//Primary coloring
-		foreach(Transform child in leftArm.transform){
-			if(child.gameObject.renderer){
+		foreach(Transform child in leftArm.transform)
+		{
+			if(child.gameObject.renderer)
+			{
 			Material hotMat = child.gameObject.renderer.material;
 			hotMat.color = scriptCharacterSheet.primaryColor;
 			}	
 		}
-			foreach(Transform child in rightArm.transform){
-			if(child.gameObject.renderer){
+			foreach(Transform child in rightArm.transform)
+		{
+			if(child.gameObject.renderer)
+			{
 			Material hotMat = child.gameObject.renderer.material;
 			hotMat.color = scriptCharacterSheet.primaryColor;
 			}	
