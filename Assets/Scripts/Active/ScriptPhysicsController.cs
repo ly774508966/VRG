@@ -43,7 +43,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
-	panelContainer = GameObject.Find ("ConPanel");
+	panelContainer = GameObject.Find ("ContainerGeometry");
 		
 	//foreach(GameObject wall in GameObject.Find ("ObjectBreakableWall")){
 	//RegisterAllPanels(panelContainer);
@@ -64,7 +64,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 	
 	if(Input.GetKeyDown(KeyCode.D))
 		{
-		BlastWall (Vector3.zero, panelContainer);	
+		BlastWall (new Vector3(500, 0, 0), panelContainer);	
 		}
 		
 	}
