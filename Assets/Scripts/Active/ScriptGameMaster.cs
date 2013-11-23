@@ -34,10 +34,10 @@ public class ScriptGameMaster : MonoBehaviour {
 	public ScriptCharacterSheet selectedSheet;
 	public ScriptCharacterSheet opposingSheet;
 	public GameObject characterGameObjectTemplate;
+	public GameObject containerCharacter;
 	List<ScriptCharacterSheet> charactersInPlay = new List<ScriptCharacterSheet>();
 	//List<ScriptCharacterSheet> activeCharacters = new List<ScriptCharacterSheet>();
 	int nextCharacterID = 0;
-	GameObject controllerCharacter;
 	
 	//Items
 	public List<Item> itemsInPlay = new List<Item>();
@@ -83,7 +83,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		overviewCamera = Camera.main;
 		
 		//Acquire controllers
-		controllerCharacter = GameObject.Find ("ControllerCharacter");
+		//containerCharacter = GameObject.Find ("ControllerCharacter");
 		
 		//Register each character object in the scene
 		foreach(GameObject character in GameObject.FindGameObjectsWithTag("Character")){
@@ -146,7 +146,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		ScriptCharacterSheet hotSheet = hotChar.GetComponent<ScriptCharacterSheet>();
 			
 		//Place character in character container
-		hotChar.transform.parent = controllerCharacter.transform;		
+		hotChar.transform.parent = containerCharacter.transform;		
 			
 		//Assign left character as selected and right as opposing; assign position objective
 		if(spawnTransform == spawn01)
@@ -163,7 +163,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		{
 			Debug.Log ("Invalid spawn position");	
 		}
-			
 			return hotSheet;
 	}
 		

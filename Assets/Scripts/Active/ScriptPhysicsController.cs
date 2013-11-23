@@ -20,6 +20,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 
 	//Containers
 	public GameObject panelContainer;
+	public Transform junkContainer;
 
 	//Local variables
 	public GameObject modelPart;
@@ -288,7 +289,6 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//Assign struckBox randomly based on model part
 		struckBox =  modelPart.transform.GetChild((int)Mathf.Floor(Random.value * modelPart.transform.childCount)).gameObject;
 
-
 		//Fire weapon at target's part if there is a struckBox
 		if(struckBox)
 		{
@@ -307,6 +307,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 		Ragdollify(modelPart);
 		BreakJoints(struckBox);
 		Propel (propelVector, modelPart);
+				modelPart.transform.parent = junkContainer;
 		}
 
 		//Spurt blood
