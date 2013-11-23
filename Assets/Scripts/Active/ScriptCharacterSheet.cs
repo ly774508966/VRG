@@ -48,25 +48,37 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	//Attributes
 	public int toughness;
 
-	public int strength;
-	public int dexterity;
-	public int agility;
-	public int focus;
-	public int moxie;
-	public int presence;
+	//public int strength;
+	//public int dexterity;
+	//public int agility;
+	//public int focus;
+	//public int moxie;
+	//public int presence;
 
 	//Skills
-	public int archery;
-	public int blades;
-	public int brawl;
-	public int computers;
-	public int firearms;
-	public int grapple;
-	public int hacking;
-	public int psionics;
-	public int seduction;
-	public int stealth;
-	
+	//public int archery;
+	//public int blades;
+	//public int brawl;
+	//public int computers;
+	//public int firearms;
+	//public int grapple;
+	//public int hacking;
+	//public int psionics;
+	//public int seduction;
+	//public int stealth;
+
+	//Old Stats
+
+	public int baseMuscle;
+	public int baseBrawl;
+	public int baseMelee;
+	public int baseShot;
+	public int baseEvasion;
+	public int baseIntelligence;
+	public int basePresence;
+
+
+
 	public int currentFocus = -9999;
 	public int maxFocus = -9999;
 	
