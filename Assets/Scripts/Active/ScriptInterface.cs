@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class ScriptInterface : MonoBehaviour {
 	
 	public GameObject selectedCharacterComparisonDisplay;
-	public GameObject opposingCharacterComparisonDisplay;
 	public GameObject selectedCharacterSheetDisplay;
 	public GameObject opposingCharacterSheetDisplay;
 	public GameObject console;

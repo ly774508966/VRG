@@ -24,12 +24,12 @@ public class ScriptGameMaster : MonoBehaviour {
 	Mode gameMode;
 	
 	//Interface
+	public float damageDisplayDepth = -1;
 	public string inputButtonName = "";
 	public GameObject damageDisplay;
 	ScriptInterface scriptInterface;
 	ScriptCycleDisplay scriptCycleDisplay;
-	float damageDisplayDepth = -1;
-	
+
 	//Characters
 	public ScriptCharacterSheet selectedSheet;
 	public ScriptCharacterSheet opposingSheet;
@@ -380,7 +380,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		
 		//New result
 		Result result = null;
-		
+	
 		if(hotSheet.target)
 		{
 			ScriptCharacterSheet targetSheet = hotSheet.target;
@@ -434,6 +434,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		GameObject currentDamageDisplay = Instantiate(
 			damageDisplay, new Vector3(result.targetCharacter.gameObject.transform.position.x,
 		                           result.targetCharacter.gameObject.transform.position.y, damageDisplayDepth), Quaternion.identity) as GameObject;
+		currentDamageDisplay.GetComponent<ScriptDisplayContainer>().camera00 = overviewCamera;
 		TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
 		if(result.success)
 		{
