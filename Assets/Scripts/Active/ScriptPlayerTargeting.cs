@@ -8,11 +8,23 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 	//Use break box to run new result on hit location
 	//Pass result through game master (and physics controller)
 
-	public float distance = 5.0F;
-	public int theAngle = 45;
-	public int segments = 10;
+	public float weaponRange = 500.0F;
+	//public int theAngle = 45;
+	//public int segments = 10;
 
-	bool shotInputReady = true;
+	public float zOffset = -1.6F; //No idea why this must be -1.6; should be 0
+
+	//bool shotInputReady = true;
+
+	//Z rotation angles
+	int startAngle = -45;
+	int finishAngle = 45;
+	public int currentAngle = 0;
+
+	bool isAscending = true;
+	bool isDescending = false;
+
+	//public int angleLerpSpeed;
 
 	// Use this for initialization
 	void Start () {
@@ -21,10 +33,38 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	//if(Time.frameCount % 5 == 0)
+	//	{
+		if(isAscending)
+		{
+			if(currentAngle <= finishAngle)
+			{
+				currentAngle += 1;
+			}
+			else
+			{
+				isAscending = false;
+				isDescending = true;
+				currentAngle -= 1;
+			}
+		}
+		else if(isDescending)
+		{
+			if(currentAngle >= startAngle)
+			{
+				currentAngle -= 1;
+			}
+			else
+			{
+				isDescending = false;
+				isAscending = true;
+				currentAngle += 1;
+			}
+	//	}
+		}
 		//if(Input.GetKeyDown (KeyCode.R))
 		  // {
-			RaycastSweep();
+			//RaycastSweep();
 		//}
 		//Update ray position
 		//Ray indicatorRay = new Ray(transform.position, new Vector3(
@@ -35,10 +75,13 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 		//if(shotInputReady)
 		//{
 
+		Ray hotRay = GetSelectionRay(currentAngle);
+		Debug.DrawRay(hotRay.origin, hotRay.direction * weaponRange, Color.green);
+
 		//}
 
 	}
-
+	/*
 	void RaycastSweep()
 		{
 			Vector3 startPosition = transform.position;
@@ -62,7 +105,25 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 
 			Debug.DrawLine (startPosition, targetPosition, Color.green);
 		}
-
-
 		}
+		*/
+
+
+	//Input start z rotation angle, finish z rotation angle, radius, speedConstant
+	//Input- angle, radius
+	//Output- x, y
+	//Output- new Ray(transform.position, currentRayDirection, Color.green)
+	//Lerp angle 0 to 1, 1 to 0 repeating
+	Ray GetSelectionRay(int angleInDegrees)
+	{
+		//Convert degrees to radians
+		float angle = angleInDegrees * Mathf.PI / 180;
+
+		float y = Mathf.Sin (angle) * weaponRange;
+		float x = Mathf.Sqrt (Mathf.Pow (weaponRange, 2) - Mathf.Pow (y, 2));
+		Debug.Log ((Mathf.Cos (angle) * weaponRange).ToString () + " is equal to " + x.ToString());
+		Vector3 rayDirection = new Vector3(x, y, transform.position.z + zOffset);
+		Debug.Log (transform.position.ToString () + " <> " + rayDirection.ToString ());
+		return new Ray(transform.position, rayDirection);
+	}
 }
