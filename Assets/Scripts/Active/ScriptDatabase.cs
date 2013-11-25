@@ -54,14 +54,6 @@ public enum AttackType
 	Shot
 }
 
-public enum FrameSize
-{
-	None,
-	Small,
-	Medium,
-	Large
-}
-
 //Character classes
 
 public class CharacterTemplate
@@ -343,6 +335,21 @@ public class Result
 			actingCharacter = actingCharacterSheet;
 		}
 	}
+
+//Player
+public class PlayerShotInfo
+{
+	ScriptCharacterSheet shooter;
+	ScriptCharacterSheet target;
+	Collider shotLocation;
+
+	public PlayerShotInfo(ScriptCharacterSheet shooterArg, ScriptCharacterSheet targetArg, Collider shotLocationArg)
+	{
+		shooter = shooterArg;
+		target = targetArg;
+		shotLocation = shotLocationArg;
+	}
+}
 
 public class ScriptDatabase : MonoBehaviour {
 

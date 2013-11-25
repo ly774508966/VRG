@@ -97,11 +97,13 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		
 		//Spawn a random character on the left and right spawnpoints and give a random item
-		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00))), CreateRandomItem());
+		GiveCharacterItem(SetAsSelected(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn00)))), CreateRandomItem());
 		GiveCharacterItem(RegisterCharacter(RandomizeCharacterValues(NewCharacter(spawn01))), CreateRandomItem());
 
 		//Begin first turn
 		RolloverCycle();
+
+
 	}
 	
 	// Update is called once per frame
@@ -129,7 +131,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		if(gameMode == Mode.Movement){
 		cycleTimer += Time.deltaTime * timerConstant;
 			if(cycleTimer >= cycleLength){
-			SetToEngagementMode();
+			//Uncomment next line to restore normal resolution
+				//SetToEngagementMode();
 			}
 		}
 	}
@@ -831,4 +834,6 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		return true;
 	}
+
+
 }
