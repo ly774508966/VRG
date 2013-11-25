@@ -34,7 +34,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	
 	public string fullName;
 	
-	public FrameSize frameSize = FrameSize.None;
+	//public FrameSize frameSize = FrameSize.None;
 	public int frameNumber = -9999;
 	
 	//First-Order Stats

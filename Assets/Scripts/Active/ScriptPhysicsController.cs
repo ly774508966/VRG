@@ -188,19 +188,6 @@ public class ScriptPhysicsController : MonoBehaviour {
 		propelVector = Vector3.zero;
 		partIsDestroyed = false;
 
-	
-
-		//Ragdoll entire character if dead
-		if(!result.targetCharacter.inPlay)
-		{
-			Ragdollify(result.targetCharacter.gameObject);
-		}
-		
-		//EffectInfo effectInfo = GetEffectInfo(result.targetCharacter, result.hitLocation);
-		
-		ScriptModelController targetModelController = result.targetCharacter.
-			GetComponentInChildren<ScriptModelController>();
-
 		//For all damage, if limb is broken, spurt blood and dismember. If not, spurt blood only
 
 		//Get attack direction
@@ -216,6 +203,14 @@ public class ScriptPhysicsController : MonoBehaviour {
 		//Upon successful attack
 		if(result.success)
 		{
+			ScriptModelController targetModelController = result.targetCharacter.
+				GetComponentInChildren<ScriptModelController>();
+
+			//Ragdoll entire character if dead
+			if(!result.targetCharacter.inPlay)
+			{
+				Ragdollify(result.targetCharacter.gameObject);
+			}
 
 		//If damage is inflicted on body part and that body part is destroyed
 		if(result.targetNetHitProfile.head < 0)
@@ -321,8 +316,8 @@ public class ScriptPhysicsController : MonoBehaviour {
 		{
 
 			//Fire weapon in random direction
-			result.actingCharacter.GetComponentInChildren<ScriptModelController>().weapon.
-				GetComponent<ScriptWeapon>().SendMessage("GunshotEffect", targetModelController);
+			result.actingCharacter.GetComponentInChildren<ScriptModelController>().
+				weapon.SendMessage("GunshotEffect", 0); //0 is dummy arg
 
 		}
 		else

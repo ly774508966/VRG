@@ -34,7 +34,8 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 	public float currentAngle = 0;
 	Ray currentRay;
 
-	bool oscillationIsPaused = false;
+	public bool oscillationIsPaused = false;
+	//public bool oscillationIsEnabled = true;
 
 	enum OscillationMode
 	{
@@ -52,7 +53,7 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 
 		layerMask = 1 << activeLayer;
 
-		lineRenderer = GetComponent<LineRenderer>();
+		//lineRenderer = GetComponent<LineRenderer>();
 
 		if(Random.value >= 0.5)
 		{
@@ -80,6 +81,9 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		//if(oscillationIsEnabled)
+		//{
 
 		if(shotFired)
 		{
@@ -169,17 +173,19 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 			RaycastHit hit;
 			if(Physics.Raycast(currentRay, out hit, scriptCharacterSheet.activeItem.itemStatProfile.maxRangeAspect, layerMask))
 			{
-				if(hit.collider.gameObject.tag == "Raycast")
-				{
-
+				//if(hit.collider.gameObject.tag == "Raycast")
+				//{
+				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
+				playerShotInfo.shotLocation = hit.collider.gameObject;
+					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
+					scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
 					Debug.Log ("Hit " + hit.collider.gameObject.name);
-				}
-				else
-				{
-					Debug.Log (hit.collider.gameObject.name);
-				}
 			}
-
+			else
+			{
+				scriptGameMaster.SendMessage ("ExecuteAction", new PlayerShotInfo(scriptCharacterSheet));
+				Debug.Log ("Miss " + gameObject.name);
+			}
 
 			//Set as not ready
 			shotInputReady = false;
@@ -189,6 +195,7 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 			cooldownTimer = 0;
 
 		}
+		//}
 
 	}
 

@@ -22,7 +22,9 @@ public class ScriptCharacterController : MonoBehaviour {
 	public bool startLerp;
 	public float fracJourney;
 	public bool atDestination;
-	
+
+	//Colliders
+	public GameObject colliderContainer;
 	
 	//public float durationMultiplier = 1;
 	

@@ -35,7 +35,7 @@ public class ScriptGameMaster : MonoBehaviour {
 	public ScriptCharacterSheet opposingSheet;
 	public GameObject characterGameObjectTemplate;
 	public GameObject containerCharacter;
-	List<ScriptCharacterSheet> charactersInPlay = new List<ScriptCharacterSheet>();
+	public List<ScriptCharacterSheet> charactersInPlay = new List<ScriptCharacterSheet>();
 	//List<ScriptCharacterSheet> activeCharacters = new List<ScriptCharacterSheet>();
 	int nextCharacterID = 0;
 	
@@ -132,7 +132,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		cycleTimer += Time.deltaTime * timerConstant;
 			if(cycleTimer >= cycleLength){
 			//Uncomment next line to restore normal resolution
-				//SetToEngagementMode();
+				SetToEngagementMode();
 			}
 		}
 	}
@@ -301,6 +301,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			List<ScriptCharacterSheet> activeCharacters = GetActiveCharacters();
 
 			//If there any characters left to act for this Cycle, then execute next action
+			/* UNCOMMENT TO RESTORE NORMAL FUNCTIONALITY
 			if(activeCharacters.Count > 0)
 			{
 				//1. Determine character order
@@ -322,9 +323,10 @@ public class ScriptGameMaster : MonoBehaviour {
 			} 
 			else 
 			{
+*/
 				//If there are no characters left to act, end cycle
 				RolloverCycle();
-			}
+		//	}
 		} else {
 			Debug.Log ("Error: Attempt to resolve engagement outside of engagement mode");
 		}
@@ -378,9 +380,10 @@ public class ScriptGameMaster : MonoBehaviour {
 
 //ACTION RESOLUTION
 
-	//Resolve character's action
+	//Resolve character's action- default overload
 	void ExecuteAction(ScriptCharacterSheet hotSheet){
-		
+		Debug.Log ("Wrong overload for execute");
+
 		//New result
 		Result result = null;
 	
@@ -415,7 +418,7 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 		
 		//Reset Wait Time to delay
-		hotSheet.waitTime = 1; //Needs to be updated to weapon cooldown
+		hotSheet.waitTime = hotSheet.activeItem.itemStatProfile.cooldownAspect; 
 		
 		//Log action to console
 		string hotLine = string.Format ("{0} attacks {1} ({2:00} ATT vs {3:00} DEF: {4:00}%). Roll: {5}", 
@@ -449,7 +452,81 @@ public class ScriptGameMaster : MonoBehaviour {
 		}
 	}
 
-	//attacking character, defending character -> attack result
+	//Resolve player input shot- 2nd overload
+	void ExecuteAction(PlayerShotInfo playerShotInfo){
+
+		//New result
+		Result result = null;
+		ScriptCharacterSheet hotSheet = playerShotInfo.shooter;
+		ScriptCharacterSheet targetSheet = playerShotInfo.target;
+
+		result = GetActionResult(playerShotInfo);
+
+		if(playerShotInfo.target)
+		{
+
+			//Change states
+			if(result.success)
+			{
+				//Reduce health
+				SumHitProfiles(result.targetCharacter.currentHitProfile, result.targetNetHitProfile);
+
+			//Apply damage results
+			if(targetSheet.currentHitProfile.head <= 0 || targetSheet.currentHitProfile.body <= 0)
+			{
+					Debug.Log (targetSheet.fullName + "Should be dead");
+				KillCharacter(targetSheet);	
+				
+				//Start encounter cam on dead character
+				RunCinematicCamera(result.targetCharacter.GetComponent<ScriptCharacterController>());
+			}
+			}
+			
+
+			
+			//Initiate visual and audio effects
+			scriptPhysicsController.SendMessage("InitiateActionEffect", result);
+			
+	
+		
+		//Set selector cooldown?
+
+		//hotSheet.waitTime = hotSheet.activeItem.itemStatProfile.cooldownAspect; 
+		
+		//Log action to console
+		string hotLine = string.Format ("{0} attacks {1} ({2:00} ATT vs {3:00} DEF: {4:00}%). Roll: {5}", 
+		                                new object[]{result.actingCharacter.fullName, result.targetCharacter.fullName,
+			result.actingAttack, result.targetDefense, result.hitPercentage, result.roll});
+		if(result.success)
+		{
+			hotLine += string.Format (" > {0}. {1} shoots {2} for {3} {4} damage.", 
+			                          new object[]{result.successNumber, result.actingCharacter.fullName, 
+				result.targetCharacter.fullName, result.grossDamage, result.damageType});
+		}
+		else
+		{
+			hotLine += string.Format (" <= {0}. {1} misses.", result.successNumber, result.actingCharacter.fullName);
+		}
+		ConsoleAddLine(hotLine);
+		
+		//Display damage
+		GameObject currentDamageDisplay = Instantiate(
+			damageDisplay, new Vector3(result.targetCharacter.gameObject.transform.position.x,
+		                           result.targetCharacter.gameObject.transform.position.y, damageDisplayDepth), Quaternion.identity) as GameObject;
+		currentDamageDisplay.GetComponent<ScriptDisplayContainer>().camera00 = overviewCamera;
+		TextMesh statusChangeText = currentDamageDisplay.GetComponentInChildren<TextMesh>();
+		if(result.success)
+		{
+			statusChangeText.text = "-" + result.grossDamage + "HP";
+		}
+		else
+		{
+			statusChangeText.text = "Miss";
+		}
+		}
+	}
+
+	//attacking character, defending character -> attack result. Default overload
 	Result GetActionResult(ScriptCharacterSheet actingCharacter, ScriptCharacterSheet targetCharacter)
 	{
 		
@@ -488,23 +565,86 @@ public class ScriptGameMaster : MonoBehaviour {
 		return result;
 	}
 
+	Result GetActionResult(PlayerShotInfo playerShotInfo)
+	{
+		ScriptCharacterSheet actingCharacter = playerShotInfo.shooter;
+		Result result = new Result(actingCharacter);
+
+		if(playerShotInfo.target)
+		{
+		result.targetCharacter = playerShotInfo.target;
+		result.hitLocation = playerShotInfo.shotLocation;
+		//Debug.Log (hitLocation.name);
+		
+		//Get attack stats
+		result.actingAttack = actingCharacter.readyAttack;
+		result.targetDefense = result.targetCharacter.readyDefense;
+		
+		//Calculate success number
+		result.hitPercentage = GetHitPercentage(result.actingAttack, result.targetDefense);
+		result.successNumber = 100 - result.hitPercentage;
+		
+		//Roll d100	
+		result.roll = GetRandom1ToN(100);
+		
+		//If roll is greater than the success number, attack succeeds
+		result.rollExcess = result.roll - result.successNumber;
+		if(result.rollExcess >= 1)
+		{
+			result.success = true;
+			
+			//Set damage properties
+			result.grossDamage = actingCharacter.readyDamage;
+			result.damageType = actingCharacter.activeItem.damageType;
+			result.targetGrossHitProfile = GetGrossHitProfile(result);
+			
+			//Apply armor (pending)
+			result.targetNetHitProfile = SumHitProfiles(result.targetGrossHitProfile, result.targetCharacter.resistanceHitProfile);
+		}
+		else
+		{
+			result.success = false;
+			}
+		}
+		else
+		{
+			result.success = false;
+		}
+		return result;
+	}
+
 //CHARACTER MANAGEMENT
 	
 	//Remove character from play
 	void KillCharacter(ScriptCharacterSheet hotSheet)
 	{
+		ScriptCharacterController scriptCharacterController = hotSheet.GetComponent<ScriptCharacterController>();
+
+		Debug.Log ("What's the " + hotSheet);
 		//Remove character from characters in play 
-		charactersInPlay.RemoveAt(GetCharactersInPlayIndex(hotSheet));
+		int hotIndex = GetCharactersInPlayIndex(hotSheet);
+		Debug.Log (hotIndex.ToString ());
+		charactersInPlay.RemoveAt(hotIndex);
 		
 		//Set character's inPlay to false
 		hotSheet.inPlay = false;
-		
+
 		//Remove character as a valid target
 		foreach(ScriptCharacterSheet otherHotSheet in charactersInPlay){
 			if(otherHotSheet.target == hotSheet){
 				otherHotSheet.target = null;
 			}
 		}
+
+		//Stop character
+		scriptCharacterController.greenLight = false;
+
+		//Disable oscillator
+		ScriptPlayerTargeting scriptPlayerTargeting = hotSheet.GetComponentInChildren<ScriptPlayerTargeting>();
+		scriptPlayerTargeting.lineRenderer.enabled = false;
+		scriptPlayerTargeting.enabled = false;
+		scriptCharacterController.colliderContainer.SetActive(false);
+
 		
 		//Set new character to spawn
 		if(hotSheet.gameObject.transform.rotation.y == 0)
@@ -783,12 +923,66 @@ public class ScriptGameMaster : MonoBehaviour {
 	//action result -> damage profile before armor
 	CharacterHitProfile GetGrossHitProfile(Result result)
 	{
-		//Get random hit location
-		int bodyPartNumber = GetRandom1ToN(6);
-		
 		//Convert damage into net change in HP
 		int hitModifier = -result.grossDamage;
-		
+
+
+		//If hit location is specified, return restricted random
+		if(result.hitLocation)
+		{
+			if(result.hitLocation.name == "ColliderHigh")
+			{
+				return new CharacterHitProfile(hitModifier, 0, 0, 0, 0, 0);
+			}
+			else if(result.hitLocation.name == "ColliderMedium")
+			{
+				int bodyPartNumber = GetRandom1ToN(3);
+				if(bodyPartNumber == 1)
+				{
+					return new CharacterHitProfile(0, hitModifier, 0, 0, 0, 0);
+				}
+				else if (bodyPartNumber == 2)
+				{
+					return new CharacterHitProfile(0, 0, hitModifier, 0, 0, 0);
+				}
+				else if (bodyPartNumber == 3)
+				{
+					return new CharacterHitProfile(0, 0, 0, hitModifier, 0, 0);
+				}
+				else
+				{
+					Debug.Log ("Broken random number");
+					return new CharacterHitProfile();
+				}
+			}
+			else if(result.hitLocation.name == "ColliderLow")
+			{
+				if(Random.value >= 0.05)
+				{
+					return new CharacterHitProfile(0, 0, 0, 0, hitModifier, 0);
+				}
+				else
+				{
+					return new CharacterHitProfile(0, 0, 0, 0, 0, hitModifier);
+				}
+			}
+			else
+			{
+				Debug.Log("Invalid hit location");
+				return new CharacterHitProfile();
+			}
+		}
+		else
+		{
+			Debug.Log ("Invalid hit location");
+				return new CharacterHitProfile();
+
+		//If hit location is unspecified, return open random
+
+
+		/*
+		int bodyPartNumber = GetRandom1ToN(6);
+
 		switch(bodyPartNumber)
 		{
 		case 1:
@@ -806,6 +1000,8 @@ public class ScriptGameMaster : MonoBehaviour {
 		default:
 			Debug.Log ("Invalid Body Part Number" + bodyPartNumber.ToString());
 			return new CharacterHitProfile();	
+		}
+		*/
 		}
 	}
 

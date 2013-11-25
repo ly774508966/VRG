@@ -43,7 +43,8 @@ public class ScriptWeapon : MonoBehaviour {
 	void Update () {
 	
 	}
-	
+
+	//Hit overload
 	void GunshotEffect(GameObject breakBox){
 
 		//Shoot projectile
@@ -61,6 +62,7 @@ public class ScriptWeapon : MonoBehaviour {
 	StartCoroutine("EndFlash");		
 	}
 
+	//Miss overload
 	void GunshotEffect (ScriptModelController missedModel)
 	{
 		//Shoot projectile randomly
@@ -71,6 +73,29 @@ public class ScriptWeapon : MonoBehaviour {
 		                          - projectileSpawn.position; 
 		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
 
+		//Sound effect
+		gunSound.Play ();
+	}
+
+	//Wild miss overload
+	void GunshotEffect (int dummyArg)
+	{
+		//Shoot projectile randomly
+		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+		hotProj.transform.parent = junkContainer.transform;
+		Vector3 attackVector = new Vector3();
+		if(transform.parent.parent.rotation.y == 180)
+		{
+		attackVector =  new Vector3(10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
+			- projectileSpawn.position; 
+		}
+		else
+		{
+			attackVector =  new Vector3(-10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
+				- projectileSpawn.position; 
+		}
+		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
+				
 		//Sound effect
 		gunSound.Play ();
 	}

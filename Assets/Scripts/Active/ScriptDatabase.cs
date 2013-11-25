@@ -63,7 +63,7 @@ public class CharacterTemplate
 	public Color primaryColor;
 	public Color secondaryColor;
 	public Color skinColor;
-	public FrameSize frameSize;
+	//public FrameSize frameSize;
 	
 	public CharacterTemplate (string fullNameArg, Color primaryColorArg, 
 		Color secondaryColorArg, Color skinColorArg, CharacterPoolProfile characterStatProfileArg)
@@ -328,6 +328,7 @@ public class Result
 	public CharacterHitProfile targetGrossHitProfile = new CharacterHitProfile();
 	//public CharacterHitProfile targetHitResistanceProfile = new CharacterHitProfile();
 	public CharacterHitProfile targetNetHitProfile = new CharacterHitProfile();
+	public GameObject hitLocation;
 
 	
 		public Result(ScriptCharacterSheet actingCharacterSheet)
@@ -339,15 +340,15 @@ public class Result
 //Player
 public class PlayerShotInfo
 {
-	ScriptCharacterSheet shooter;
-	ScriptCharacterSheet target;
-	Collider shotLocation;
+	public ScriptCharacterSheet shooter;
+	public ScriptCharacterSheet target;
+	public GameObject shotLocation;
 
-	public PlayerShotInfo(ScriptCharacterSheet shooterArg, ScriptCharacterSheet targetArg, Collider shotLocationArg)
+	public PlayerShotInfo(ScriptCharacterSheet shooterArg)
 	{
 		shooter = shooterArg;
-		target = targetArg;
-		shotLocation = shotLocationArg;
+		//target = targetArg;
+		//shotLocation = shotLocationArg;
 	}
 }
 
@@ -396,9 +397,9 @@ public class ScriptDatabase : MonoBehaviour {
 	public Item unarmed = new Item("Unarmed", AttackType.Brawl, DamageType.Bludgeoning, new ItemStatProfile(0, 0, 0, 1, 0, 0, 0));
 	
 	//Premade characters
-	public CharacterTemplate coppermouth = new CharacterTemplate(
-		"Coppermouth", Color.green, Color.yellow, Color.white,
-		new CharacterPoolProfile(10, 10, 8, 4, 10, 4, 5, 8, 4));
+	//public CharacterTemplate coppermouth = new CharacterTemplate(
+	//	"Coppermouth", Color.green, Color.yellow, Color.white,
+	//	new CharacterPoolProfile(10, 10, 8, 4, 10, 4, 5, 8, 4));
 	
 	//Tactic[] tacticsLookup = new Tactic[]{
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterPoolProfile( 0, 0, 0, 0, 0, DamageType.None))  	
