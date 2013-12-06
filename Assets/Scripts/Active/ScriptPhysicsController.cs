@@ -317,7 +317,7 @@ public class ScriptPhysicsController : MonoBehaviour {
 
 			//Fire weapon in random direction
 			result.actingCharacter.GetComponentInChildren<ScriptModelController>().
-				weapon.SendMessage("GunshotEffect", 0); //0 is dummy arg
+				weapon.SendMessage("GunshotEffect", 0, 0); //0 is dummy arg
 
 		}
 		else

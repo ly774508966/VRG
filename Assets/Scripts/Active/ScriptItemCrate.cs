@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 public class ScriptItemCrate : MonoBehaviour {
-	
+
+	public Item containedItem;
+
 	public GameObject lid;
 	public GameObject xSide0;
 	public GameObject xSide1;

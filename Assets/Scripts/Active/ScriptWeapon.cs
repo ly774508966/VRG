@@ -75,12 +75,17 @@ public class ScriptWeapon : MonoBehaviour {
 
 		//Sound effect
 		gunSound.Play ();
+
+		//Muzzle Flash
+		hotFlash = Instantiate(muzzleFlashPrefab, transform.position, transform.rotation) as GameObject;
+		StartCoroutine("EndFlash");
 	}
 
 	//Wild miss overload
 	void GunshotEffect (int dummyArg)
 	{
 		//Shoot projectile randomly
+		Debug.Log("Wild Miss Overload");
 		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
 		hotProj.transform.parent = junkContainer.transform;
 		Vector3 attackVector = new Vector3();
@@ -98,6 +103,10 @@ public class ScriptWeapon : MonoBehaviour {
 				
 		//Sound effect
 		gunSound.Play ();
+
+		//Muzzle Flash
+		hotFlash = Instantiate(muzzleFlashPrefab, transform.position, transform.rotation) as GameObject;
+		StartCoroutine("EndFlash");
 	}
 
 	

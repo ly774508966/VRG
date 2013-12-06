@@ -169,12 +169,15 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 
 		if(Input.GetKeyUp (playerKeyCode) && shotLoaded)
 		{
+
+		
 			//Fire shot
 			RaycastHit hit;
 			if(Physics.Raycast(currentRay, out hit, scriptCharacterSheet.activeItem.itemStatProfile.maxRangeAspect, layerMask))
 			{
 				//if(hit.collider.gameObject.tag == "Raycast")
 				//{
+
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = hit.collider.gameObject;
 					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
@@ -183,8 +186,10 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 			}
 			else
 			{
+				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
+				playerShotInfo.shotLocation = null;
 				scriptGameMaster.SendMessage ("ExecuteAction", new PlayerShotInfo(scriptCharacterSheet));
-				Debug.Log ("Miss " + gameObject.name);
+				Debug.Log ("Miss ");
 			}
 
 			//Set as not ready
@@ -207,15 +212,18 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 		//Get weapon range
 		float weaponRange = scriptCharacterSheet.activeItem.itemStatProfile.maxRangeAspect;
 
-
+		//Get destination coordinates
 		float y = Mathf.Sin (angle) * weaponRange;
 		float x = Mathf.Cos (angle) * weaponRange;
 		//Debug.Log ((Mathf.Cos (angle) * weaponRange).ToString () + " is equal to " + x.ToString());
+
+		//If left player
 		if(playerKeyCode == KeyCode.Q)
 		{
 		Vector3 rayDirection = new Vector3(x, y, transform.position.z + zOffset);
 		return new Ray(transform.position, rayDirection);
 		}
+		//If right player
 		else if(playerKeyCode == KeyCode.P)
 		{
 			Vector3 rayDirection = new Vector3(-x, y, transform.position.z + zOffset);
@@ -228,8 +236,8 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 		}
 	}
 
-	void PassShotInfo()
-	{
+	//void PassShotInfo()
+	//{
 
-	}
+	//}
 }

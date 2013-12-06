@@ -361,10 +361,10 @@ public class ScriptDatabase : MonoBehaviour {
 	//Name records
 	public List<string> firstNames = new List<string>(new string[] {"Jumbo", "Ham", "Tassik", 
 		"Marinn", "Rose", "Joseph", "Dash", "Jaedon", "Argot", "Tau", "Rachel", "Julien", "Lily", "Larry", 
-		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln"});
+		"Maynard", "Leo", "Ota", "Gulliver", "Megan", "Freck", "Korder", "Lincoln, Hayden, Mary, Violet"});
 	public List<string> lastNames = new List<string>(new string[] {"Baloney", "Jehosephat", "Kayla", 
 		"Dillon", "Reynolds", "Wild", "Rendar", "Casio", "Veis", "Ceti", "Vega", "Pavec", "Puncture", 
-		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln"});
+		"Jello", "Thatcher", "Marshall", "Stockholm", "Retri", "Freck", "Korder", "Lincoln, Wyr, Gentry, Nova"});
 
 	//Item attribute records
 	Attribute[] purposeAttributes = new Attribute[]{

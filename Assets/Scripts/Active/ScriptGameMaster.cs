@@ -474,7 +474,7 @@ public class ScriptGameMaster : MonoBehaviour {
 			//Apply damage results
 			if(targetSheet.currentHitProfile.head <= 0 || targetSheet.currentHitProfile.body <= 0)
 			{
-					Debug.Log (targetSheet.fullName + "Should be dead");
+					//Debug.Log (targetSheet.fullName + "Should be dead");
 				KillCharacter(targetSheet);	
 				
 				//Start encounter cam on dead character
@@ -523,6 +523,11 @@ public class ScriptGameMaster : MonoBehaviour {
 		{
 			statusChangeText.text = "Miss";
 		}
+		}
+		else
+		{
+			//If no target, initiate visual/ audio effect only
+			scriptPhysicsController.SendMessage("InitiateActionEffect", result);
 		}
 	}
 
