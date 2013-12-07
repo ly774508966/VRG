@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ScriptItemCrate : MonoBehaviour {
 
-	public Item containedItem;
+	public List<Item> containedItems = new List<Item>();
 
 	public GameObject lid;
 	public GameObject xSide0;
@@ -14,10 +15,16 @@ public class ScriptItemCrate : MonoBehaviour {
 	public Material crateMaterial;
 	AudioSource audioSource;
 	public const float Y_FORCE = 1000;
+	public ScriptDatabase scriptDatabase;
 	
 	
 	// Use this for initialization
 	void Start () {
+
+		//Get scripts
+		scriptDatabase = GameObject.Find("ControllerGame").GetComponent<ScriptDatabase>();
+
+		//Get pieces
 		lid = transform.FindChild("ObjCrateLid").gameObject;
 		xSide0 = transform.FindChild("ObjCrateXSide0").gameObject;
 		xSide1 = transform.FindChild("ObjCrateXSide1").gameObject;
@@ -27,6 +34,13 @@ public class ScriptItemCrate : MonoBehaviour {
 		audioSource = GetComponent<AudioSource>();
 		
 		SetCrateColor(GetRandomCrateColor());
+
+		//Fill with 100 random consumables
+		for(int i = 0; i < 100; i++)
+		{
+		containedItems.Add (scriptDatabase.GetRandomConsumable());
+		}
+
 	}
 	
 	// Update is called once per frame
@@ -58,6 +72,9 @@ public class ScriptItemCrate : MonoBehaviour {
 		ySide.renderer.material.color = Color.white;
 		crateLight.gameObject.SetActive(false);
 		audioSource.Play ();
+
+		//Debug.Log(containedItem.fullName);
+		//Debug.Log(scriptDatabase.highestI);
 	}
 	
 	Color GetRandomCrateColor()

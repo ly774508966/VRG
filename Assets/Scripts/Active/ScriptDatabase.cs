@@ -34,7 +34,10 @@ public enum AttributeType
 {
 	Quality,
 	Power,
-	Purpose
+	Purpose,
+	FoodQuality,
+	Ingredient,
+	Dish
 }
 
 public enum TacticType
@@ -254,7 +257,10 @@ public class Attribute
 		attributeProfile = profile;
 		//damageType = DamageType.None; //Overrides damage type
 	}
-	
+	public Attribute (string attributeNameArg) 
+	{
+		attributeName = attributeNameArg;
+	}
 			public Attribute (string attributeNameArg, AttackType attackTypeArg, DamageType damageTypeArg, ItemStatProfile itemStatProfileArg)
 	{
 		
@@ -354,6 +360,9 @@ public class PlayerShotInfo
 
 public class ScriptDatabase : MonoBehaviour {
 
+	//Debug
+	//public int highestI;
+
 	//Runtime variables
 	Item tempItem;
 	public int nextItemID = 0;
@@ -382,6 +391,113 @@ public class ScriptDatabase : MonoBehaviour {
 	Attribute[] qualityAttributes = new Attribute[]{
 		new Attribute("Overclocked", new ItemStatProfile(0, 0, 2, 0, 1, 0, 0)),
 		new Attribute("Crummy", new ItemStatProfile(-1, 0, -1, -2, 0, 0, 0))
+	};
+
+
+	Attribute[] foodQualityAttributes = new Attribute[]
+	{
+		new Attribute("Extra Spicy"),
+		new Attribute("Sour"),
+		new Attribute("Tantalizing"),
+		new Attribute("Rancid"),
+		new Attribute("Pungent"),
+		new Attribute("Pangalactic"),
+		new Attribute("Zero-Calorie"),
+		new Attribute("Invigorating"),
+		new Attribute("Squirming"),
+		new Attribute("Putrid"),
+		new Attribute("Piping-Hot"),
+		new Attribute("Bitter"),
+		new Attribute("Whole-Fat"),
+		new Attribute("Decadent"),
+		new Attribute("Salty"),
+		new Attribute("Hypnotic"),
+		new Attribute("Velvety"),
+		new Attribute("Whipped"),
+		new Attribute("Vegan"),
+		new Attribute("Dangerous"),
+		new Attribute("Soggy"),
+		new Attribute("Poisonous"),
+		new Attribute("Barbequed"),
+		new Attribute("Pickled"),
+		new Attribute("Expired"),
+		new Attribute("Fuzzy"),
+		new Attribute("Grade-D"),
+		new Attribute("Hallucinogenic"),
+		new Attribute("Deep-Fried"),
+		new Attribute("Teriyaki"),
+		new Attribute("Grilled"),
+
+	};
+
+	Attribute[] ingredientAttributes = new Attribute[]
+	{
+		new Attribute("Turkey"),
+		new Attribute("Whiskey"),
+		new Attribute("Tequila"),
+		new Attribute("Ranch"),
+		new Attribute("Shrimp"),
+		new Attribute("Excrement"),
+		new Attribute("Mushroom"),
+		new Attribute("Bacon"),
+		new Attribute("Goat Cheese"),
+		new Attribute("Buffalo"),
+		new Attribute("Tentacle"),
+		new Attribute("Escargot"),
+		new Attribute("Spinach"),
+		new Attribute("Mystery"),
+		new Attribute("Dragon"),
+		new Attribute("Habanero"),
+		new Attribute("Knuckle"),
+		new Attribute("Lard"),
+		new Attribute("Spam"),
+		new Attribute("Chocolate"),
+		new Attribute("Strawberry"),
+		new Attribute("Pork"),
+		new Attribute("Garden"),
+		new Attribute("Fatback"),
+		new Attribute("Pickle"),
+		new Attribute("Watermelon"),
+		new Attribute("Alligator"),
+		new Attribute("Antiseptic"),
+		new Attribute("Mayo-Grade"),
+		new Attribute("Human"),
+		new Attribute("Unicorn"),
+		new Attribute("Tuna"),
+		new Attribute("Eel"),
+		new Attribute("Garlic")
+	};
+
+	Attribute[] dishAttributes = new Attribute[]
+	{
+		new Attribute("Burrito"),
+		new Attribute("Cocktail"),
+		new Attribute("Smoothie"),
+		new Attribute("Sundae"),
+		new Attribute("Taco"),
+		new Attribute("Noodles"),
+		new Attribute("Sauce"),
+		new Attribute("Syrup"),
+		new Attribute("Frittata"),
+		new Attribute("Surprise"),
+		new Attribute("Jerky"),
+		new Attribute("Coffee"),
+		new Attribute("Croissant"),
+		new Attribute("Salad"),
+		new Attribute("Pie"),
+		new Attribute("Froyo"),
+		new Attribute("Roll"),
+		new Attribute("Gelato"),
+		new Attribute("Pickle"),
+		new Attribute("Kabob"),
+		new Attribute("Banana"),
+		new Attribute("Relish"),
+		new Attribute("Aoili"),
+		new Attribute("Lager"),
+		new Attribute("Merlot"),
+		new Attribute("Dressing"),
+		new Attribute("Pizza"),
+		new Attribute("Curry"),
 	};
 	
 	//Tactic records
@@ -419,6 +535,47 @@ public class ScriptDatabase : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+
+	public Item GetRandomConsumable()
+	{
+		Item hotItem = new Item();
+
+		//Assign item ID
+		hotItem.itemID = nextItemID;
+		nextItemID += 1;
+
+		//Determine and apply dish attribute
+		//int i = dishAttributes.Length - 1;
+		int i = Random.Range (0, dishAttributes.Length);
+		Attribute dishAttribute = dishAttributes[i];
+		hotItem = ApplyAttribute(hotItem, dishAttribute, AttributeType.Dish);
+
+		//Debug
+		//if(i > highestI)
+		//{
+		//	highestI = i;
+		//}
+
+		//Determine and apply ingredient attribute
+		int j = Random.Range (0, ingredientAttributes.Length);
+		Attribute ingredientAttribute = ingredientAttributes[j];
+		hotItem = ApplyAttribute(hotItem, ingredientAttribute, AttributeType.Ingredient);
+
+		//Determine apply food quality attribute
+		int k = Random.Range (0, foodQualityAttributes.Length);
+		Attribute foodQualityAttribute = foodQualityAttributes[k];
+		hotItem = ApplyAttribute(hotItem, foodQualityAttribute, AttributeType.FoodQuality);
+
+		Debug.Log(string.Format("{0} / {1}; {2} / {3}; {4} / {5}", k, foodQualityAttributes.Length - 1, j, 
+		                        ingredientAttributes.Length - 1, i, dishAttributes.Length - 1));
+
+		//Set name
+		hotItem.fullName = hotItem.namePart0 + " " + hotItem.namePart1 + " " + hotItem.namePart2;
+
+		return hotItem;
+
 	}
 	
 	public Item GetRandomItem()
@@ -471,6 +628,10 @@ public class ScriptDatabase : MonoBehaviour {
 	
 	Item ApplyAttribute(Item hotItem, Attribute hotAttribute, AttributeType attributeType)
 	{
+		//If item is equippable
+		if(attributeType == AttributeType.Quality || attributeType == AttributeType.Power || 
+		   attributeType == AttributeType.Purpose)
+		{
 		//Populate name fields
 		if(attributeType == AttributeType.Quality)
 		{
@@ -512,6 +673,36 @@ public class ScriptDatabase : MonoBehaviour {
 		}
 		
 		
+		//return hotItem;
+
+		}
+		else if (attributeType == AttributeType.FoodQuality || attributeType == AttributeType.Ingredient || 
+		              attributeType == AttributeType.Dish)
+		{
+			//Apply consumable attributes
+			//Populate name fields
+			if(attributeType == AttributeType.FoodQuality)
+			{
+				hotItem.namePart0 = hotAttribute.attributeName;
+			}
+			else if(attributeType == AttributeType.Ingredient)
+			{
+				hotItem.namePart1 = hotAttribute.attributeName;
+			}
+			else if(attributeType == AttributeType.Dish)
+			{
+				hotItem.namePart2 = hotAttribute.attributeName;
+			}
+			else
+			{
+				Debug.Log ("Invalid attribute type: " + attributeType);
+			}
+		}
+		else
+		{
+			Debug.Log("Invalid Attribute Type: " + attributeType.ToString());
+
+		}
 		return hotItem;
 	}
 	
