@@ -493,11 +493,12 @@ public class ScriptDatabase : MonoBehaviour {
 		new Attribute("Banana"),
 		new Attribute("Relish"),
 		new Attribute("Aoili"),
-		new Attribute("Lager"),
+		//new Attribute("Lager"),
 		new Attribute("Merlot"),
 		new Attribute("Dressing"),
 		new Attribute("Pizza"),
 		new Attribute("Curry"),
+		new Attribute("Testicles")
 	};
 	
 	//Tactic records
