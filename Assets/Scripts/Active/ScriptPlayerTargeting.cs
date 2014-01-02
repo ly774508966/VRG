@@ -182,14 +182,14 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 				playerShotInfo.shotLocation = hit.collider.gameObject;
 					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
 					scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
-					Debug.Log ("Hit " + hit.collider.gameObject.name);
+				//	Debug.Log ("Hit " + hit.collider.gameObject.name);
 			}
 			else
 			{
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = null;
 				scriptGameMaster.SendMessage ("ExecuteAction", new PlayerShotInfo(scriptCharacterSheet));
-				Debug.Log ("Miss ");
+				//Debug.Log ("Miss ");
 			}
 
 			//Set as not ready

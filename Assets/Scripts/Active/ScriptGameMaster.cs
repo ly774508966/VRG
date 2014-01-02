@@ -2,6 +2,18 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class GridTile
+{
+	public Vector3 location;
+	public List<GameObject> presentGameObjects;
+
+	public GridTile(Vector3 locationArg)
+	{
+		location = locationArg;
+	}
+}
+
 public class ScriptGameMaster : MonoBehaviour {
 		
 	//Phases - Actions resolve in execution phase; players issue orders in command phase
@@ -45,6 +57,15 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Space
 	public Transform spawn00;
 	public Transform spawn01;
+	public GridTile[ , , ] gameGrid;
+	//public int gridSizeX = 10;
+	//public int gridSizeY = 20;
+	//public int gridSizeZ = 1;
+	public Vector3 gridSpacing = new Vector3(1, 1, 1);
+	public GameObject gridTilePrefab;
+	public GameObject gridContainer;
+	public GameObject containerPrefab;
+
 	
 	//Time
 	public int cycle = -1;
@@ -72,6 +93,14 @@ public class ScriptGameMaster : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{	
+		//Create grid
+		gameGrid = NewGameGrid(100, 100, 1);
+		//Debug.Log(gameGrid[5, 11, 0].location);
+
+		//Debug.Log(gameGrid[0, 0, 0].location);
+
+
+
 		//Acquire scripts
 		GameObject interfaceController = GameObject.Find ("ControllerInterface");
 		scriptInterface = interfaceController.GetComponent<ScriptInterface>();
@@ -625,10 +654,10 @@ public class ScriptGameMaster : MonoBehaviour {
 	{
 		ScriptCharacterController scriptCharacterController = hotSheet.GetComponent<ScriptCharacterController>();
 
-		Debug.Log ("What's the " + hotSheet);
+		//Debug.Log ("What's the " + hotSheet);
 		//Remove character from characters in play 
 		int hotIndex = GetCharactersInPlayIndex(hotSheet);
-		Debug.Log (hotIndex.ToString ());
+		//Debug.Log (hotIndex.ToString ());
 		charactersInPlay.RemoveAt(hotIndex);
 		
 		//Set character's inPlay to false
@@ -1036,5 +1065,39 @@ public class ScriptGameMaster : MonoBehaviour {
 		return true;
 	}
 
+	GridTile[ , , ] NewGameGrid (int gridSizeX, int gridSizeY, int gridSizeZ)
+	{
+		GridTile[ , ,] hotGrid = new GridTile[gridSizeX,gridSizeY,gridSizeZ];
 
+		for(int i = 0; i < gridSizeX; i++)
+		{
+
+		//	GameObject xContainer = Instantiate(containerPrefab, transform.position, transform.rotation) as GameObject;
+		//	xContainer.transform.parent = gridContainer.transform;
+		//	xContainer.name = string.Format("X{0:00}", i);
+
+			//Debug.Log(xContainer.name);
+
+			for(int j = 0; j < gridSizeY; j++)
+			{
+		//		GameObject yContainer = Instantiate(containerPrefab, transform.position, transform.rotation) as GameObject;
+		//		yContainer.transform.parent = xContainer.transform;
+		//		yContainer.name = string.Format("Y{0:00}", j);
+				
+				for (int k = 0; k < gridSizeZ; k++)
+				{
+					Vector3 tileLocation = new Vector3((float)i * gridSpacing.x, (float)j * gridSpacing.y, (float)k * gridSpacing.z);
+
+					hotGrid[i, j, k] = new GridTile(tileLocation);
+					//Debug.Log(gameGrid[i, j, k].location.ToString());
+					//Debug.Log(tileLocation);
+		//			GameObject hotTile = Instantiate(gridTilePrefab, tileLocation, Quaternion.identity) as GameObject;
+		//			hotTile.transform.parent = yContainer.transform;
+					
+				}
+			}
+		}
+
+		return hotGrid;
+	}
 }

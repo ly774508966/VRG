@@ -162,15 +162,17 @@ public class ScriptPhysicsController : MonoBehaviour {
 			if(child.collider)
 			{
 			//if(Random.value <= 0.75)
-			//{
-			child.gameObject.AddComponent<Rigidbody>();
-			child.rigidbody.mass = 1;
-			child.rigidbody.drag = 0;
-			child.rigidbody.angularDrag = 0.05F;
-			child.rigidbody.useGravity = true;
-			child.rigidbody.isKinematic = false;
-			child.rigidbody.WakeUp();
-			child.rigidbody.AddForce(blastForce);
+				if(child.rigidbody == null)
+				{
+					child.gameObject.AddComponent<Rigidbody>();
+				}
+				child.rigidbody.mass = 1;
+				child.rigidbody.drag = 0;
+				child.rigidbody.angularDrag = 0.05F;
+				child.rigidbody.useGravity = true;
+				child.rigidbody.isKinematic = false;
+				child.rigidbody.WakeUp();
+				child.rigidbody.AddForce(blastForce);
 			//	}
 			}
 			else

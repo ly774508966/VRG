@@ -568,8 +568,8 @@ public class ScriptDatabase : MonoBehaviour {
 		Attribute foodQualityAttribute = foodQualityAttributes[k];
 		hotItem = ApplyAttribute(hotItem, foodQualityAttribute, AttributeType.FoodQuality);
 
-		Debug.Log(string.Format("{0} / {1}; {2} / {3}; {4} / {5}", k, foodQualityAttributes.Length - 1, j, 
-		                        ingredientAttributes.Length - 1, i, dishAttributes.Length - 1));
+		//Debug.Log(string.Format("{0} / {1}; {2} / {3}; {4} / {5}", k, foodQualityAttributes.Length - 1, j, 
+		  //                      ingredientAttributes.Length - 1, i, dishAttributes.Length - 1));
 
 		//Set name
 		hotItem.fullName = hotItem.namePart0 + " " + hotItem.namePart1 + " " + hotItem.namePart2;
