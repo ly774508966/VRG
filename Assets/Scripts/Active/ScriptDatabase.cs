@@ -335,6 +335,7 @@ public class Result
 	//public CharacterHitProfile targetHitResistanceProfile = new CharacterHitProfile();
 	public CharacterHitProfile targetNetHitProfile = new CharacterHitProfile();
 	public GameObject hitLocation;
+	public PlayerShotInfo playerShotInfo;
 
 	
 		public Result(ScriptCharacterSheet actingCharacterSheet)
@@ -349,6 +350,7 @@ public class PlayerShotInfo
 	public ScriptCharacterSheet shooter;
 	public ScriptCharacterSheet target;
 	public GameObject shotLocation;
+	public Ray shotRay;
 
 	public PlayerShotInfo(ScriptCharacterSheet shooterArg)
 	{

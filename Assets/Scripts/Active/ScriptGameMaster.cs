@@ -484,11 +484,14 @@ public class ScriptGameMaster : MonoBehaviour {
 	//Resolve player input shot- 2nd overload
 	void ExecuteAction(PlayerShotInfo playerShotInfo){
 
+		Debug.Log("Execute action ray " + playerShotInfo.shotRay.ToString());
+
 		//New result
 		Result result = null;
 		ScriptCharacterSheet hotSheet = playerShotInfo.shooter;
 		ScriptCharacterSheet targetSheet = playerShotInfo.target;
 
+		//Add playershotinfo to result and resolve action
 		result = GetActionResult(playerShotInfo);
 
 		if(playerShotInfo.target)
@@ -563,6 +566,8 @@ public class ScriptGameMaster : MonoBehaviour {
 	//attacking character, defending character -> attack result. Default overload
 	Result GetActionResult(ScriptCharacterSheet actingCharacter, ScriptCharacterSheet targetCharacter)
 	{
+
+
 		
 		Result result = new Result(actingCharacter);
 		result.targetCharacter = targetCharacter;
@@ -603,6 +608,9 @@ public class ScriptGameMaster : MonoBehaviour {
 	{
 		ScriptCharacterSheet actingCharacter = playerShotInfo.shooter;
 		Result result = new Result(actingCharacter);
+		result.playerShotInfo = playerShotInfo;
+
+		Debug.Log("Action result init: " + playerShotInfo.shotRay.ToString());
 
 		if(playerShotInfo.target)
 		{

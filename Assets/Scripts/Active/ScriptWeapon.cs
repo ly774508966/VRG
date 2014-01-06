@@ -17,7 +17,7 @@ public class ScriptWeapon : MonoBehaviour {
 	//Projectile
 	public GameObject bulletPrefab;
 	public Transform projectileSpawn;
-	public float projectileSpeed;
+	float projectileSpeed = 1000;
 
 	//Sound
 	public AudioSource gunSound;
@@ -82,23 +82,24 @@ public class ScriptWeapon : MonoBehaviour {
 	}
 
 	//Wild miss overload
-	void GunshotEffect (int dummyArg)
+	void GunshotEffect (Ray shotRay)
 	{
 		//Shoot projectile randomly
-		Debug.Log("Wild Miss Overload");
+		//Debug.Log("Wild Miss Overload: " + shotRay.ToString());
 		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
 		hotProj.transform.parent = junkContainer.transform;
 		Vector3 attackVector = new Vector3();
-		if(transform.parent.parent.rotation.y == 180)
-		{
-		attackVector =  new Vector3(10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
-			- projectileSpawn.position; 
-		}
-		else
-		{
-			attackVector =  new Vector3(-10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
-				- projectileSpawn.position; 
-		}
+		//if(transform.parent.parent.rotation.y == 180)
+		//{
+		//attackVector =  new Vector3(10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
+		//	- projectileSpawn.position; 
+		//}
+		//else
+		//{
+		//	attackVector =  new Vector3(-10, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
+		//		- projectileSpawn.position; 
+		//}
+		attackVector = shotRay.direction;
 		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
 				
 		//Sound effect

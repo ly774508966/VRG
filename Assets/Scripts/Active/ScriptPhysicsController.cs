@@ -317,9 +317,9 @@ public class ScriptPhysicsController : MonoBehaviour {
 		else if(result.success == false)
 		{
 
-			//Fire weapon in random direction
+			//Fire weapon straight ahead
 			result.actingCharacter.GetComponentInChildren<ScriptModelController>().
-				weapon.SendMessage("GunshotEffect", 0, 0); //0 is dummy arg
+				weapon.SendMessage("GunshotEffect", result.playerShotInfo.shotRay); //natural shot ray
 
 		}
 		else

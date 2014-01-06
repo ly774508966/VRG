@@ -169,7 +169,7 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 
 		if(Input.GetKeyUp (playerKeyCode) && shotLoaded)
 		{
-
+			Debug.Log("Button release ray: " + currentRay.ToString());
 		
 			//Fire shot
 			RaycastHit hit;
@@ -181,14 +181,19 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = hit.collider.gameObject;
 					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
-					scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
+
+				playerShotInfo.shotRay = currentRay;	
+				//Debug.Log("shotray Assigned: " + playerShotInfo.shotRay.ToString());
+				scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
 				//	Debug.Log ("Hit " + hit.collider.gameObject.name);
 			}
 			else
 			{
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = null;
-				scriptGameMaster.SendMessage ("ExecuteAction", new PlayerShotInfo(scriptCharacterSheet));
+				playerShotInfo.shotRay = currentRay;
+				Debug.Log("shotray Assigned: " + playerShotInfo.shotRay.ToString());
+				scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
 				//Debug.Log ("Miss ");
 			}
 
