@@ -52,7 +52,7 @@ public class ScriptWeapon : MonoBehaviour {
 		hotProj.transform.parent = junkContainer.transform;
 		//hotProj.rigidbody.AddForce(new Vector3(1000, 1000, 1000));
 		Vector3 attackVector =  breakBox.transform.position - projectileSpawn.position; 
-		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
+		hotProj.GetComponent<Rigidbody>().AddForce(attackVector * projectileSpeed);
 
 		//Sound effect
 		gunSound.Play ();
@@ -71,7 +71,7 @@ public class ScriptWeapon : MonoBehaviour {
 		Vector3 attackVector =  (missedModel.gameObject.transform.position 
 		                         ) + new Vector3(0, (Random.value - 0.5F)*4, (Random.value - 0.5F)*4) //Magic numbers
 		                          - projectileSpawn.position; 
-		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
+		hotProj.GetComponent<Rigidbody>().AddForce(attackVector * projectileSpeed);
 
 		//Sound effect
 		gunSound.Play ();
@@ -100,7 +100,7 @@ public class ScriptWeapon : MonoBehaviour {
 		//		- projectileSpawn.position; 
 		//}
 		attackVector = shotRay.direction;
-		hotProj.rigidbody.AddForce(attackVector * projectileSpeed);
+		hotProj.GetComponent<Rigidbody>().AddForce(attackVector * projectileSpeed);
 				
 		//Sound effect
 		gunSound.Play ();

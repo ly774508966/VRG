@@ -25,8 +25,8 @@ public class BlockScript : MonoBehaviour {
 	}
 	
 	void Break () {
-		rigidbody.isKinematic = false;
-		rigidbody.WakeUp();
+		GetComponent<Rigidbody>().isKinematic = false;
+		GetComponent<Rigidbody>().WakeUp();
 	}
 	
 }

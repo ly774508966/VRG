@@ -35,11 +35,6 @@ public class ScriptModelHead : MonoBehaviour {
 		
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
 	void HeadExplode (float explosiveForce){
 		foreach(Transform child in transform){
 			if(child.GetComponent<Rigidbody>()){

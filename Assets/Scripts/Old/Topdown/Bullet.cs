@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	gameObject.rigidbody.WakeUp();
+	gameObject.GetComponent<Rigidbody>().WakeUp();
 	}
 	
 	void OnTriggerEnter(Collider other){

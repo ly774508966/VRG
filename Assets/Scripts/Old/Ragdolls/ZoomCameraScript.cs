@@ -14,6 +14,6 @@ public class ZoomCameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	/*float*/ zoomInput = Input.GetAxis ("CameraZoom");
-	camera.orthographicSize += zoomInput * Time.deltaTime * zoomSpeed;
+	GetComponent<Camera>().orthographicSize += zoomInput * Time.deltaTime * zoomSpeed;
 	}
 }

@@ -37,10 +37,10 @@ public class CharacterHitbox : MonoBehaviour {
 	}*/
 	
 IEnumerator Invulnerability (){
-	renderer.material = invulnerabilityMaterial;
+	GetComponent<Renderer>().material = invulnerabilityMaterial;
 	isInvulnerable = true;
 	yield return new WaitForSeconds(1.0F);
-	renderer.material = defaultMaterial;
+	GetComponent<Renderer>().material = defaultMaterial;
 	isInvulnerable = false;
 	
 	}

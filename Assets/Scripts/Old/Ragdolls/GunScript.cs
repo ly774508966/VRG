@@ -79,7 +79,7 @@ void FixedUpdate () {
 		//	}
 		yield return null;	
 		Debug.Log(Time.frameCount + "ApplyDamage" + transform.root.gameObject);
-		audio.Play ();
+		GetComponent<AudioSource>().Play ();
 		ApplyDamage (_box);
 		ApplyForce (_box);
 		
@@ -91,9 +91,9 @@ void FixedUpdate () {
 	}
 	
 	void ApplyForce (GameObject box) {
-		if(!box.rigidbody.isKinematic){
+		if(!box.GetComponent<Rigidbody>().isKinematic){
 			Vector3 forceDirection = transform.TransformDirection(Vector3.right);
-			box.rigidbody.AddForce(forceDirection * weaponForce);
+			box.GetComponent<Rigidbody>().AddForce(forceDirection * weaponForce);
 	}
 	}
 	

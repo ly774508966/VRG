@@ -16,8 +16,8 @@ public class ScriptWallPanel : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision hit){
-	if(hit.gameObject.rigidbody.velocity.magnitude > wallImpactThreshold && hit.gameObject.layer == 21){
-		rigidbody.isKinematic = false;	
+	if(hit.gameObject.GetComponent<Rigidbody>().velocity.magnitude > wallImpactThreshold && hit.gameObject.layer == 21){
+		GetComponent<Rigidbody>().isKinematic = false;	
 		}
 	}
 	

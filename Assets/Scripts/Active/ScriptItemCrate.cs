@@ -15,14 +15,10 @@ public class ScriptItemCrate : MonoBehaviour {
 	public Material crateMaterial;
 	AudioSource audioSource;
 	public const float Y_FORCE = 1000;
-	public ScriptDatabase scriptDatabase;
 	
 	
 	// Use this for initialization
 	void Start () {
-
-		//Get scripts
-		scriptDatabase = GameObject.Find("ControllerGame").GetComponent<ScriptDatabase>();
 
 		//Get pieces
 		lid = transform.FindChild("ObjCrateLid").gameObject;
@@ -38,7 +34,7 @@ public class ScriptItemCrate : MonoBehaviour {
 		//Fill with 100 random consumables
 		for(int i = 0; i < 100; i++)
 		{
-		containedItems.Add (scriptDatabase.GetRandomConsumable());
+		containedItems.Add (ScriptDatabase.Instance.GetRandomConsumable());
 		}
 
 	}
@@ -63,13 +59,13 @@ public class ScriptItemCrate : MonoBehaviour {
 	void PopOpen ()
 	{
 		//Debug.Log ("Pop open call received");
-		lid.rigidbody.isKinematic = false;
-		lid.rigidbody.WakeUp();
-		lid.rigidbody.AddForce((Random.value * 2 - 1) * 100, Y_FORCE, Random.value * -500);
-		lid.renderer.material.color = Color.white;
-		xSide0.renderer.material.color = Color.white;
-		xSide1.renderer.material.color = Color.white;
-		ySide.renderer.material.color = Color.white;
+		lid.GetComponent<Rigidbody>().isKinematic = false;
+		lid.GetComponent<Rigidbody>().WakeUp();
+		lid.GetComponent<Rigidbody>().AddForce((Random.value * 2 - 1) * 100, Y_FORCE, Random.value * -500);
+		lid.GetComponent<Renderer>().material.color = Color.white;
+		xSide0.GetComponent<Renderer>().material.color = Color.white;
+		xSide1.GetComponent<Renderer>().material.color = Color.white;
+		ySide.GetComponent<Renderer>().material.color = Color.white;
 		crateLight.gameObject.SetActive(false);
 		audioSource.Play ();
 
@@ -90,10 +86,10 @@ public class ScriptItemCrate : MonoBehaviour {
 		//{
 		//child.gameObject.renderer.material.color = crateColor;		
 		//}
-		lid.renderer.material.color = crateColor;
-		xSide0.renderer.material.color = crateColor;
-		xSide1.renderer.material.color = crateColor;
-		ySide.renderer.material.color = crateColor;
+		lid.GetComponent<Renderer>().material.color = crateColor;
+		xSide0.GetComponent<Renderer>().material.color = crateColor;
+		xSide1.GetComponent<Renderer>().material.color = crateColor;
+		ySide.GetComponent<Renderer>().material.color = crateColor;
 		
 		//crateMaterial.SetColor("_Color", crateColor);
 		crateLight.color = crateColor;

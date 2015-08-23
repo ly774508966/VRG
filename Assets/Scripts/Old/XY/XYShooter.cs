@@ -25,7 +25,7 @@ public Vector3 shotInput = Vector3.zero;
 		canFire = false;
 		GameObject newBullet;
 		newBullet = Instantiate (bullet,new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.0f), transform.rotation) as GameObject;
-		newBullet.rigidbody.AddForce(shotInput * shotForce);
+		newBullet.GetComponent<Rigidbody>().AddForce(shotInput * shotForce);
 				//(transform.TransformDirection(shotVector * shotForce));
 		StartCoroutine("ShotTimer");
 		}

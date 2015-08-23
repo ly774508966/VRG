@@ -9,26 +9,15 @@ public class ScriptInterface : MonoBehaviour {
 	public GameObject opposingCharacterSheetDisplay;
 	public GameObject console;
 	
-	ScriptGameMaster scriptGameMaster;
-	
 	GUIStyle defaultStyle;
-	
-	//public bool testSwitch = true;
-	
-	
-	// Use this for initialization
-	void Start () {
-		scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
-	//console = transform.FindChild("Console").gameObject;	
-	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		
-		selectedCharacterComparisonDisplay.guiText.text = GetCharacterComparison(scriptGameMaster.selectedSheet, scriptGameMaster.opposingSheet);
+		selectedCharacterComparisonDisplay.GetComponent<GUIText>().text = GetCharacterComparison(ScriptGameMaster.Instance.selectedSheet, ScriptGameMaster.Instance.opposingSheet);
 		//opposingCharacterComparisonDisplay.guiText.text = GetMirroredCharacterComparison(scriptGameMaster.opposingSheet);
-		selectedCharacterSheetDisplay.guiText.text = GetCharacterSheet(scriptGameMaster.selectedSheet);
-		opposingCharacterSheetDisplay.guiText.text = GetCharacterSheet(scriptGameMaster.opposingSheet);
+		selectedCharacterSheetDisplay.GetComponent<GUIText>().text = GetCharacterSheet(ScriptGameMaster.Instance.selectedSheet);
+		opposingCharacterSheetDisplay.GetComponent<GUIText>().text = GetCharacterSheet(ScriptGameMaster.Instance.opposingSheet);
 		
 	}
 	

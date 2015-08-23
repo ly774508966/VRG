@@ -23,6 +23,6 @@ public class ScriptCycleDisplay : MonoBehaviour {
 	
 	void UpdateCycle(int currentCycle){
 		//cycleNumber = currentCycle;
-			guiCycleDisplay.guiText.text = currentCycle.ToString();
+			guiCycleDisplay.GetComponent<GUIText>().text = currentCycle.ToString();
 	}
 }

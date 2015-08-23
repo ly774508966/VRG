@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+//TODO Deprecated
+
 public class CharacterSheet : MonoBehaviour {
 	
 	public float HP = 3.0F;
@@ -9,7 +11,7 @@ public class CharacterSheet : MonoBehaviour {
 	public Material defaultMaterial;
 	// Use this for initialization
 	void Start () {
-	gameObject.transform.parent.renderer.material = defaultMaterial;
+	gameObject.transform.parent.GetComponent<Renderer>().material = defaultMaterial;
 	}
 	
 	// Update is called once per frame
@@ -30,10 +32,10 @@ public class CharacterSheet : MonoBehaviour {
 	}
 	
 IEnumerator Invulnerability (){
-	gameObject.transform.parent.renderer.material = invulnerabilityMaterial;
+	gameObject.transform.parent.GetComponent<Renderer>().material = invulnerabilityMaterial;
 	isInvulnerable = true;
 	yield return new WaitForSeconds(1.0F);
-	gameObject.transform.parent.renderer.material = defaultMaterial;
+	gameObject.transform.parent.GetComponent<Renderer>().material = defaultMaterial;
 	isInvulnerable = false;
 	
 	}

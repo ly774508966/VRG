@@ -362,8 +362,15 @@ public class PlayerShotInfo
 
 public class ScriptDatabase : MonoBehaviour {
 
-	//Debug
-	//public int highestI;
+	private static ScriptDatabase _instance;
+	public static ScriptDatabase Instance {
+		get {
+			if(_instance == null) {
+				_instance = GameObject.FindObjectOfType<ScriptDatabase>();
+			}
+			return _instance;
+		}
+	}
 
 	//Runtime variables
 	Item tempItem;
@@ -524,20 +531,8 @@ public class ScriptDatabase : MonoBehaviour {
 	//	new Tactic("Basic Shot", TacticType.Action, new CharacterPoolProfile( 0, 0, 0, 0, 0, DamageType.None))  	
 	//};
 
-	
-	//public Dictionary<AttributeName,Attribute> attributeInfo = 
-	//	new Dictionary<AttributeName, Attribute> ()
-	//{
-	//	{pistol,SetAttribute( 	
-	//};
-	
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void Awake() {
+		_instance = this;
 	}
 
 

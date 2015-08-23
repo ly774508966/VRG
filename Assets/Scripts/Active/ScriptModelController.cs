@@ -37,25 +37,25 @@ public class ScriptModelController : MonoBehaviour {
 		//Primary coloring
 		foreach(Transform child in leftArm.transform)
 		{
-			if(child.gameObject.renderer)
+			if(child.gameObject.GetComponent<Renderer>())
 			{
-			Material hotMat = child.gameObject.renderer.material;
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 			hotMat.color = scriptCharacterSheet.primaryColor;
 			}	
 		}
 			foreach(Transform child in rightArm.transform)
 		{
-			if(child.gameObject.renderer)
+			if(child.gameObject.GetComponent<Renderer>())
 			{
-			Material hotMat = child.gameObject.renderer.material;
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 			hotMat.color = scriptCharacterSheet.primaryColor;
 			}	
 		}
 
 		
 				foreach(Transform child in spine.transform){
-			if(child.gameObject.renderer){
-			Material hotMat = child.gameObject.renderer.material;
+			if(child.gameObject.GetComponent<Renderer>()){
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 				//Spine is primary color except for hips (spinebox6)
 				if(child.name == "spineBox6"){
 			hotMat.color = scriptCharacterSheet.secondaryColor;
@@ -68,22 +68,22 @@ public class ScriptModelController : MonoBehaviour {
 		//Secondary coloring
 			
 				foreach(Transform child in rightLeg.transform){
-			if(child.gameObject.renderer){
-			Material hotMat = child.gameObject.renderer.material;
+			if(child.gameObject.GetComponent<Renderer>()){
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 			hotMat.color = scriptCharacterSheet.secondaryColor;
 			}	
 		}
 				foreach(Transform child in leftLeg.transform){
-			if(child.gameObject.renderer){
-			Material hotMat = child.gameObject.renderer.material;
+			if(child.gameObject.GetComponent<Renderer>()){
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 			hotMat.color = scriptCharacterSheet.secondaryColor;
 			}	
 		}
 		//Skin coloring
 		
 				foreach(Transform child in head.transform){
-			if(child.gameObject.renderer){
-			Material hotMat = child.gameObject.renderer.material;
+			if(child.gameObject.GetComponent<Renderer>()){
+			Material hotMat = child.gameObject.GetComponent<Renderer>().material;
 			hotMat.color = scriptCharacterSheet.skinColor;
 			}	
 		}

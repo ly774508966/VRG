@@ -29,16 +29,16 @@ void FixedUpdate () {
 	}
 void InitiateRagdoll (GameObject part) {
 		foreach (Transform child in part.transform) {
-			if(child.gameObject.rigidbody) {
-				InitiateBoxPhysics(child.gameObject.rigidbody);
+			if(child.gameObject.GetComponent<Rigidbody>()) {
+				InitiateBoxPhysics(child.gameObject.GetComponent<Rigidbody>());
 			} else {
 				InitiateRagdoll (child.gameObject);
 				}
 			}
 		}
 void InitiateBoxPhysics (Rigidbody box) {
-		box.rigidbody.isKinematic = false;
-		box.rigidbody.WakeUp();
+		box.GetComponent<Rigidbody>().isKinematic = false;
+		box.GetComponent<Rigidbody>().WakeUp();
 }
 	
 void ReceiveDamage (int damageAmount) {

@@ -27,7 +27,7 @@ public class ScriptConsole : MonoBehaviour {
 	
 		consoleText.Insert (0, Instantiate(textBlock,transform.position,transform.rotation) as GameObject);
 		consoleText[0].transform.parent = gameObject.transform;
-		consoleText[0].guiText.text = textLine;
+		consoleText[0].GetComponent<GUIText>().text = textLine;
 		
 	}
 

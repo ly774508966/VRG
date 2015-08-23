@@ -175,17 +175,13 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 			RaycastHit hit;
 			if(Physics.Raycast(currentRay, out hit, scriptCharacterSheet.activeItem.itemStatProfile.maxRangeAspect, layerMask))
 			{
-				//if(hit.collider.gameObject.tag == "Raycast")
-				//{
 
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = hit.collider.gameObject;
 					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
 
 				playerShotInfo.shotRay = currentRay;	
-				//Debug.Log("shotray Assigned: " + playerShotInfo.shotRay.ToString());
 				scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);
-				//	Debug.Log ("Hit " + hit.collider.gameObject.name);
 			}
 			else
 			{
@@ -239,6 +235,13 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 			Debug.Log ("Invalid Character");
 			return new Ray();
 		}
+	}
+
+	public void DisableOscillation(ScriptCharacterController characterController) {
+		lineRenderer.enabled = false;
+
+		characterController.colliderContainer.SetActive(false);
+		enabled = false;
 	}
 
 	//void PassShotInfo()

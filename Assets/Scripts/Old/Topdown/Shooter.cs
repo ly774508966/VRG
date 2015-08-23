@@ -23,7 +23,7 @@ public float shotDelay = 1.0F;
 		canFire = false;
 		GameObject newBullet;
 		newBullet = Instantiate (bullet,new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.0f), transform.rotation) as GameObject;
-		newBullet.rigidbody.AddForce(shotVector * shotForce);
+		newBullet.GetComponent<Rigidbody>().AddForce(shotVector * shotForce);
 				//(transform.TransformDirection(shotVector * shotForce));
 		StartCoroutine("ShotTimer");
 		}

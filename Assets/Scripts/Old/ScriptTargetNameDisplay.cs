@@ -9,7 +9,7 @@ public class ScriptTargetNameDisplay : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		guiText.text = "Select Target";
+		GetComponent<GUIText>().text = "Select Target";
 	}
 	
 	// Update is called once per frame
