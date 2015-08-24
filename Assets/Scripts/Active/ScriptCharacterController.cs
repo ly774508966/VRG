@@ -12,7 +12,7 @@ public class ScriptCharacterController : MonoBehaviour {
 	//public Camera cinematicCamera1;
 	
 	//Movement
-	ScriptCharacterSheet scriptCharacterSheet;
+	CharacterSheet scriptCharacterSheet;
 	public Vector3 startMarker;
 	public Vector3 endMarker;
 	public float movementSpeed = 0.5F;
@@ -30,7 +30,7 @@ public class ScriptCharacterController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		scriptCharacterSheet = GetComponent<ScriptCharacterSheet>();
+		scriptCharacterSheet = GetComponent<CharacterSheet>();
 		
 		//cinematicCamera0.enabled = false;
 		//cinematicCamera1.enabled = false;

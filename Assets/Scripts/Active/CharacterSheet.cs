@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-public class ScriptCharacterSheet : MonoBehaviour {
+public class CharacterSheet : MonoBehaviour {
 	
 /*NOTES
  * -9999 is used as a placeholder for values that are assigned during runtime (easy debugging). 
@@ -162,7 +162,7 @@ public class ScriptCharacterSheet : MonoBehaviour {
 	public bool suspendPositionObjective = false;
 	
 	//Objectives
-	public ScriptCharacterSheet target = null;
+	public CharacterSheet target = null;
 	
 
 	

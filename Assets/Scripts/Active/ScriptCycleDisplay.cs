@@ -2,14 +2,21 @@ using UnityEngine;
 using System.Collections;
 
 public class ScriptCycleDisplay : MonoBehaviour {
-	
-	GameObject guiCycleDisplay;
+	private GUIText _cycleText = null;
+	GUIText CycleText {
+		get {
+			if (_cycleText == null) {
+				_cycleText = transform.FindChild ("GUICycleDisplay").GetComponent<GUIText> ();
+			}
+			return _cycleText;
+		}
+	}
 	//int cycleNumber;
 	//ScriptGameMaster scriptGameMaster;
 	
 	// Use this for initialization
 	void Start () {
-		guiCycleDisplay = transform.FindChild("GUICycleDisplay").gameObject;
+		_cycleText = transform.FindChild("GUICycleDisplay").GetComponent<GUIText>();
 		//scriptGameMaster = GameObject.Find ("ControllerGame").GetComponent<ScriptGameMaster>();
 	}
 	
@@ -23,6 +30,9 @@ public class ScriptCycleDisplay : MonoBehaviour {
 	
 	void UpdateCycle(int currentCycle){
 		//cycleNumber = currentCycle;
-			guiCycleDisplay.GetComponent<GUIText>().text = currentCycle.ToString();
+//		print ("gui component: " + guiCycleDisplay.GetComponent<GUIText>().text);
+//		print ("current cycle: " + currentCycle.ToString());
+
+		CycleText.GetComponent<GUIText>().text = currentCycle.ToString();
 	}
 }

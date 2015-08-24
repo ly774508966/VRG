@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ShotController : MonoBehaviour{
 
-	public ScriptCharacterSheet playerOneCharacter;
+	public CharacterSheet playerOneCharacter;
 
 //	public void OnPointerDown(PointerEventData eventData) {
 //		
@@ -28,7 +28,7 @@ public class ShotController : MonoBehaviour{
 
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(playerOneCharacter);
 				playerShotInfo.shotLocation = hit.collider.gameObject;
-				playerShotInfo.target = GetParentCharacterRecursively(playerShotInfo.shotLocation.transform);
+				playerShotInfo.target = Utility.GetParentCharacterRecursively(playerShotInfo.shotLocation.transform);
 //				playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
 				
 				playerShotInfo.shotRay = ray;
@@ -38,16 +38,5 @@ public class ShotController : MonoBehaviour{
 		}
 	}
 
-	private ScriptCharacterSheet GetParentCharacterRecursively(Transform child) {
-		ScriptCharacterSheet characterSheet = child.parent.GetComponent<ScriptCharacterSheet>();
-		if (characterSheet != null) {
-			return characterSheet;
-		} else {
-			if(child.parent == child.root) {
-				return null;
-			} else {
-				return GetParentCharacterRecursively(child.parent);
-			}
-		}
-	}
+
 }

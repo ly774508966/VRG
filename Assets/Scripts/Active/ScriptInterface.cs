@@ -58,7 +58,7 @@ public class ScriptInterface : MonoBehaviour {
 	}
 	*/
 
-	string GetCharacterComparison(ScriptCharacterSheet selectedCharacter, ScriptCharacterSheet opposingCharacter)
+	string GetCharacterComparison(CharacterSheet selectedCharacter, CharacterSheet opposingCharacter)
 	{
 		return string.Format("{0}     {1}"
 		                     + "\n Range {2:00}     {3:00} Range"
@@ -71,7 +71,7 @@ public class ScriptInterface : MonoBehaviour {
 			selectedCharacter.readyPriority, opposingCharacter.readyPriority});
 	}
 
-	string GetCharacterSheet(ScriptCharacterSheet hotSheet)
+	string GetCharacterSheet(CharacterSheet hotSheet)
 	{
 		return hotSheet.stringID +
 			"\n Toughness: " + hotSheet.toughness +

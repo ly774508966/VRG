@@ -178,7 +178,7 @@ public class CharacterHitProfile
 		public string namePart1 = "";
 		public string namePart2 = "";
 		
-		public ScriptCharacterSheet owner = null;
+		public CharacterSheet owner = null;
 		
 		//Appearance
 	//Color itemColor;
@@ -319,8 +319,8 @@ public class TacticStatProfile
 	[System.Serializable]
 public class Result
 {
-	public ScriptCharacterSheet actingCharacter = null;
-	public ScriptCharacterSheet targetCharacter = null;
+	public CharacterSheet actingCharacter = null;
+	public CharacterSheet targetCharacter = null;
 	public bool success = false;
 	public DamageType damageType = DamageType.None;
 	public int grossDamage = -9999;
@@ -338,7 +338,7 @@ public class Result
 	public PlayerShotInfo playerShotInfo;
 
 	
-		public Result(ScriptCharacterSheet actingCharacterSheet)
+		public Result(CharacterSheet actingCharacterSheet)
 		{
 			actingCharacter = actingCharacterSheet;
 		}
@@ -347,12 +347,12 @@ public class Result
 //Player
 public class PlayerShotInfo
 {
-	public ScriptCharacterSheet shooter;
-	public ScriptCharacterSheet target;
+	public CharacterSheet shooter;
+	public CharacterSheet target;
 	public GameObject shotLocation;
 	public Ray shotRay;
 
-	public PlayerShotInfo(ScriptCharacterSheet shooterArg)
+	public PlayerShotInfo(CharacterSheet shooterArg)
 	{
 		shooter = shooterArg;
 		//target = targetArg;

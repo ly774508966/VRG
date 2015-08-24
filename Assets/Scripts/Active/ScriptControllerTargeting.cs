@@ -41,7 +41,7 @@ public class ScriptControllerTargeting : MonoBehaviour {
 	//return destination - source;	
 	
 	
-	public bool GetActingPosition(ScriptCharacterSheet hotSheet)
+	public bool GetActingPosition(CharacterSheet hotSheet)
 	{
 		
 			//If character is in play and has a target,

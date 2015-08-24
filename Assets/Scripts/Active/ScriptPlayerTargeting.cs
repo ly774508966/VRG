@@ -16,7 +16,7 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 	int activeLayer = 9;
 	int layerMask;
 
-	public ScriptCharacterSheet scriptCharacterSheet;
+	public CharacterSheet scriptCharacterSheet;
 	public ScriptGameMaster scriptGameMaster;
 
 	public LineRenderer lineRenderer;
@@ -178,7 +178,7 @@ public class ScriptPlayerTargeting : MonoBehaviour {
 
 				PlayerShotInfo playerShotInfo = new PlayerShotInfo(scriptCharacterSheet);
 				playerShotInfo.shotLocation = hit.collider.gameObject;
-					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<ScriptCharacterSheet>();
+					playerShotInfo.target = playerShotInfo.shotLocation.transform.parent.parent.GetComponent<CharacterSheet>();
 
 				playerShotInfo.shotRay = currentRay;	
 				scriptGameMaster.SendMessage ("ExecuteAction", playerShotInfo);

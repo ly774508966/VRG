@@ -46,13 +46,14 @@ public class ScriptWeapon : MonoBehaviour {
 
 	//Hit overload
 	void GunshotEffect(GameObject breakBox){
+		return;
 
 		//Shoot projectile
 		GameObject hotProj = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
 		hotProj.transform.parent = junkContainer.transform;
 		//hotProj.rigidbody.AddForce(new Vector3(1000, 1000, 1000));
 		Vector3 attackVector =  breakBox.transform.position - projectileSpawn.position; 
-		hotProj.GetComponent<Rigidbody>().AddForce(attackVector * projectileSpeed);
+//		hotProj.GetComponent<Rigidbody>().AddForce(attackVector * projectileSpeed);
 
 		//Sound effect
 		gunSound.Play ();

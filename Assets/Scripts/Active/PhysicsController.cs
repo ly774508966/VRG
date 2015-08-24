@@ -1,11 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class ScriptPhysicsController : MonoBehaviour
+public class PhysicsController : MonoBehaviour
 {
-
-
-
 	//Force
 	public float propelForceConstant = 100F;
 	public float headExplodeForce = 1000;
@@ -22,7 +19,6 @@ public class ScriptPhysicsController : MonoBehaviour
 	public Transform junkContainer;
 
 	//Local variables
-	public GameObject modelPart;
 	public Vector3 rangedAttack;
 	public Vector3 propelVector;
 	public bool partIsDestroyed;
@@ -30,33 +26,34 @@ public class ScriptPhysicsController : MonoBehaviour
 	//Temp
 	public GameObject debug;
 
-	//Local variables
-	//public bool propel;
-	//public bool blowUpHead;
-	
-	
-	
-	//public GameObject testHead;
-	
+	private static PhysicsController _instance;
+	public static PhysicsController Instance {
+		get {
+			if(_instance == null) {
+				_instance = GameObject.FindObjectOfType<PhysicsController>();
+			}
+			return _instance;
+		}
+	}
+
+	void Awake () {
+		_instance = this;
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
-		
 		panelContainer = GameObject.Find ("ContainerGeometry");
 		
 		//foreach(GameObject wall in GameObject.Find ("ObjectBreakableWall")){
 		//RegisterAllPanels(panelContainer);
 		//GameObject poorBastard = GameObject.Find ("ObjectCharacterModel");
 		//PropelChunk(poorBastard, propelForce);
-	
-		
-		
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-	
 		if (Input.GetKeyDown (KeyCode.B)) {
 			BlastWall (new Vector3 (1000, 1000, 1000), debug);	
 		}
@@ -64,32 +61,14 @@ public class ScriptPhysicsController : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.D)) {
 			BlastWall (new Vector3 (500, 0, 0), panelContainer);	
 		}
-		
-	}
-	/*
-	void RegisterAllPanels(GameObject wallSegment){
-		foreach(Transform child in wallSegment.transform){
-			if(child.rigidbody == null){
-				//Debug.Log ("Run");
-				RegisterAllPanels(child.gameObject);
-			} else {
-				GameObject hotPanel = child.gameObject;
-				//Destroy(hotPanel.rigidbody);
-				//Add panel scripts
-				//hotPanel.AddComponent("ScriptWallPanel");
-				//hotPanel.GetComponent<ScriptWallPanel>().wallImpactThreshold = wallThresholdVelocity;
-				//hotPanel.AddComponent("FixedJoint");
-		
-		//FixedJoint hotJoint = hotPanel.GetComponent<FixedJoint>();
-		//		hotJoint.breakForce = wallJointStrength; 
-		//		hotJoint.rigidbody.isKinematic = true;
-			}
+
+		if (Input.GetKeyDown (KeyCode.R)) {
+			Ragdollify(ScriptGameMaster.Instance.charactersInPlay[0].gameObject);
 		}
 	}
-	*/
-	void Unragdollify (GameObject chunk)
+
+	public void Unragdollify (GameObject chunk)
 	{
-		
 		foreach (Transform child in chunk.transform) {
 			if (child.GetComponent<Rigidbody> () != null) {
 				child.GetComponent<Rigidbody> ().isKinematic = true;
@@ -99,14 +78,16 @@ public class ScriptPhysicsController : MonoBehaviour
 		}
 	}
 	
-	void Ragdollify (GameObject chunk)
+	public void Ragdollify (GameObject chunk)
 	{
-		
 		foreach (Transform child in chunk.transform) {
 			if (child.GetComponent<Rigidbody> () != null) {
 				//	Debug.Log (child);
-				child.GetComponent<Rigidbody> ().isKinematic = false;
-				child.GetComponent<Rigidbody> ().WakeUp ();
+				if(!child.gameObject.name.Contains("head")) {
+					child.GetComponent<Rigidbody> ().isKinematic = false;
+				}
+
+//				child.GetComponent<Rigidbody> ().WakeUp ();
 			} else {
 				Ragdollify (child.gameObject);
 			}
@@ -177,10 +158,9 @@ public class ScriptPhysicsController : MonoBehaviour
 		}
 	}
 	
-	void InitiateActionEffect (Result result)
+	public void InitiateActionEffect (Result result)
 	{
 		//Reset "local" variables
-		modelPart = null;
 		propelVector = Vector3.zero;
 		partIsDestroyed = false;
 
@@ -206,6 +186,7 @@ public class ScriptPhysicsController : MonoBehaviour
 				Ragdollify (result.targetCharacter.gameObject);
 			}
 
+			GameObject modelPart = null;
 			//If damage is inflicted on body part and that body part is destroyed
 			if (result.targetNetHitProfile.head < 0) {
 				//Assign execution variables
@@ -273,10 +254,11 @@ public class ScriptPhysicsController : MonoBehaviour
 
 			//Dismember if destroyed
 			if (partIsDestroyed) {
-				Ragdollify (modelPart);
-				BreakJoints (result.playerShotInfo.shotLocation);
-				Propel (propelVector, modelPart);
-				modelPart.transform.parent = junkContainer;
+//				Ragdollify (modelPart);
+//				BreakJoints (result.playerShotInfo.shotLocation);
+//				print ("propel vector, model part: " + propelVector +", " + modelPart);
+//				Propel (propelVector, modelPart);
+//				modelPart.transform.parent = junkContainer;
 			}
 
 			//Spurt blood
@@ -295,65 +277,6 @@ public class ScriptPhysicsController : MonoBehaviour
 			Debug.Log ("Something went horribly wrong");
 		}
 
-		/*
-	switch(hotResult.hitLocation)
-		{
-		case BodyPart.Head:
-			modelPart = hotModelController.head;
-			breakBox = modelPart.transform.FindChild("headBox1").gameObject;
-			break;
-		case BodyPart.Body:
-			modelPart = hotModelController.spine;
-			breakBox = modelPart.transform.FindChild("spineBox4").gameObject;
-			break;
-		case BodyPart.LeftArm:
-			modelPart = hotModelController.leftArm;
-			breakBox = modelPart.transform.FindChild("leftArmBox3").gameObject;
-			break;
-		case BodyPart.RightArm:
-			modelPart = hotModelController.rightArm;
-			breakBox = modelPart.transform.FindChild("rightArmBox3").gameObject;
-			break;
-		case BodyPart.LeftLeg:
-			modelPart = hotModelController.leftLeg;
-			breakBox = modelPart.transform.FindChild("leftLegBox3").gameObject;
-			break;
-		case BodyPart.RightLeg:
-			modelPart = hotModelController.rightLeg;
-			breakBox = modelPart.transform.FindChild("rightLegBox3").gameObject;
-			break;
-		default:
-			Debug.Log ("Invalid Body Part: " + hotResult.hitLocation.ToString());
-			break;
-		}
-		
-		//Debug.Log (modelPart.ToString() + breakBox.ToString());
-
-
-
-		Vector3 rangedAttack = hotResult.actingCharacter.
-			GetComponentInChildren<ScriptControllerTargeting>().rangedAttack;
-		
-		if(hotResult.hitLocation == BodyPart.Head)
-		{
-					if(hotResult.targetCharacter.currentHeadHP <= 0)
-			{
-			modelPart.SendMessage("HeadExplode", headExplodeForce);	
-		}
-
-		if(hotResult.hitLocation == BodyPart.Body)
-			{
-				if(hotResult.targetCharacter.currentBodyHP <= 0)
-				{
-
-				}
-			}
-		Ragdollify(modelPart);
-		BreakJoints(breakBox);
-		Propel(rangedAttack * 200, hotResult.targetCharacter.gameObject);
-		//breakBox.rigidbody.AddForce(rangedAttack * 500);
-		//Debug.Log ("Broke the " + hotResult.hitLocation);
-*/
 	}
 	
 	void BreakJoints (GameObject breakBox)
